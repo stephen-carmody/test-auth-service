@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .user-info {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .user-info.active {
+            display: block;
+        }
+
+        .user-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .token-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .user-info .btn {
+            margin-top: 20px;
+            background: #dc3545;
+        }
+
+        .api-actions {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .api-actions h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .api-btn {
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .api-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .response-display {
+            margin-top: 15px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading .spinner {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Auth Gateway</h1>
+            <p>Register or login to access storage services</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')">Login</div>
+            <div class="tab" onclick="switchTab('register')">Register</div>
+        </div>
+
+        <div class="content">
+            <!-- Login Form -->
+            <div id="login-form" class="form active">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button class="btn" onclick="login()">
+                    <div class="spinner"></div>
+                    <span>Login</span>
+                </button>
+                <div id="login-message" class="message"></div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="form">
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" placeholder="Choose a username (3+ chars)">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Choose a password (6+ chars)">
+                </div>
+                <button class="btn" onclick="register()">
+                    <div class="spinner"></div>
+                    <span>Register</span>
+                </button>
+                <div id="register-message" class="message"></div>
+            </div>
+
+            <!-- User Info (Shown after login) -->
+            <div id="user-info" class="user-info">
+                <h3>Welcome, <span id="username-display"></span>!</h3>
+                <p>You are now logged in with a 24-hour session token.</p>
+                <div class="token-display">
+                    <strong>Token:</strong><br>
+                    <span id="token-display"></span>
+                </div>
+
+                <div class="api-actions">
+                    <h4>Test API Endpoints:</h4>
+                    <button class="api-btn" onclick="testEndpoint('/stats', 'GET')">Get Stats</button>
+                    <button class="api-btn" onclick="testEndpoint('/persistent', 'GET')">List My Keys</button>
+                    <button class="api-btn" onclick="testEndpoint('/shared', 'GET')">List Shared Keys</button>
+                    <button class="api-btn" onclick="logout()">Logout</button>
+
+                    <div id="response-display" class="response-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://storage-service-kvn1.onrender.com';
+        let currentToken = null;
+        let currentUsername = null;
+
+        // DOM Elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const userInfo = document.getElementById('user-info');
+
+        function switchTab(tabName) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show clicked tab
+            if (tabName === 'login') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                registerForm.classList.remove('active');
+                loginForm.classList.remove('active');
+                registerForm.classList.add('active');
+            }
+        }
+
+        function showMessage(formId, message, isError = false) {
+            const messageElement = document.getElementById(`${formId}-message`);
+            messageElement.textContent = message;
+            messageElement.className = `message ${isError ? 'error' : 'success'}`;
+
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function setLoading(button, isLoading) {
+            const btn = button;
+            if (isLoading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const loginBtn = document.querySelector('#login-form .btn');
+
+            if (!username || !password) {
+                showMessage('login', 'Please fill in all fields', true);
+                return;
+            }
+
+            setLoading(loginBtn, true);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({username, password})
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentToken = data.token;
+                    currentUsername = username;
+
+                    // Update UI
+                    document.getElementById('username-display').textContent = username;
+                    document.getElementById('token-display').textContent = data.token;
+
+                    // Hide forms, show user info
+                    loginForm.classList.remove('active');
+                    registerForm.classList.remove('active');
+                    userInfo.classList.add('active');
+
+                    showMessage('login', 'Login successful!');
+
+                    // Clear form fields
+                    document.getElementById('login-username').value = '';
+                    document.getElementById('login-password').value = '';
+                } else {
+                    showMessage('login', data.error || 'Login failed', true);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('login', 'Network error. Please try again.', true);
+            } finally {
+                setLoading(loginBtn, false);
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+            const registerBtn = document.querySelector('#register-form .btn');
+
+            if (!username || !password) {
+                showMessage('register', 'Please fill in all fields', true);
+                return;
+            }
+
+            if (username.length < 3) {
+                showMessage('register', 'Username must be at least 3 characters', true);
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('register', 'Password must be at least 6 characters', true);
+                return;
+            }
+
+            setLoading(registerBtn, true);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({username, password})
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('register', 'Registration successful! You can now login.');
+                    // Switch to login tab
+                    switchTab('login');
+                    // Pre-fill username
+                    document.getElementById('login-username').value = username;
+                    // Clear register form
+                    document.getElementById('register-username').value = '';
+                    document.getElementById('register-password').value = '';
+                } else {
+                    showMessage('register', data.error || 'Registration failed', true);
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                showMessage('register', 'Network error. Please try again.', true);
+            } finally {
+                setLoading(registerBtn, false);
+            }
+        }
+
+        async function logout() {
+            if (!currentToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Reset state
+                    currentToken = null;
+                    currentUsername = null;
+
+                    // Update UI
+                    userInfo.classList.remove('active');
+                    switchTab('login');
+
+                    // Clear response display
+                    document.getElementById('response-display').textContent = '';
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        async function testEndpoint(endpoint, method = 'GET', body = null) {
+            if (!currentToken) {
+                alert('Please login first');
+                return;
+            }
+
+            const responseDisplay = document.getElementById('response-display');
+
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                responseDisplay.textContent = 'Loading...';
+
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                const data = await response.json();
+
+                responseDisplay.textContent = JSON.stringify(data, null, 2);
+
+                if (!response.ok) {
+                    responseDisplay.style.color = '#dc3545';
+                } else {
+                    responseDisplay.style.color = '#155724';
+                }
+            } catch (error) {
+                console.error('API call error:', error);
+                responseDisplay.textContent = `Error: ${error.message}`;
+                responseDisplay.style.color = '#dc3545';
+            }
+        }
+
+        // Check for saved token on page load
+        window.addEventListener('load', () => {
+            // Check URL for token (optional feature for direct linking)
+            const urlParams = new URLSearchParams(window.location.search);
+            const savedToken = urlParams.get('token');
+
+            if (savedToken) {
+                // Could implement token validation here
+                currentToken = savedToken;
+            }
+        });
+
+        // Add enter key support
+        document.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (loginForm.classList.contains('active')) {
+                    login();
+                } else if (registerForm.classList.contains('active')) {
+                    register();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
