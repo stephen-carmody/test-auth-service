@@ -283,6 +283,101 @@
         .loading .spinner {
             display: block;
         }
+
+        .chat-section {
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .chat-section h4 {
+            margin-bottom: 12px;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .chat-messages {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            height: 200px;
+            overflow-y: auto;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            background: var(--surface);
+        }
+
+        .chat-message .username {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 11px;
+        }
+
+        .chat-message .timestamp {
+            color: var(--text-muted);
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        .chat-message .message-text {
+            color: var(--text);
+            margin-top: 2px;
+            word-wrap: break-word;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text);
+            transition: border-color 0.2s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .chat-send {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--accent-hover);
+        }
+
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 
@@ -350,6 +445,15 @@
                     <button class="api-btn" onclick="logout()">Logout</button>
 
                     <div id="response-display" class="response-display"></div>
+                </div>
+
+                <div class="chat-section">
+                    <h4>Global Chat</h4>
+                    <div id="chat-messages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." maxlength="200">
+                        <button id="chat-send" class="chat-send" onclick="sendMessage()">Send</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -445,6 +549,9 @@
                     registerForm.classList.remove('active');
                     userInfo.classList.add('active');
 
+                    // Start chat polling
+                    startChatPolling();
+
                     showMessage('login', 'Login successful!');
 
                     // Clear form fields
@@ -539,6 +646,9 @@
                     userInfo.classList.remove('active');
                     switchTab('login');
 
+                    // Stop chat polling
+                    stopChatPolling();
+
                     // Clear response display
                     document.getElementById('response-display').textContent = '';
                 }
@@ -605,6 +715,9 @@
                 loginForm.classList.remove('active');
                 registerForm.classList.remove('active');
                 userInfo.classList.add('active');
+
+                // Start chat polling
+                startChatPolling();
             }
 
             // Check URL for token (optional feature for direct linking)
@@ -617,6 +730,154 @@
             }
         });
 
+        // Chat functionality
+        let chatMessages = [];
+        let chatPollingInterval = null;
+
+        function startChatPolling() {
+            // Poll for new messages every 2 seconds
+            chatPollingInterval = setInterval(loadChatMessages, 2000);
+            loadChatMessages(); // Initial load
+        }
+
+        function stopChatPolling() {
+            if (chatPollingInterval) {
+                clearInterval(chatPollingInterval);
+                chatPollingInterval = null;
+            }
+        }
+
+        async function loadChatMessages() {
+            if (!currentToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.value && Array.isArray(data.value)) {
+                        chatMessages = data.value;
+                        displayChatMessages();
+                    }
+                } else if (response.status !== 404) {
+                    // 404 is expected if no messages exist yet
+                    console.error('Failed to load chat messages');
+                }
+            } catch (error) {
+                console.error('Error loading chat messages:', error);
+            }
+        }
+
+        function displayChatMessages() {
+            const chatContainer = document.getElementById('chat-messages');
+            chatContainer.innerHTML = '';
+
+            if (chatMessages.length === 0) {
+                chatContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center;">No messages yet. Start the conversation!</div>';
+                return;
+            }
+
+            // Show last 50 messages
+            const recentMessages = chatMessages.slice(-50);
+            
+            recentMessages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'chat-message';
+                
+                const timestamp = new Date(msg.timestamp).toLocaleTimeString();
+                
+                messageDiv.innerHTML = `
+                    <div>
+                        <span class="username">${msg.username}</span>
+                        <span class="timestamp">${timestamp}</span>
+                    </div>
+                    <div class="message-text">${msg.message}</div>
+                `;
+                
+                chatContainer.appendChild(messageDiv);
+            });
+
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function sendMessage() {
+            if (!currentToken) return;
+
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const sendBtn = document.getElementById('chat-send');
+            sendBtn.disabled = true;
+
+            try {
+                // Get current messages
+                let currentMessages = [];
+                try {
+                    const getResponse = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${currentToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (getResponse.ok) {
+                        const data = await getResponse.json();
+                        if (data.value && Array.isArray(data.value)) {
+                            currentMessages = data.value;
+                        }
+                    }
+                } catch (e) {
+                    // Ignore errors when getting current messages
+                }
+
+                // Add new message
+                const newMessage = {
+                    username: currentUsername,
+                    message: message,
+                    timestamp: new Date().toISOString()
+                };
+
+                currentMessages.push(newMessage);
+
+                // Keep only last 100 messages to prevent storage bloat
+                if (currentMessages.length > 100) {
+                    currentMessages = currentMessages.slice(-100);
+                }
+
+                // Save updated messages
+                const response = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ value: currentMessages })
+                });
+
+                if (response.ok) {
+                    input.value = '';
+                    // Immediately refresh messages
+                    await loadChatMessages();
+                } else {
+                    console.error('Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
         // Add enter key support
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -624,6 +885,8 @@
                     login();
                 } else if (registerForm.classList.contains('active')) {
                     register();
+                } else if (document.activeElement.id === 'chat-input') {
+                    sendMessage();
                 }
             }
         });
