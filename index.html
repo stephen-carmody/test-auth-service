@@ -432,6 +432,10 @@
                     currentToken = data.token;
                     currentUsername = username;
 
+                    // Save to localStorage
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('authUsername', username);
+
                     // Update UI
                     document.getElementById('username-display').textContent = username;
                     document.getElementById('token-display').textContent = data.token;
@@ -527,6 +531,10 @@
                     currentToken = null;
                     currentUsername = null;
 
+                    // Clear localStorage
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('authUsername');
+
                     // Update UI
                     userInfo.classList.remove('active');
                     switchTab('login');
@@ -581,13 +589,31 @@
 
         // Check for saved token on page load
         window.addEventListener('load', () => {
+            // Check localStorage for saved auth state
+            const savedToken = localStorage.getItem('authToken');
+            const savedUsername = localStorage.getItem('authUsername');
+
+            if (savedToken && savedUsername) {
+                currentToken = savedToken;
+                currentUsername = savedUsername;
+                
+                // Update UI to show logged in state
+                document.getElementById('username-display').textContent = savedUsername;
+                document.getElementById('token-display').textContent = savedToken;
+                
+                // Hide forms, show user info
+                loginForm.classList.remove('active');
+                registerForm.classList.remove('active');
+                userInfo.classList.add('active');
+            }
+
             // Check URL for token (optional feature for direct linking)
             const urlParams = new URLSearchParams(window.location.search);
-            const savedToken = urlParams.get('token');
+            const urlToken = urlParams.get('token');
 
-            if (savedToken) {
+            if (urlToken) {
                 // Could implement token validation here
-                currentToken = savedToken;
+                currentToken = urlToken;
             }
         });
 
