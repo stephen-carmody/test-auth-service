@@ -10,24 +10,10 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-        }
-
-        :root {
-            --bg: #1e1e2e;
-            --surface: #313244;
-            --surface-light: #45475a;
-            --text: #cdd6f4;
-            --text-muted: #a6adc8;
-            --accent: #89b4fa;
-            --accent-hover: #74c7ec;
-            --success: #a6e3a1;
-            --error: #f38ba8;
-            --border: #585b70;
         }
 
         body {
-            background: var(--bg);
+            background: linear-gradient(135deg, #8b7d6b 0%, #a69a8a 30%, #c0b5a3 60%, #d4c5b9 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -35,16 +21,34 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 28px;
         }
+
+        :root {
+            --bg: #8b7d6b; /* Soft sepia brown like aged canvas */
+            --surface: #c9b79c; /* Warm neutral like Lisa's skin tones */
+            --surface-light: #d4c5b9; /* Lighter warm neutral */
+            --text: #4a4035; /* Deep brown like Leonardo's ink */
+            --text-muted: #6b5d4f; /* Muted warm brown */
+            --accent: #7a8c7a; /* Muted green like landscape background */
+            --accent-hover: #8fa28f; /* Lighter muted green */
+            --success: #a8b2a1; /* Sage green */
+            --error: #c47e6a; /* Soft terracotta */
+            --border: #9b8f7f; /* Warm brown border */
+        }
+
+
 
         .container {
             width: 100%;
             max-width: 450px;
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            border: 2px solid var(--text);
+            border-radius: 0;
             overflow: hidden;
             margin: 20px auto;
+            box-shadow: 0 0 10px var(--accent);
         }
 
         .chat-container {
@@ -69,23 +73,23 @@
             color: var(--text);
             padding: 24px;
             text-align: center;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .header h1 {
-            font-size: 20px;
             margin-bottom: 8px;
             font-weight: 500;
         }
 
         .header p {
             color: var(--text-muted);
-            font-size: 13px;
         }
 
         .tabs {
             display: flex;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--text);
         }
 
         .tab {
@@ -98,12 +102,15 @@
             color: var(--text-muted);
             transition: all 0.2s ease;
             border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .tab.active {
             background: var(--surface);
             color: var(--accent);
             border-bottom: 2px solid var(--accent);
+            text-shadow: 0 0 5px var(--accent);
         }
 
         .content {
@@ -127,23 +134,23 @@
             margin-bottom: 6px;
             color: var(--text);
             font-weight: 400;
-            font-size: 13px;
         }
 
         .form-group input {
             width: 100%;
             padding: 10px 12px;
             background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
+            border: 1px solid var(--text);
+            border-radius: 0;
             color: var(--text);
-            transition: border-color 0.2s ease;
+            font-size: 28px;
+            transition: all 0.2s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
         }
 
         .form-group input::placeholder {
@@ -153,18 +160,22 @@
         .btn {
             width: 100%;
             padding: 10px;
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            background: var(--surface);
+            color: var(--text);
+            border: 2px solid var(--text);
+            border-radius: 0;
             font-weight: 500;
+            font-size: 28px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn:hover {
-            background: var(--accent-hover);
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 10px var(--accent);
         }
 
         .btn:disabled {
@@ -177,22 +188,23 @@
             padding: 10px;
             border-radius: 6px;
             text-align: center;
-            font-size: 13px;
             display: none;
         }
 
         .message.success {
             display: block;
-            background: rgba(166, 227, 161, 0.1);
+            background: var(--bg);
             color: var(--success);
-            border: 1px solid rgba(166, 227, 161, 0.2);
+            border: 2px solid var(--success);
+            text-shadow: 0 0 3px var(--success);
         }
 
         .message.error {
             display: block;
-            background: rgba(243, 139, 168, 0.1);
+            background: var(--bg);
             color: var(--error);
-            border: 1px solid rgba(243, 139, 168, 0.2);
+            border: 2px solid var(--error);
+            text-shadow: 0 0 3px var(--error);
         }
 
         .user-info {
@@ -212,20 +224,19 @@
 
         .user-info p {
             color: var(--text-muted);
-            font-size: 13px;
             margin-bottom: 16px;
         }
 
         .token-display {
             background: var(--bg);
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 0;
             margin: 16px 0;
             word-break: break-all;
             font-family: inherit;
-            font-size: 11px;
             text-align: left;
-            border: 1px solid var(--border);
+            border: 1px solid var(--text);
+            color: var(--accent);
         }
 
         .user-info .btn {
@@ -244,39 +255,41 @@
             margin-bottom: 12px;
             color: var(--text);
             font-weight: 500;
-            font-size: 14px;
         }
 
         .api-btn {
             padding: 8px 12px;
             background: var(--surface-light);
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            border: 1px solid var(--text);
+            border-radius: 0;
             cursor: pointer;
-            font-size: 13px;
             margin: 4px;
+            font-size: 28px;
             transition: all 0.2s ease;
             color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .api-btn:hover {
             background: var(--accent);
             color: var(--bg);
             border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
         }
 
         .response-display {
             margin-top: 12px;
             background: var(--bg);
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 0;
             font-family: inherit;
-            font-size: 11px;
             max-height: 200px;
             overflow-y: auto;
             text-align: left;
             white-space: pre-wrap;
-            border: 1px solid var(--border);
+            border: 1px solid var(--text);
+            color: var(--accent);
         }
 
         .spinner {
@@ -313,18 +326,16 @@
             margin-bottom: 12px;
             color: var(--text);
             font-weight: 500;
-            font-size: 14px;
         }
 
         .chat-messages {
             background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
+            border: 1px solid var(--text);
+            border-radius: 0;
             height: 200px;
             overflow-y: auto;
             padding: 12px;
             margin-bottom: 12px;
-            font-size: 12px;
         }
 
         .chat-message {
@@ -337,12 +348,10 @@
         .chat-message .username {
             color: var(--accent);
             font-weight: 500;
-            font-size: 11px;
         }
 
         .chat-message .timestamp {
             color: var(--text-muted);
-            font-size: 10px;
             margin-left: 8px;
         }
 
@@ -361,16 +370,17 @@
             flex: 1;
             padding: 8px 12px;
             background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
+            border: 1px solid var(--text);
+            border-radius: 0;
             color: var(--text);
-            transition: border-color 0.2s ease;
+            font-size: 28px;
+            transition: all 0.2s ease;
         }
 
         .chat-input:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
         }
 
         .chat-input::placeholder {
@@ -379,18 +389,22 @@
 
         .chat-send {
             padding: 8px 16px;
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            border-radius: 6px;
-            font-size: 13px;
+            background: var(--surface);
+            color: var(--text);
+            border: 2px solid var(--text);
+            border-radius: 0;
             font-weight: 500;
+            font-size: 28px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .chat-send:hover {
-            background: var(--accent-hover);
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 8px var(--accent);
         }
 
         .chat-send:disabled {
@@ -401,12 +415,11 @@
         /* Full-page chat layout */
         .status-bar {
             background: var(--surface-light);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 2px solid var(--text);
             padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
         }
 
         .status-bar .status-info {
@@ -420,17 +433,21 @@
 
         .status-bar .logout-btn {
             padding: 4px 12px;
-            background: var(--error);
-            color: var(--bg);
-            border: none;
-            border-radius: 4px;
-            font-size: 12px;
+            background: var(--surface);
+            color: var(--error);
+            border: 1px solid var(--error);
+            border-radius: 0;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            font-size: 28px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .status-bar .logout-btn:hover {
-            background: #eba0ac;
+            background: var(--error);
+            color: var(--bg);
+            box-shadow: 0 0 8px var(--error);
         }
 
         .chat-messages-full {
@@ -438,31 +455,52 @@
             background: var(--bg);
             overflow-y: auto;
             padding: 16px;
-            font-size: 13px;
         }
 
         .chat-input-container-full {
             background: var(--surface-light);
             border-top: 1px solid var(--border);
-            padding: 12px 16px;
+            padding: 8px 16px;
             display: flex;
             gap: 12px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            overflow: hidden; /* Prevent button from breaking out */
+        }
+
+        /* When grid is active, make chat input on top */
+        .game-grid-overlay.active ~ .chat-container .chat-input-container-full,
+        .chat-input-container-full.grid-active {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface-light);
+            border-top: 2px solid var(--accent);
+            z-index: 2000;
+            padding: 8px 20px;
+            align-items: center;
+            overflow: hidden; /* Prevent button from breaking out */
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.8);
         }
 
         .chat-input-full {
             flex: 1;
-            padding: 10px 14px;
+            min-width: 0; /* Allow shrinking */
+            padding: 6px 14px;
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14px;
+            border: 1px solid var(--text);
+            border-radius: 0;
             color: var(--text);
-            transition: border-color 0.2s ease;
+            font-size: 28px;
+            transition: all 0.2s ease;
         }
 
         .chat-input-full:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
         }
 
         .chat-input-full::placeholder {
@@ -470,19 +508,23 @@
         }
 
         .chat-send-full {
-            padding: 10px 20px;
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 4px 12px;
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--text);
+            border-radius: 0;
             font-weight: 500;
+            font-size: 28px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .chat-send-full:hover {
-            background: var(--accent-hover);
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 8px var(--accent);
         }
 
         .chat-send-full:disabled {
@@ -490,22 +532,30 @@
             cursor: not-allowed;
         }
 
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
         .system-message {
             color: var(--text-muted);
             font-style: italic;
             text-align: center;
             margin: 12px 0;
-            font-size: 12px;
         }
 
         .command-message {
-            background: rgba(137, 180, 250, 0.1);
+            background: var(--bg);
             border-left: 3px solid var(--accent);
             padding: 8px 12px;
             margin: 8px 0;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 12px;
+            border-radius: 0;
+            font-family: inherit;
+            border: 1px solid var(--accent);
         }
 
         .command-message .command-title {
@@ -517,6 +567,96 @@
         .command-message .command-desc {
             color: var(--text-muted);
             margin-bottom: 2px;
+        }
+
+        /* Game Grid Overlay */
+        .game-grid-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+            pointer-events: auto;
+        }
+
+        .game-grid-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+        }
+
+        .game-grid {
+            display: grid;
+            gap: 1px;
+            background: none;
+            padding: 0;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .grid-cell {
+            background: rgba(122, 140, 122, 0.05); /* Subtle muted green */
+            border: 1px solid rgba(143, 162, 143, 0.2); /* Soft green borders */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: rgba(74, 64, 53, 0.6); /* Warm brown text */
+            transition: all 0.2s ease;
+            cursor: pointer;
+            box-sizing: border-box;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .grid-cell:hover {
+            background: rgba(203, 166, 247, 0.4);
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Grid-aligned UI elements */
+        .ui-grid-aligned {
+            position: fixed;
+            background: var(--surface);
+            border: 2px solid var(--text);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .chat-input-grid-aligned {
+            position: fixed;
+            background: var(--surface-light);
+            border-top: 2px solid var(--accent);
+            padding: 1ch;
+            display: flex;
+            gap: 1ch;
+            z-index: 2001;
+        }
+
+        .chat-messages-grid-aligned {
+            position: fixed;
+            background: rgba(27, 30, 46, 0.8);
+            border: 1px solid var(--text);
+            overflow-y: auto;
+            z-index: 1500;
+        }
+
+        .grid-cell-occupied {
+            background: rgba(168, 178, 161, 0.4) !important; /* Sage green like background */
+            border-color: #a8b2a1 !important;
+            box-shadow: 0 0 12px rgba(168, 178, 161, 0.3) !important; /* Subtle glow */
+        }
+
+        .grid-cell-ui-element {
+            background: rgba(201, 183, 156, 0.6) !important; /* Warm neutral like skin tones */
+            border: 2px solid var(--accent) !important;
+            border-radius: 2px;
+            box-shadow: 0 0 15px rgba(201, 183, 156, 0.4) !important; /* Soft glow */
         }
     </style>
 </head>
@@ -583,88 +723,38 @@
             <input type="text" id="chat-input-full" class="chat-input-full" placeholder="Type a message or /? for commands..." maxlength="200">
             <button id="chat-send-full" class="chat-send-full" onclick="sendMessageFull()">Send</button>
         </div>
-    </div>
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('login')">Login</div>
-            <div class="tab" onclick="switchTab('register')">Register</div>
+        
+        <!-- Game Grid Overlay (for testing) -->
+        <div id="game-grid-overlay" class="game-grid-overlay">
+            <div id="game-grid" class="game-grid"></div>
         </div>
-
-        <div class="content">
-            <!-- Login Form -->
-            <div id="login-form" class="form active">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" placeholder="Enter your username">
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
-                </div>
-                <button class="btn" onclick="login()">
-                    <div class="spinner"></div>
-                    <span>Login</span>
-                </button>
-                <div id="login-message" class="message"></div>
-            </div>
-
-            <!-- Register Form -->
-            <div id="register-form" class="form">
-                <div class="form-group">
-                    <label for="register-username">Username</label>
-                    <input type="text" id="register-username" placeholder="Choose a username (3+ chars)">
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" placeholder="Choose a password (6+ chars)">
-                </div>
-                <button class="btn" onclick="register()">
-                    <div class="spinner"></div>
-                    <span>Register</span>
-                </button>
-                <div id="register-message" class="message"></div>
-            </div>
-
-            <!-- User Info (Shown after login) -->
-            <div id="user-info" class="user-info">
-                <h3>Welcome, <span id="username-display"></span>!</h3>
-                <p>You are now logged in with a 24-hour session token.</p>
-                <div class="token-display">
-                    <strong>Token:</strong><br>
-                    <span id="token-display"></span>
-                </div>
-
-                <div class="api-actions">
-                    <h4>Test API Endpoints:</h4>
-                    <button class="api-btn" onclick="testEndpoint('/stats', 'GET')">Get Stats</button>
-                    <button class="api-btn" onclick="testEndpoint('/persistent', 'GET')">List My Keys</button>
-                    <button class="api-btn" onclick="testEndpoint('/shared', 'GET')">List Shared Keys</button>
-                    <button class="api-btn" onclick="logout()">Logout</button>
-
-                    <div id="response-display" class="response-display"></div>
-                </div>
-
-                <div class="chat-section">
-                    <h4>Global Chat</h4>
-                    <div id="chat-messages" class="chat-messages"></div>
-                    <div class="chat-input-container">
-                        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." maxlength="200">
-                        <button id="chat-send" class="chat-send" onclick="sendMessage()">Send</button>
-                    </div>
-                </div>
-            </div>
+        
+        <!-- Hidden elements for JavaScript access -->
+        <div style="display: none;">
+            <span id="username-display"></span>
+            <span id="token-display"></span>
         </div>
     </div>
 
     <script>
-        const API_BASE_URL = 'https://storage-service-kvn1.onrender.com';
+        // Version and cache control
+        const APP_VERSION = '1.2.0';
+        
+        // Force cache invalidation
+        if (window.location.search.includes('nocache')) {
+            console.log('Cache disabled for testing');
+        }
+        
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : 'https://storage-service-kvn1.onrender.com';
         let currentToken = null;
         let currentUsername = null;
+        let gridSystemInitialized = false;
 
         // DOM Elements
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        const userInfo = document.getElementById('user-info');
 
         function switchTab(tabName) {
             // Update tabs
@@ -679,7 +769,6 @@
                 registerForm.classList.remove('active');
             } else {
                 document.querySelector('.tab:nth-child(2)').classList.add('active');
-                registerForm.classList.remove('active');
                 loginForm.classList.remove('active');
                 registerForm.classList.add('active');
             }
@@ -689,10 +778,7 @@
             const messageElement = document.getElementById(`${formId}-message`);
             messageElement.textContent = message;
             messageElement.className = `message ${isError ? 'error' : 'success'}`;
-
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 5000);
+            // Removed auto-hide - messages will stay visible until next attempt
         }
 
         function setLoading(button, isLoading) {
@@ -843,20 +929,47 @@
                     // Clear localStorage
                     localStorage.removeItem('authToken');
                     localStorage.removeItem('authUsername');
+                    localStorage.removeItem('localChatMessages');
 
-                    // Update UI
-                    document.querySelector('.container').style.display = 'flex';
-                    document.body.style.overflow = 'auto';
+                    // Update UI - first hide chat completely
                     document.getElementById('chat-container').classList.remove('active');
+                    
+                    // Force browser to acknowledge the change
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            // Reset container display 
+                            document.querySelector('.container').style.display = '';
+                            
+                            // Force another reflow
+                            void document.querySelector('.container').offsetHeight;
+                            
+                            // Now set it to flex (should trigger proper layout)
+                            document.querySelector('.container').style.display = 'flex';
+                            document.querySelector('.container').style.margin = '20px auto';
+                            document.querySelector('.container').style.maxWidth = '450px';
+                            
+                            // Reset body to its natural state
+                            document.body.style.display = '';
+                            document.body.style.overflow = '';
+                            
+                            // Force container to have proper layout properties
+                            const container = document.querySelector('.container');
+                            container.style.display = 'flex';
+                            container.style.flexDirection = 'column'; // This is the key fix!
+                            container.style.margin = '20px auto';
+                            container.style.maxWidth = '450px';
+                            container.style.width = '100%';
 
-                    // Stop chat polling
-                    stopChatPolling();
-                    
-                    // Clear chat messages
-                    chatMessages = [];
-                    
-                    // Switch to login tab
-                    switchTab('login');
+                            // Stop chat polling
+                            stopChatPolling();
+                            
+                            // Clear chat messages
+                            chatMessages = [];
+                            
+                            // Switch to login tab
+                            switchTab('login');
+                        });
+                    });
                 }
             } catch (error) {
                 console.error('Logout error:', error);
@@ -884,26 +997,30 @@
                 const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
                 const data = await response.json();
 
-                // Add command result to chat
+                // Add command result with current timestamp for proper ordering
                 const resultMessage = {
                     type: 'command',
                     command: `/${endpoint.replace('/', '')} result:`,
-                    description: JSON.stringify(data, null, 2)
+                    description: JSON.stringify(data, null, 2),
+                    timestamp: new Date().toISOString(),
+                    isLocalOnly: true
                 };
                 
-                chatMessages.push(resultMessage);
-                displayChatMessages();
+                insertMessageInOrder(resultMessage);
+                saveLocalMessages();
 
             } catch (error) {
                 console.error('API call error:', error);
                 const errorMessage = {
                     type: 'command',
                     command: `/${endpoint.replace('/', '')} error:`,
-                    description: error.message
+                    description: error.message,
+                    timestamp: new Date().toISOString(),
+                    isLocalOnly: true
                 };
                 
-                chatMessages.push(errorMessage);
-                displayChatMessages();
+                insertMessageInOrder(errorMessage);
+                saveLocalMessages();
             }
         }
 
@@ -930,6 +1047,13 @@
                 // Update status bar
                 document.getElementById('status-username').textContent = savedUsername;
 
+                // Load saved local messages before starting polling
+                const localMessages = loadLocalMessages();
+                if (localMessages.length > 0) {
+                    chatMessages = localMessages;
+                    displayChatMessages();
+                }
+                
                 // Start chat polling
                 startChatPolling();
                 
@@ -955,6 +1079,7 @@
             '/stats': 'Get Redis stats and usage information',
             '/persistent': 'List your persistent storage keys',
             '/shared': 'List shared storage keys',
+
             '/help': 'Show this help message',
             '/?': 'Show this help message'
         };
@@ -987,7 +1112,9 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.value && Array.isArray(data.value)) {
-                        chatMessages = data.value;
+                        // Load saved local messages and merge with server messages
+                        const localMessages = loadLocalMessages();
+                        chatMessages = [...data.value, ...localMessages];
                         displayChatMessages();
                     }
                 } else if (response.status !== 404) {
@@ -996,6 +1123,44 @@
                 }
             } catch (error) {
                 console.error('Error loading chat messages:', error);
+            }
+        }
+
+        function insertMessageInOrder(newMessage) {
+            // Find the correct position to insert the message based on timestamp
+            let insertIndex = chatMessages.length;
+            
+            for (let i = 0; i < chatMessages.length; i++) {
+                if (!chatMessages[i].timestamp || new Date(newMessage.timestamp) < new Date(chatMessages[i].timestamp)) {
+                    insertIndex = i;
+                    break;
+                }
+            }
+            
+            chatMessages.splice(insertIndex, 0, newMessage);
+            displayChatMessages();
+        }
+
+        function insertMessagesInOrder(newMessages) {
+            // Insert multiple messages in order
+            newMessages.forEach(msg => {
+                insertMessageInOrder(msg);
+            });
+        }
+
+        function saveLocalMessages() {
+            // Save only local-only messages to localStorage
+            const localMessages = chatMessages.filter(msg => msg.isLocalOnly);
+            localStorage.setItem('localChatMessages', JSON.stringify(localMessages));
+        }
+
+        function loadLocalMessages() {
+            try {
+                const saved = localStorage.getItem('localChatMessages');
+                return saved ? JSON.parse(saved) : [];
+            } catch (error) {
+                console.error('Error loading local messages:', error);
+                return [];
             }
         }
 
@@ -1008,8 +1173,15 @@
                 return;
             }
 
+            // Sort messages by timestamp before displaying
+            const sortedMessages = [...chatMessages].sort((a, b) => {
+                if (!a.timestamp) return 1;
+                if (!b.timestamp) return -1;
+                return new Date(a.timestamp) - new Date(b.timestamp);
+            });
+
             // Show last 50 messages
-            const recentMessages = chatMessages.slice(-50);
+            const recentMessages = sortedMessages.slice(-50);
             
             recentMessages.forEach(msg => {
                 const messageDiv = document.createElement('div');
@@ -1034,8 +1206,8 @@
                     
                     messageDiv.innerHTML = `
                         <div>
-                            <span style="color: var(--accent); font-weight: 500; font-size: 12px;">${msg.username}</span>
-                            <span style="color: var(--text-muted); font-size: 11px; margin-left: 8px;">${timestamp}</span>
+                            <span style="color: var(--accent); font-weight: 500;">${msg.username}</span>
+                            <span style="color: var(--text-muted); margin-left: 8px;">${timestamp}</span>
                         </div>
                         <div style="color: var(--text); margin-top: 4px; word-wrap: break-word;">${msg.message}</div>
                     `;
@@ -1051,28 +1223,34 @@
         function showWelcomeMessage() {
             const welcomeMessage = {
                 type: 'system',
-                message: `Welcome to the chat, ${currentUsername}! Type /? for available commands.`
+                message: `Welcome to the chat, ${currentUsername}! Type /? for available commands.`,
+                timestamp: new Date().toISOString(),
+                isLocalOnly: true
             };
             
             if (!chatMessages.some(msg => msg.type === 'system' && msg.message.includes('Welcome'))) {
-                chatMessages.push(welcomeMessage);
-                displayChatMessages();
+                insertMessageInOrder(welcomeMessage);
+                saveLocalMessages();
             }
         }
 
         function showCommandHelp() {
             const helpMessages = [];
+            const currentTime = new Date().toISOString();
             
             Object.entries(CHAT_COMMANDS).forEach(([cmd, desc]) => {
                 helpMessages.push({
                     type: 'command',
                     command: cmd,
-                    description: desc
+                    description: desc,
+                    timestamp: currentTime,
+                    isLocalOnly: true
                 });
             });
             
-            chatMessages.push(...helpMessages);
-            displayChatMessages();
+            // Insert all help messages at once
+            insertMessagesInOrder(helpMessages);
+            saveLocalMessages();
         }
 
         async function executeCommand(command) {
@@ -1085,16 +1263,21 @@
                     const endpoint = commandLower.replace('/', '');
                     await testEndpoint(`/${endpoint}`, 'GET');
                     break;
+
                 case '/help':
                 case '/?':
                     showCommandHelp();
                     break;
                 default:
-                    chatMessages.push({
+                    const unknownCommandMsg = {
                         type: 'system',
-                        message: `Unknown command: ${command}. Type /? for available commands.`
-                    });
-                    displayChatMessages();
+                        message: `Unknown command: ${command}. Type /? for available commands.`,
+                        timestamp: new Date().toISOString(),
+                        isLocalOnly: true
+                    };
+                    insertMessageInOrder(unknownCommandMsg);
+                    saveLocalMessages();
+                    break;
             }
         }
 
@@ -1106,14 +1289,27 @@
             
             if (!message) return;
 
+            // Clear input immediately for better UX
+            input.value = '';
+
             const sendBtn = document.getElementById('chat-send-full');
+            const originalText = sendBtn.textContent;
+            
             sendBtn.disabled = true;
+            
+            // Start TUI spinner animation
+            let spinnerIndex = 0;
+            const spinnerFrames = ['░░░░', '▒░░░', '▓▒░░', '█▓▒░', '██▓▒', '███▓', '████', '███▓', '██▓▒', '█▓▒░', '▓▒░░', '▒░░░'];
+            
+            const spinnerInterval = setInterval(() => {
+                sendBtn.textContent = spinnerFrames[spinnerIndex];
+                spinnerIndex = (spinnerIndex + 1) % spinnerFrames.length;
+            }, 80);
 
             try {
                 // Check if it's a command
                 if (message.startsWith('/')) {
                     await executeCommand(message);
-                    input.value = '';
                     return;
                 }
 
@@ -1172,20 +1368,353 @@
             } catch (error) {
                 console.error('Error sending message:', error);
             } finally {
+                // Stop spinner and restore button
+                clearInterval(spinnerInterval);
+                sendBtn.textContent = originalText;
                 sendBtn.disabled = false;
             }
         }
 
-        // Add enter key support
+        // Add enter key support for chat input
+        document.getElementById('chat-input-full').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                sendMessageFull();
+            }
+        });
+
+        // Add enter key support for login/register forms
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 if (loginForm.classList.contains('active')) {
                     login();
                 } else if (registerForm.classList.contains('active')) {
                     register();
-                } else if (document.activeElement.id === 'chat-input-full') {
-                    sendMessageFull();
                 }
+            }
+        });
+
+        // Game Grid Functions
+        let gameGridActive = true;
+        let gridResizeTimeout = null;
+        
+        // Force reinitialization on script load
+        console.log(`Grid system v${APP_VERSION} initializing...`);
+
+        function createGameGrid() {
+            const overlay = document.getElementById('game-grid-overlay');
+            const grid = document.getElementById('game-grid');
+            
+            console.log(`Creating grid system v${APP_VERSION}...`);
+            
+            // Use exact viewport dimensions
+            let windowWidth = window.innerWidth;
+            let windowHeight = window.innerHeight;
+            
+            // Calculate 1ch in pixels (same as body font size: 28px)
+            const oneCh = 28; // Body font size is 28px = 1ch
+            
+            // Calculate grid to fill entire viewport exactly
+            let bestCols, bestRows, bestCellSizeCh;
+            
+            // Try to find a cell size that creates integer grid dimensions
+            // Start with a reasonable cell size and adjust to fill viewport
+            let targetCellSizePx = 20; // Start with 20px target
+            let bestFit = Infinity;
+            
+            // Test cell sizes from 10px to 40px to find best fit
+            for (let testSizePx = 10; testSizePx <= 40; testSizePx += 1) {
+                let testCols = Math.floor(windowWidth / testSizePx);
+                let testRows = Math.floor(windowHeight / testSizePx);
+                
+                // Calculate actual cell size needed to fill viewport exactly
+                let actualCellSizeX = windowWidth / testCols;
+                let actualCellSizeY = windowHeight / testRows;
+                let avgCellSize = (actualCellSizeX + actualCellSizeY) / 2;
+                
+                // Check how close we are to desired cell size range (15-25px)
+                let fitScore = Math.abs(avgCellSize - 20) + 
+                               Math.abs(actualCellSizeX - actualCellSizeY) * 10; // Penalize non-square cells
+                
+                if (fitScore < bestFit && testCols > 10 && testRows > 10) {
+                    bestFit = fitScore;
+                    bestCols = testCols;
+                    bestRows = testRows;
+                    bestCellSizeCh = avgCellSize / oneCh;
+                }
+            }
+            
+            // Ensure we have at least some minimum dimensions
+            if (bestCols < 10) bestCols = 10;
+            if (bestRows < 10) bestRows = 10;
+            
+            // Calculate pixel size for display
+            let bestCellSizePx = bestCellSizeCh * oneCh;
+            let actualWidth = bestCols * bestCellSizePx + (bestCols - 1) * 1;
+            let actualHeight = bestRows * bestCellSizePx + (bestRows - 1) * 1;
+            
+            // Set grid template to fill container exactly
+            grid.style.gridTemplateColumns = `repeat(${bestCols}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${bestRows}, 1fr)`;
+            grid.style.gap = '1px';
+            grid.style.width = '100vw';
+            grid.style.height = '100vh';
+            grid.style.position = 'fixed';
+            grid.style.top = '0';
+            grid.style.left = '0';
+            
+            // Clear and create cells
+            grid.innerHTML = '';
+            const totalCells = bestCols * bestRows;
+            const cells = [];
+            
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                cell.style.width = 'auto';
+                cell.style.height = 'auto';
+                cell.style.aspectRatio = '1';
+                cell.textContent = i % 10 === 0 ? '•' : '';
+                cell.dataset.gridIndex = i;
+                grid.appendChild(cell);
+                cells.push(cell);
+            }
+            
+            console.log(`Grid: ${bestCols}x${bestRows} = ${totalCells} cells, ${bestCellSizeCh}ch each (${bestCellSizePx}px)`);
+            console.log(`Coverage: ${actualWidth}x${actualHeight}px (${(actualWidth/windowWidth*100).toFixed(1)}% width, ${(actualHeight/windowHeight*100).toFixed(1)}% height)`);
+            
+            // Always position UI elements based on grid when grid is active
+            if (gameGridActive) {
+                if (!gridSystemInitialized) {
+                    console.log('Grid system not initialized, forcing reinitialization...');
+                    gridSystemInitialized = true;
+                }
+                positionUIElementsOnGrid(bestCols, bestRows, bestCellSizeCh);
+            }
+        }
+
+        function positionUIElementsOnGrid(cols, rows, cellSize) {
+            const oneCh = 28; // Body font size
+            
+            // Get actual viewport dimensions
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const cellWidthPx = windowWidth / cols;
+            const cellHeightPx = windowHeight / rows;
+            
+            // Global variable declaration to ensure access
+            if (typeof window.chatInputStartRow === 'undefined') {
+                window.chatInputStartRow = 0;
+            }
+            
+            // Define variables at function scope to prevent ReferenceError
+            const chatMessagesEl = document.getElementById('chat-messages-full');
+            const chatInputEl = document.querySelector('.chat-input-container-full');
+            const headerEl = document.querySelector('.header');
+            const startRow = 4; // Start after header (first 3 rows)
+            const endRow = rows - 4; // Leave 3 rows for input
+            const chatRows = endRow - startRow; // Define at function scope
+            window.chatInputStartRow = rows - 3; // Store in global scope (bottom 3 rows)
+            
+            // Position header in first 3 rows, full width
+            if (headerEl) {
+                headerEl.classList.add('header-grid-aligned');
+                
+                // Position using pixels based on actual grid cell dimensions
+                headerEl.style.position = 'fixed';
+                headerEl.style.left = '0'; // Start from left edge
+                headerEl.style.top = '0'; // Start from top
+                headerEl.style.width = `${cols * cellWidthPx}px`;
+                headerEl.style.height = `${3 * cellHeightPx}px`; // First 3 rows
+                headerEl.style.zIndex = '1'; // Above grid but below higher UI
+                headerEl.style.display = 'flex';
+                headerEl.style.justifyContent = 'center';
+                headerEl.style.alignItems = 'center';
+            }
+            
+            // Position chat messages relative to grid (50% horizontal, from top)
+            if (chatMessagesEl) {
+                chatMessagesEl.classList.add('chat-messages-grid-aligned');
+                const chatCols = Math.floor(cols * 0.5); // 50% of horizontal cells
+                
+                // Position using pixels based on actual grid cell dimensions
+                chatMessagesEl.style.position = 'fixed';
+                chatMessagesEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1
+                chatMessagesEl.style.top = `${startRow * cellHeightPx}px`;
+                chatMessagesEl.style.width = `${chatCols * cellWidthPx}px`;
+                chatMessagesEl.style.height = `${chatRows * cellHeightPx}px`;
+                chatMessagesEl.style.zIndex = '1'; // Above grid but below higher UI
+            }
+            
+            // Position chat input at bottom 3 rows, same width as messages (50%)
+            if (chatInputEl) {
+                chatInputEl.classList.add('chat-input-grid-aligned');
+                const inputCols = Math.floor(cols * 0.5); // Same width as messages (50%)
+                
+                chatInputEl.style.position = 'fixed';
+                chatInputEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1 (same as messages)
+                chatInputEl.style.top = `${window.chatInputStartRow * cellHeightPx}px`;
+                chatInputEl.style.width = `${inputCols * cellWidthPx}px`;
+                chatInputEl.style.height = `${3 * cellHeightPx}px`; // 3 rows tall
+                chatInputEl.style.zIndex = '1'; // Above grid but below higher UI
+            }
+            
+            // Mark occupied grid cells for UI elements
+            const totalCells = cols * rows;
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.querySelector(`[data-grid-index="${i}"]`);
+                if (!cell) continue;
+                
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                
+                // Reset all cells first
+                cell.classList.remove('grid-cell-occupied', 'grid-cell-ui-element');
+                
+                // Mark cells occupied by header (first 3 rows, full width)
+                if (row >= 0 && row < 3) {
+                    cell.classList.add('grid-cell-occupied');
+                }
+                
+                // Mark cells occupied by chat messages area
+                if (col >= 1 && col < 1 + Math.floor(cols * 0.5) && 
+                    row >= startRow && row < endRow) {
+                    cell.classList.add('grid-cell-occupied');
+                }
+                
+                // Mark cells occupied by chat input area (bottom 3 rows, 50% width starting from column 1)
+                if (row >= window.chatInputStartRow && row < rows && 
+                    col >= 1 && col < 1 + Math.floor(cols * 0.5)) {
+                    cell.classList.add('grid-cell-ui-element');
+                }
+            }
+            
+            console.log(`UI Grid-aligned: Messages ${Math.floor(cols * 0.5)}x${chatRows} at rows ${startRow}-${endRow}, Input ${cols}x4 at rows ${window.chatInputStartRow}-${rows-1}`);
+            console.log(`Grid maintains full viewport: ${cols}x${rows} cells, not shrinking to occupied areas`);
+        }
+
+        function toggleGameGrid() {
+            const overlay = document.getElementById('game-grid-overlay');
+            gameGridActive = !gameGridActive;
+            
+            console.log(`Grid toggle: ${gameGridActive ? 'OFF' : 'ON'}`);
+            
+            if (gameGridActive) {
+                overlay.classList.add('active');
+                // Force reinitialization to prevent stale state
+                gridSystemInitialized = false;
+                createGameGrid(); // This will also call positionUIElementsOnGrid
+            } else {
+                overlay.classList.remove('active');
+                
+                // Reset UI to normal layout when grid is hidden
+                const chatMessages = document.getElementById('chat-messages-full');
+                const chatInputEl = document.querySelector('.chat-input-container-full');
+                
+                if (chatMessages) {
+                    chatMessages.classList.remove('chat-messages-grid-aligned');
+                    chatMessages.style.left = '';
+                    chatMessages.style.top = '';
+                    chatMessages.style.width = '';
+                    chatMessages.style.height = '';
+                }
+                
+                if (chatInputEl) {
+                    chatInputEl.classList.remove('chat-input-grid-aligned');
+                    chatInputEl.style.left = '';
+                    chatInputEl.style.top = '';
+                    chatInputEl.style.width = '';
+                    chatInputEl.style.height = '';
+                }
+            }
+        }
+
+        function handleResize() {
+            if (!gameGridActive) return;
+            
+            // Immediate full grid update with zero debounce
+            createGameGrid();
+            
+            // Optional: still keep a tiny timeout for safety (can remove entirely)
+            if (gridResizeTimeout) {
+                clearTimeout(gridResizeTimeout);
+            }
+            
+            gridResizeTimeout = setTimeout(() => {
+                createGameGrid();
+            }, 5);
+        }
+        
+        function updateGridPositionsOnly() {
+            // Get current grid dimensions
+            const grid = document.getElementById('game-grid');
+            if (!grid) return;
+            
+            const computedStyle = window.getComputedStyle(grid);
+            const gridWidth = grid.offsetWidth;
+            const gridHeight = grid.offsetHeight;
+            
+            // Estimate grid dimensions (rough calculation for fast updates)
+            const cols = Math.ceil(Math.sqrt(gridWidth * gridHeight / 400)); // Approximate
+            const rows = Math.ceil(gridHeight / 20); // Approximate cell height
+            const cellWidthPx = gridWidth / cols;
+            const cellHeightPx = gridHeight / rows;
+            
+            // Update element positions only
+            const headerEl = document.querySelector('.header');
+            const chatMessagesEl = document.getElementById('chat-messages-full');
+            const chatInputEl = document.querySelector('.chat-input-container-full');
+            
+            if (headerEl) {
+                headerEl.style.left = '0';
+                headerEl.style.top = '0';
+                headerEl.style.width = `${cols * cellWidthPx}px`;
+                headerEl.style.height = `${3 * cellHeightPx}px`;
+            }
+            
+            if (chatMessagesEl) {
+                const chatCols = Math.floor(cols * 0.5);
+                const startRow = 4; // After header
+                const endRow = rows - 5;
+                const chatRows = endRow - startRow;
+                
+                chatMessagesEl.style.left = `${1 * cellWidthPx}px`;
+                chatMessagesEl.style.top = `${startRow * cellHeightPx}px`;
+                chatMessagesEl.style.width = `${chatCols * cellWidthPx}px`;
+                chatMessagesEl.style.height = `${chatRows * cellHeightPx}px`;
+            }
+            
+            if (chatInputEl) {
+                const inputStartRow = rows - 3;
+                const inputCols = Math.floor(cols * 0.5); // Same width as messages (50%)
+                
+                chatInputEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1
+                chatInputEl.style.top = `${inputStartRow * cellHeightPx}px`;
+                chatInputEl.style.width = `${inputCols * cellWidthPx}px`;
+                chatInputEl.style.height = `${3 * cellHeightPx}px`;
+            }
+        }
+
+        // Track resize state
+        let isResizing = false;
+        
+        // Initialize grid on page load
+        window.addEventListener('load', () => {
+            const overlay = document.getElementById('game-grid-overlay');
+            overlay.classList.add('active');
+            createGameGrid();
+        });
+        
+        // Add resize listeners for fast response
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('mousedown', () => { isResizing = true; });
+        window.addEventListener('mouseup', () => { isResizing = false; });
+        
+        // Add keyboard shortcut to toggle grid (Ctrl+G or Cmd+G)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+                e.preventDefault();
+                toggleGameGrid();
             }
         });
     </script>
