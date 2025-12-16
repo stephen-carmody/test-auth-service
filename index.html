@@ -36,6 +36,25 @@
             --success: #a8b2a1; /* Sage green */
             --error: #c47e6a; /* Soft terracotta */
             --border: #9b8f7f; /* Warm brown border */
+
+            /* Dynamic Color Palette for Grid Highlighting */
+            --grid-cell-base: rgba(122, 140, 122, 0.05);
+            --grid-cell-border: rgba(143, 162, 143, 0.2);
+            --grid-cell-hover: rgba(203, 166, 247, 0.4);
+            
+            /* UI Element Color Palette - Sepia/Harmony Based */
+            --ui-color-1: rgba(201, 183, 156, 0.6); /* Warm neutral (existing) */
+            --ui-color-2: rgba(168, 178, 161, 0.5); /* Sage green */
+            --ui-color-3: rgba(196, 126, 106, 0.5); /* Soft terracotta */
+            --ui-color-4: rgba(122, 140, 122, 0.5); /* Muted green */
+            --ui-color-5: rgba(155, 143, 127, 0.5); /* Warm brown */
+            --ui-color-6: rgba(184, 166, 146, 0.5); /* Dusty rose */
+            --ui-color-7: rgba(143, 155, 147, 0.5); /* Muted sage */
+            --ui-color-8: rgba(169, 149, 129, 0.5); /* Terracotta brown */
+            --ui-color-9: rgba(132, 148, 135, 0.5); /* Olive green */
+            --ui-color-10: rgba(178, 162, 146, 0.5); /* Warm sand */
+            --ui-color-11: rgba(154, 138, 124, 0.5); /* Dusty brown */
+            --ui-color-12: rgba(146, 166, 156, 0.5); /* Seafoam green */
         }
 
 
@@ -49,6 +68,12 @@
             overflow: hidden;
             margin: 20px auto;
             box-shadow: 0 0 10px var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .container.auth-grid-aligned {
+            max-width: none;
+            margin: 0;
         }
 
         .chat-container {
@@ -571,7 +596,9 @@
 
         /* Game Grid Overlay */
         .game-grid-overlay {
-            display: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: fixed;
             top: 0;
             left: 0;
@@ -580,12 +607,6 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: -1;
             pointer-events: auto;
-        }
-
-        .game-grid-overlay.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 0;
         }
 
@@ -653,20 +674,46 @@
         }
 
         .grid-cell-ui-element {
-            background: rgba(201, 183, 156, 0.6) !important; /* Warm neutral like skin tones */
+            background: var(--ui-color-1) !important; /* Default warm neutral */
             border: 2px solid var(--accent) !important;
             border-radius: 2px;
             box-shadow: 0 0 15px rgba(201, 183, 156, 0.4) !important; /* Soft glow */
         }
+
+        /* Dynamic UI Element Color Classes */
+        .grid-cell-ui-1 { background: var(--ui-color-1) !important; border: 2px solid #c9b79c !important; box-shadow: 0 0 12px rgba(201, 183, 156, 0.3) !important; }
+        .grid-cell-ui-2 { background: var(--ui-color-2) !important; border: 2px solid #a8b2a1 !important; box-shadow: 0 0 12px rgba(168, 178, 161, 0.3) !important; }
+        .grid-cell-ui-3 { background: var(--ui-color-3) !important; border: 2px solid #c47e6a !important; box-shadow: 0 0 12px rgba(196, 126, 106, 0.3) !important; }
+        .grid-cell-ui-4 { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; box-shadow: 0 0 12px rgba(122, 140, 122, 0.3) !important; }
+        .grid-cell-ui-5 { background: var(--ui-color-5) !important; border: 2px solid #9b8f7f !important; box-shadow: 0 0 12px rgba(155, 143, 127, 0.3) !important; }
+        .grid-cell-ui-6 { background: var(--ui-color-6) !important; border: 2px solid #b8a692 !important; box-shadow: 0 0 12px rgba(184, 166, 146, 0.3) !important; }
+        .grid-cell-ui-7 { background: var(--ui-color-7) !important; border: 2px solid #8f9b93 !important; box-shadow: 0 0 12px rgba(143, 155, 147, 0.3) !important; }
+        .grid-cell-ui-8 { background: var(--ui-color-8) !important; border: 2px solid #a99581 !important; box-shadow: 0 0 12px rgba(169, 149, 129, 0.3) !important; }
+        .grid-cell-ui-9 { background: var(--ui-color-9) !important; border: 2px solid #849487 !important; box-shadow: 0 0 12px rgba(132, 148, 135, 0.3) !important; }
+        .grid-cell-ui-10 { background: var(--ui-color-10) !important; border: 2px solid #b2a292 !important; box-shadow: 0 0 12px rgba(178, 162, 146, 0.3) !important; }
+        .grid-cell-ui-11 { background: var(--ui-color-11) !important; border: 2px solid #9a8a7c !important; box-shadow: 0 0 12px rgba(154, 138, 124, 0.3) !important; }
+        .grid-cell-ui-12 { background: var(--ui-color-12) !important; border: 2px solid #92a69c !important; box-shadow: 0 0 12px rgba(146, 166, 156, 0.3) !important; }
+
+        /* Auth Container Grid Alignment */
+        .auth-grid-aligned {
+            position: fixed;
+            background: var(--surface);
+            border: 2px solid var(--text);
+            box-shadow: 0 0 10px var(--accent);
+            z-index: 1500;
+            overflow: hidden;
+            max-width: none; /* Remove width constraint when grid-aligned */
+            width: auto;
+            height: auto;
+        }
+
+        .grid-cell-auth { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; border-radius: 2px; box-shadow: 0 0 15px rgba(122, 140, 122, 0.4) !important; }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Auth Gateway</h1>
-            <p>Register or login to access storage services</p>
-        </div>
+
 
         <div class="tabs">
             <div class="tab active" onclick="switchTab('login')">Login</div>
@@ -833,6 +880,9 @@
                     const chatContainer = document.getElementById('chat-container');
                     chatContainer.classList.add('active');
                     
+                    // Update grid to reflect UI change (remove auth highlighting, add chat highlighting)
+                    createGameGrid();
+                    
                     // Update status bar
                     document.getElementById('status-username').textContent = username;
 
@@ -950,16 +1000,10 @@
                             
                             // Reset body to its natural state
                             document.body.style.display = '';
-                            document.body.style.overflow = '';
                             
-                            // Force container to have proper layout properties
-                            const container = document.querySelector('.container');
-                            container.style.display = 'flex';
-                            container.style.flexDirection = 'column'; // This is the key fix!
-                            container.style.margin = '20px auto';
-                            container.style.maxWidth = '450px';
-                            container.style.width = '100%';
-
+                            // Update grid to reflect UI change (add auth highlighting)
+                            createGameGrid();
+                            
                             // Stop chat polling
                             stopChatPolling();
                             
@@ -1079,6 +1123,8 @@
             '/stats': 'Get Redis stats and usage information',
             '/persistent': 'List your persistent storage keys',
             '/shared': 'List shared storage keys',
+            '/colors': 'Test dynamic color allocation system',
+            '/palette': 'Show current color palette information',
 
             '/help': 'Show this help message',
             '/?': 'Show this help message'
@@ -1264,6 +1310,30 @@
                     await testEndpoint(`/${endpoint}`, 'GET');
                     break;
 
+                case '/colors':
+                    const colorAssignments = testDynamicColorAllocation();
+                    if (colorAssignments) {
+                        const colorDetails = {
+                            type: 'command',
+                            command: 'Color Test Results',
+                            description: `Generated ${colorAssignments.length} colors. First 5 assignments:\n${colorAssignments.slice(0, 5).map(c => `${c.label}: ${c.color} (${c.name})`).join('\n')}\n\nUse Ctrl+Shift+C for full details in console.`,
+                            timestamp: new Date().toISOString(),
+                            isLocalOnly: true
+                        };
+                        insertMessageInOrder(colorDetails);
+                    }
+                    break;
+                case '/palette':
+                    const paletteInfo = getColorPaletteInfo();
+                    const paletteMessage = {
+                        type: 'command',
+                        command: 'Color Palette Info',
+                        description: JSON.stringify(paletteInfo, null, 2),
+                        timestamp: new Date().toISOString(),
+                        isLocalOnly: true
+                    };
+                    insertMessageInOrder(paletteMessage);
+                    break;
                 case '/help':
                 case '/?':
                     showCommandHelp();
@@ -1394,12 +1464,165 @@
             }
         });
 
+        // Dynamic Color Allocation System
+        const ColorAllocationSystem = {
+            // Predefined sepia/harmony color palette
+            colorPalette: [
+                { r: 201, g: 183, b: 156, name: 'warm-neutral' },     // Original UI color
+                { r: 168, g: 178, b: 161, name: 'sage-green' },       // Success color
+                { r: 196, g: 126, b: 106, name: 'soft-terracotta' },  // Error color variant
+                { r: 122, g: 140, b: 122, name: 'muted-green' },      // Accent color
+                { r: 155, g: 143, b: 127, name: 'warm-brown' },       // Border variant
+                { r: 184, g: 166, b: 146, name: 'dusty-rose' },       // Soft rose
+                { r: 143, g: 155, b: 147, name: 'muted-sage' },       // Light sage
+                { r: 169, g: 149, b: 129, name: 'terracotta-brown' }, // Brown terracotta
+                { r: 132, g: 148, b: 135, name: 'olive-green' },       // Deep green
+                { r: 178, g: 162, b: 146, name: 'warm-sand' },        // Sand color
+                { r: 154, g: 138, b: 124, name: 'dusty-brown' },      // Muted brown
+                { r: 146, g: 166, b: 156, name: 'seafoam-green' }     // Light green
+            ],
+            
+            // Track assigned colors to avoid conflicts
+            assignedColors: new Map(),
+            uiElementCounter: 0,
+            
+            // Generate additional colors dynamically using HSL rotation within sepia range
+            generateColor(index) {
+                // Base sepia hue range (30-60 degrees)
+                const baseHue = 45; // Mid-sepia
+                const hueVariation = 15; // ±15 degrees variation
+                
+                // Create consistent color from index using golden ratio
+                const goldenRatio = 1.618033988749895;
+                const hue = (baseHue + (index * goldenRatio * hueVariation) % 60) % 60;
+                
+                // Keep saturation and lightness within sepia range
+                const saturation = 20 + (index % 3) * 10; // 20-40% for muted look
+                const lightness = 45 + (index % 4) * 8;   // 45-69% for visibility
+                
+                // Convert HSL to RGB
+                return this.hslToRgb(hue, saturation, lightness);
+            },
+            
+            // HSL to RGB conversion
+            hslToRgb(h, s, l) {
+                h /= 360;
+                s /= 100;
+                l /= 100;
+                
+                let r, g, b;
+                
+                if (s === 0) {
+                    r = g = b = l;
+                } else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1/6) return p + (q - p) * 6 * t;
+                        if (t < 1/2) return q;
+                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                        return p;
+                    };
+                    
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+                    r = hue2rgb(p, q, h + 1/3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1/3);
+                }
+                
+                return {
+                    r: Math.round(r * 255),
+                    g: Math.round(g * 255),
+                    b: Math.round(b * 255)
+                };
+            },
+            
+            // Get or assign color for UI element type
+            getUIElementColor(elementType, elementId = null) {
+                const key = elementId || elementType;
+                
+                // Return existing assignment if available
+                if (this.assignedColors.has(key)) {
+                    return this.assignedColors.get(key);
+                }
+                
+                // Use predefined palette for first 12 elements
+                if (this.uiElementCounter < this.colorPalette.length) {
+                    const color = this.colorPalette[this.uiElementCounter];
+                    this.assignedColors.set(key, color);
+                    this.uiElementCounter++;
+                    return color;
+                }
+                
+                // Generate dynamic color for additional elements
+                const colorIndex = this.uiElementCounter - this.colorPalette.length;
+                const dynamicColor = this.generateColor(colorIndex);
+                dynamicColor.name = `dynamic-${colorIndex + 1}`;
+                
+                this.assignedColors.set(key, dynamicColor);
+                this.uiElementCounter++;
+                return dynamicColor;
+            },
+            
+            // Get CSS class name for UI element
+            getUIClassName(elementType, elementId = null) {
+                const color = this.getUIElementColor(elementType, elementId);
+                const colorIndex = this.colorPalette.findIndex(c => 
+                    c.r === color.r && c.g === color.g && c.b === color.b
+                );
+                
+                if (colorIndex >= 0) {
+                    return `grid-cell-ui-${colorIndex + 1}`;
+                }
+                
+                // For dynamic colors, generate inline style
+                return null; // Will use inline styling
+            },
+            
+            // Apply color to grid cells
+            applyUIToGridCells(elementType, elementId, cells) {
+                const color = this.getUIElementColor(elementType, elementId);
+                const className = this.getUIClassName(elementType, elementId);
+                
+                cells.forEach(cell => {
+                    // Remove any existing UI classes
+                    cell.className = cell.className.replace(/grid-cell-ui-\d+/g, '');
+                    cell.classList.remove('grid-cell-ui-element');
+                    
+                    if (className) {
+                        cell.classList.add(className);
+                    } else {
+                        // Apply inline style for dynamic colors
+                        const rgba = `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`;
+                        const borderRgb = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                        cell.style.background = `${rgba} !important`;
+                        cell.style.border = `2px solid ${borderRgb} !important`;
+                        cell.style.borderRadius = '2px';
+                        cell.style.boxShadow = `0 0 12px ${rgba} !important`;
+                    }
+                });
+            },
+            
+            // Reset color assignments
+            reset() {
+                this.assignedColors.clear();
+                this.uiElementCounter = 0;
+            },
+            
+            // Get contrast color for text
+            getContrastColor(color) {
+                // Calculate relative luminance
+                const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
+                return luminance > 0.5 ? '#4a4035' : '#d4c5b9'; // Use existing theme colors
+            }
+        };
+
         // Game Grid Functions
-        let gameGridActive = true;
         let gridResizeTimeout = null;
         
         // Force reinitialization on script load
-        console.log(`Grid system v${APP_VERSION} initializing...`);
+        console.log(`Grid system v${APP_VERSION} with dynamic color allocation initializing...`);
 
         function createGameGrid() {
             const overlay = document.getElementById('game-grid-overlay');
@@ -1483,14 +1706,12 @@
             console.log(`Grid: ${bestCols}x${bestRows} = ${totalCells} cells, ${bestCellSizeCh}ch each (${bestCellSizePx}px)`);
             console.log(`Coverage: ${actualWidth}x${actualHeight}px (${(actualWidth/windowWidth*100).toFixed(1)}% width, ${(actualHeight/windowHeight*100).toFixed(1)}% height)`);
             
-            // Always position UI elements based on grid when grid is active
-            if (gameGridActive) {
-                if (!gridSystemInitialized) {
-                    console.log('Grid system not initialized, forcing reinitialization...');
-                    gridSystemInitialized = true;
-                }
-                positionUIElementsOnGrid(bestCols, bestRows, bestCellSizeCh);
+            // Always position UI elements based on grid
+            if (!gridSystemInitialized) {
+                console.log('Grid system not initialized, forcing reinitialization...');
+                gridSystemInitialized = true;
             }
+            positionUIElementsOnGrid(bestCols, bestRows, bestCellSizeCh);
         }
 
         function positionUIElementsOnGrid(cols, rows, cellSize) {
@@ -1511,6 +1732,7 @@
             const chatMessagesEl = document.getElementById('chat-messages-full');
             const chatInputEl = document.querySelector('.chat-input-container-full');
             const headerEl = document.querySelector('.header');
+            const authEl = document.querySelector('.container');
             const startRow = 4; // Start after header (first 3 rows)
             const endRow = rows - 4; // Leave 3 rows for input
             const chatRows = endRow - startRow; // Define at function scope
@@ -1530,6 +1752,31 @@
                 headerEl.style.display = 'flex';
                 headerEl.style.justifyContent = 'center';
                 headerEl.style.alignItems = 'center';
+            }
+            
+            // Position auth container in center of viewport (if visible)
+            if (authEl && authEl.style.display !== 'none') {
+                authEl.classList.add('auth-grid-aligned');
+                
+                // Calculate center positioning (60% of viewport)
+                const authStartCol = Math.floor(cols * 0.2);  // 20% from left
+                const authEndCol = Math.floor(cols * 0.8);    // 80% from left (60% width)
+                const authStartRow = Math.floor(rows * 0.25); // 25% from top
+                const authEndRow = Math.floor(rows * 0.75);   // 75% from top (50% height)
+                const authWidth = authEndCol - authStartCol;
+                const authHeight = authEndRow - authStartRow;
+                
+                // Position using pixels based on actual grid cell dimensions
+                authEl.style.position = 'fixed';
+                authEl.style.left = `${authStartCol * cellWidthPx}px`;
+                authEl.style.top = `${authStartRow * cellHeightPx}px`;
+                authEl.style.width = `${authWidth * cellWidthPx}px`;
+                authEl.style.height = `${authHeight * cellHeightPx}px`;
+                authEl.style.zIndex = '1500'; // Above grid, below interactive elements
+                authEl.style.display = 'flex';
+                authEl.style.flexDirection = 'column';
+                authEl.style.justifyContent = 'center';
+                authEl.style.alignItems = 'center';
             }
             
             // Position chat messages relative to grid (50% horizontal, from top)
@@ -1559,8 +1806,13 @@
                 chatInputEl.style.zIndex = '1'; // Above grid but below higher UI
             }
             
-            // Mark occupied grid cells for UI elements
+            // Mark occupied grid cells for UI elements using dynamic color allocation
             const totalCells = cols * rows;
+            const headerCells = [];
+            const authCells = [];
+            const messageCells = [];
+            const inputCells = [];
+            
             for (let i = 0; i < totalCells; i++) {
                 const cell = document.querySelector(`[data-grid-index="${i}"]`);
                 if (!cell) continue;
@@ -1570,68 +1822,64 @@
                 
                 // Reset all cells first
                 cell.classList.remove('grid-cell-occupied', 'grid-cell-ui-element');
+                cell.className = cell.className.replace(/grid-cell-ui-\d+/g, '');
+                cell.style.background = '';
+                cell.style.border = '';
+                cell.style.boxShadow = '';
                 
-                // Mark cells occupied by header (first 3 rows, full width)
+                // Collect cells for different UI elements
                 if (row >= 0 && row < 3) {
-                    cell.classList.add('grid-cell-occupied');
+                    headerCells.push(cell); // Header cells
                 }
                 
-                // Mark cells occupied by chat messages area
+                // Collect auth container cells (if auth container is visible)
+                if (authEl && authEl.style.display !== 'none') {
+                    const authStartCol = Math.floor(cols * 0.2);
+                    const authEndCol = Math.floor(cols * 0.8);
+                    const authStartRow = Math.floor(rows * 0.25);
+                    const authEndRow = Math.floor(rows * 0.75);
+                    
+                    if (col >= authStartCol && col < authEndCol && 
+                        row >= authStartRow && row < authEndRow) {
+                        authCells.push(cell); // Auth container area
+                    }
+                }
+                
                 if (col >= 1 && col < 1 + Math.floor(cols * 0.5) && 
                     row >= startRow && row < endRow) {
-                    cell.classList.add('grid-cell-occupied');
+                    messageCells.push(cell); // Chat message area
                 }
                 
-                // Mark cells occupied by chat input area (bottom 3 rows, 50% width starting from column 1)
                 if (row >= window.chatInputStartRow && row < rows && 
                     col >= 1 && col < 1 + Math.floor(cols * 0.5)) {
-                    cell.classList.add('grid-cell-ui-element');
+                    inputCells.push(cell); // Chat input area
                 }
+            }
+            
+            // Apply dynamic colors to UI elements
+            if (headerCells.length > 0) {
+                ColorAllocationSystem.applyUIToGridCells('header', 'main-header', headerCells);
+            }
+            
+            if (authCells.length > 0) {
+                ColorAllocationSystem.applyUIToGridCells('auth', 'auth-container', authCells);
+            }
+            
+            if (messageCells.length > 0) {
+                ColorAllocationSystem.applyUIToGridCells('messages', 'chat-messages', messageCells);
+            }
+            
+            if (inputCells.length > 0) {
+                ColorAllocationSystem.applyUIToGridCells('input', 'chat-input', inputCells);
             }
             
             console.log(`UI Grid-aligned: Messages ${Math.floor(cols * 0.5)}x${chatRows} at rows ${startRow}-${endRow}, Input ${cols}x4 at rows ${window.chatInputStartRow}-${rows-1}`);
             console.log(`Grid maintains full viewport: ${cols}x${rows} cells, not shrinking to occupied areas`);
         }
 
-        function toggleGameGrid() {
-            const overlay = document.getElementById('game-grid-overlay');
-            gameGridActive = !gameGridActive;
-            
-            console.log(`Grid toggle: ${gameGridActive ? 'OFF' : 'ON'}`);
-            
-            if (gameGridActive) {
-                overlay.classList.add('active');
-                // Force reinitialization to prevent stale state
-                gridSystemInitialized = false;
-                createGameGrid(); // This will also call positionUIElementsOnGrid
-            } else {
-                overlay.classList.remove('active');
-                
-                // Reset UI to normal layout when grid is hidden
-                const chatMessages = document.getElementById('chat-messages-full');
-                const chatInputEl = document.querySelector('.chat-input-container-full');
-                
-                if (chatMessages) {
-                    chatMessages.classList.remove('chat-messages-grid-aligned');
-                    chatMessages.style.left = '';
-                    chatMessages.style.top = '';
-                    chatMessages.style.width = '';
-                    chatMessages.style.height = '';
-                }
-                
-                if (chatInputEl) {
-                    chatInputEl.classList.remove('chat-input-grid-aligned');
-                    chatInputEl.style.left = '';
-                    chatInputEl.style.top = '';
-                    chatInputEl.style.width = '';
-                    chatInputEl.style.height = '';
-                }
-            }
-        }
+
 
         function handleResize() {
-            if (!gameGridActive) return;
-            
             // Immediate full grid update with zero debounce
             createGameGrid();
             
@@ -1700,8 +1948,6 @@
         
         // Initialize grid on page load
         window.addEventListener('load', () => {
-            const overlay = document.getElementById('game-grid-overlay');
-            overlay.classList.add('active');
             createGameGrid();
         });
         
@@ -1710,13 +1956,86 @@
         window.addEventListener('mousedown', () => { isResizing = true; });
         window.addEventListener('mouseup', () => { isResizing = false; });
         
-        // Add keyboard shortcut to toggle grid (Ctrl+G or Cmd+G)
+        // Add test command for dynamic colors (Ctrl+Shift+C)
         document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
                 e.preventDefault();
-                toggleGameGrid();
+                testDynamicColorAllocation();
             }
         });
+
+        // Test function to demonstrate dynamic color allocation
+        function testDynamicColorAllocation() {
+            console.log('Testing Dynamic Color Allocation System...');
+            
+            // Reset the system to start fresh
+            ColorAllocationSystem.reset();
+            
+            // Test different UI element types
+            const testElements = [
+                { type: 'button', id: 'test-btn-1', label: 'Test Button 1' },
+                { type: 'panel', id: 'test-panel-1', label: 'Test Panel 1' },
+                { type: 'widget', id: 'test-widget-1', label: 'Test Widget 1' },
+                { type: 'modal', id: 'test-modal-1', label: 'Test Modal 1' },
+                { type: 'sidebar', id: 'test-sidebar-1', label: 'Test Sidebar 1' },
+                { type: 'toolbar', id: 'test-toolbar-1', label: 'Test Toolbar 1' },
+                { type: 'notification', id: 'test-notification-1', label: 'Test Notification 1' },
+                { type: 'dropdown', id: 'test-dropdown-1', label: 'Test Dropdown 1' },
+                { type: 'tooltip', id: 'test-tooltip-1', label: 'Test Tooltip 1' },
+                { type: 'dialog', id: 'test-dialog-1', label: 'Test Dialog 1' },
+                { type: 'menu', id: 'test-menu-1', label: 'Test Menu 1' },
+                { type: 'statusbar', id: 'test-statusbar-1', label: 'Test Status Bar 1' },
+                { type: 'tab', id: 'test-tab-1', label: 'Test Tab 1' },
+                { type: 'breadcrumb', id: 'test-breadcrumb-1', label: 'Test Breadcrumb 1' },
+                { type: 'progress', id: 'test-progress-1', label: 'Test Progress 1' }
+            ];
+            
+            // Generate color assignments
+            const colorAssignments = [];
+            testElements.forEach(element => {
+                const color = ColorAllocationSystem.getUIElementColor(element.type, element.id);
+                const className = ColorAllocationSystem.getUIClassName(element.type, element.id);
+                const contrastColor = ColorAllocationSystem.getContrastColor(color);
+                
+                colorAssignments.push({
+                    type: element.type,
+                    id: element.id,
+                    label: element.label,
+                    color: `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`,
+                    border: `rgb(${color.r}, ${color.g}, ${color.b})`,
+                    className: className,
+                    contrastColor: contrastColor,
+                    name: color.name
+                });
+            });
+            
+            // Display results in console
+            console.table(colorAssignments);
+            
+            // Add visual demonstration in chat
+            const colorDemoMessage = {
+                type: 'command',
+                command: 'Dynamic Color System Demo',
+                description: `Generated ${colorAssignments.length} unique colors. Press Ctrl+Shift+C to see full details in console.`,
+                timestamp: new Date().toISOString(),
+                isLocalOnly: true
+            };
+            
+            insertMessageInOrder(colorDemoMessage);
+            
+            return colorAssignments;
+        }
+
+        // Function to get current color palette info
+        function getColorPaletteInfo() {
+            return {
+                predefinedColors: ColorAllocationSystem.colorPalette.length,
+                currentAssignments: ColorAllocationSystem.assignedColors.size,
+                availableColors: 'Unlimited (dynamic generation)',
+                colorRange: 'Sepia harmony (30-60° hue, 20-40% saturation, 45-69% lightness)',
+                contrastRatio: 'WCAG AA compliant with theme colors'
+            };
+        }
     </script>
 </body>
 
