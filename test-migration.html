@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        #test-output { margin-top: 20px; padding: 10px; background: #f0f0f0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>ComponentFactory Migration Test</h1>
+    <button onclick="testMigration()">Test Migration Functions</button>
+    <div id="test-output"></div>
+
+    <script>
+        // Simulate the migrated components system
+        function testMigration() {
+            const output = document.getElementById('test-output');
+            output.innerHTML = '<div>Testing ComponentFactory migration...</div>';
+            
+            try {
+                // Test 1: Check if migration functions exist
+                const migrationFunctions = [
+                    'migrateAuthSystem',
+                    'createLoginForm', 
+                    'createRegisterForm',
+                    'migrateChatSystem',
+                    'createStatusBar',
+                    'createChatInputContainer',
+                    'switchAuthTab',
+                    'loginMigrated',
+                    'registerMigrated',
+                    'initializeMigratedComponents',
+                    'switchToChatInterface',
+                    'switchToAuthInterface'
+                ];
+                
+                let passedTests = 0;
+                const totalTests = migrationFunctions.length + 2; // +2 for ComponentFactory and ColorAllocationSystem
+                
+                output.innerHTML += '<div>Checking migration functions...</div>';
+                
+                migrationFunctions.forEach(funcName => {
+                    if (typeof window[funcName] === 'function') {
+                        output.innerHTML += `<div class="success">✓ ${funcName} exists</div>`;
+                        passedTests++;
+                    } else {
+                        output.innerHTML += `<div class="error">✗ ${funcName} missing</div>`;
+                    }
+                });
+                
+                // Test 2: Check if ComponentFactory exists
+                if (typeof ComponentFactory === 'function') {
+                    output.innerHTML += '<div class="success">✓ ComponentFactory class exists</div>';
+                    passedTests++;
+                } else {
+                    output.innerHTML += '<div class="error">✗ ComponentFactory class missing</div>';
+                }
+                
+                // Test 3: Check if ColorAllocationSystem exists
+                if (typeof ColorAllocationSystem === 'object') {
+                    output.innerHTML += '<div class="success">✓ ColorAllocationSystem exists</div>';
+                    passedTests++;
+                } else {
+                    output.innerHTML += '<div class="error">✗ ColorAllocationSystem missing</div>';
+                }
+                
+                // Test 4: Check if migratedComponents object exists
+                if (typeof migratedComponents === 'object') {
+                    output.innerHTML += '<div class="success">✓ migratedComponents object exists</div>';
+                    passedTests++;
+                } else {
+                    output.innerHTML += '<div class="error">✗ migratedComponents object missing</div>';
+                }
+                
+                // Summary
+                const successRate = Math.round((passedTests / totalTests) * 100);
+                output.innerHTML += `<div style="margin-top: 20px; font-weight: bold;">
+                    Migration Test Results: ${passedTests}/${totalTests} tests passed (${successRate}%)
+                </div>`;
+                
+                if (successRate >= 90) {
+                    output.innerHTML += '<div class="success">✅ Migration appears successful!</div>';
+                } else {
+                    output.innerHTML += '<div class="error">❌ Migration has issues</div>';
+                }
+                
+            } catch (error) {
+                output.innerHTML = `<div class="error">❌ Test failed: ${error.message}</div>`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -71,7 +71,7 @@
             transition: all 0.3s ease;
         }
 
-        .container.auth-grid-aligned {
+        .container.auth-aligned {
             max-width: none;
             margin: 0;
         }
@@ -353,89 +353,7 @@
             font-weight: 500;
         }
 
-        .chat-messages {
-            background: var(--bg);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            height: 200px;
-            overflow-y: auto;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
 
-        .chat-message {
-            margin-bottom: 8px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            background: var(--surface);
-        }
-
-        .chat-message .username {
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        .chat-message .timestamp {
-            color: var(--text-muted);
-            margin-left: 8px;
-        }
-
-        .chat-message .message-text {
-            color: var(--text);
-            margin-top: 2px;
-            word-wrap: break-word;
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 8px 12px;
-            background: var(--bg);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            color: var(--text);
-            font-size: 28px;
-            transition: all 0.2s ease;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 5px var(--accent);
-        }
-
-        .chat-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .chat-send {
-            padding: 8px 16px;
-            background: var(--surface);
-            color: var(--text);
-            border: 2px solid var(--text);
-            border-radius: 0;
-            font-weight: 500;
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .chat-send:hover {
-            background: var(--accent);
-            color: var(--bg);
-            box-shadow: 0 0 8px var(--accent);
-        }
-
-        .chat-send:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
 
         /* Full-page chat layout */
         .status-bar {
@@ -475,14 +393,14 @@
             box-shadow: 0 0 8px var(--error);
         }
 
-        .chat-messages-full {
+        .chat-messages {
             flex: 1;
             background: var(--bg);
             overflow-y: auto;
             padding: 16px;
         }
 
-        .chat-input-container-full {
+        .chat-input-container {
             background: var(--surface-light);
             border-top: 1px solid var(--border);
             padding: 8px 16px;
@@ -495,8 +413,8 @@
         }
 
         /* When grid is active, make chat input on top */
-        .game-grid-overlay.active ~ .chat-container .chat-input-container-full,
-        .chat-input-container-full.grid-active {
+        .game-grid-overlay.active ~ .chat-container .chat-input-container,
+        .chat-input-container.active {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -510,7 +428,7 @@
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.8);
         }
 
-        .chat-input-full {
+        .chat-input {
             flex: 1;
             min-width: 0; /* Allow shrinking */
             padding: 6px 14px;
@@ -522,17 +440,17 @@
             transition: all 0.2s ease;
         }
 
-        .chat-input-full:focus {
+        .chat-input:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 5px var(--accent);
         }
 
-        .chat-input-full::placeholder {
+        .chat-input::placeholder {
             color: var(--text-muted);
         }
 
-        .chat-send-full {
+        .chat-send {
             padding: 4px 12px;
             background: var(--surface);
             color: var(--text);
@@ -546,13 +464,13 @@
             letter-spacing: 1px;
         }
 
-        .chat-send-full:hover {
+        .chat-send:hover {
             background: var(--accent);
             color: var(--bg);
             box-shadow: 0 0 8px var(--accent);
         }
 
-        .chat-send-full:disabled {
+        .chat-send:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -641,15 +559,15 @@
             transform: scale(1.1);
         }
 
-        /* Grid-aligned UI elements */
-        .ui-grid-aligned {
+        /* Aligned UI elements */
+        .ui-aligned {
             position: fixed;
             background: var(--surface);
             border: 2px solid var(--text);
             box-shadow: 0 0 10px var(--accent);
         }
 
-        .chat-input-grid-aligned {
+        .chat-input-aligned {
             position: fixed;
             background: var(--surface-light);
             border-top: 2px solid var(--accent);
@@ -659,7 +577,7 @@
             z-index: 2001;
         }
 
-        .chat-messages-grid-aligned {
+        .chat-messages-aligned {
             position: fixed;
             background: rgba(27, 30, 46, 0.8);
             border: 1px solid var(--text);
@@ -694,93 +612,131 @@
         .grid-cell-ui-11 { background: var(--ui-color-11) !important; border: 2px solid #9a8a7c !important; box-shadow: 0 0 12px rgba(154, 138, 124, 0.3) !important; }
         .grid-cell-ui-12 { background: var(--ui-color-12) !important; border: 2px solid #92a69c !important; box-shadow: 0 0 12px rgba(146, 166, 156, 0.3) !important; }
 
-        /* Auth Container Grid Alignment */
-        .auth-grid-aligned {
+        /* Auth Container Alignment */
+        .auth-aligned {
             position: fixed;
             background: var(--surface);
             border: 2px solid var(--text);
             box-shadow: 0 0 10px var(--accent);
             z-index: 1500;
             overflow: hidden;
-            max-width: none; /* Remove width constraint when grid-aligned */
+            max-width: none; /* Remove width constraint when aligned */
             width: auto;
             height: auto;
         }
 
-        .grid-cell-auth { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; border-radius: 2px; box-shadow: 0 0 15px rgba(122, 140, 122, 0.4) !important; }
+        .cell-auth { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; border-radius: 2px; box-shadow: 0 0 15px rgba(122, 140, 122, 0.4) !important; }
+
+        /* Component System Styles */
+        .component-button,
+        .component-panel,
+        .component-input,
+        .component-text,
+        .component-container,
+        .component-icon {
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* Component States */
+        .component-button.state-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .component-button.state-active {
+            transform: scale(0.98);
+        }
+
+        .component-input.state-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .component-panel.state-hidden,
+        .component-button.state-hidden,
+        .component-input.state-hidden,
+        .component-text.state-hidden,
+        .component-container.state-hidden,
+        .component-icon.state-hidden {
+            display: none !important;
+        }
+
+        /* Component Hover Effects */
+        .component-button:hover:not(.state-disabled) {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .component-input:focus:not(.state-disabled) {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        /* Component Animation Support */
+        .component-button,
+        .component-panel,
+        .component-input {
+            transition: all 0.2s ease;
+        }
+
+        /* Component Grid Integration */
+        [data-component-id].grid-aligned {
+            position: fixed;
+            z-index: 1000;
+        }
+
+        /* Component Layering */
+        .component-panel {
+            z-index: 1100;
+        }
+
+        .component-button {
+            z-index: 1200;
+        }
+
+        .component-input {
+            z-index: 1150;
+        }
+
+        /* Component Focus Management */
+        [data-component-id]:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Component Loading State */
+        .component-loading::after {
+            content: '...';
+            animation: loading-dots 1.5s infinite;
+        }
+
+        @keyframes loading-dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <!-- Auth Container will be created by ComponentFactory -->
+    <div id="auth-container-placeholder"></div>
 
-
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('login')">Login</div>
-            <div class="tab" onclick="switchTab('register')">Register</div>
-        </div>
-
-        <div class="content">
-            <!-- Login Form -->
-            <div id="login-form" class="form active">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" placeholder="Enter your username">
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
-                </div>
-                <button class="btn" onclick="login()">
-                    <div class="spinner"></div>
-                    <span>Login</span>
-                </button>
-                <div id="login-message" class="message"></div>
-            </div>
-
-            <!-- Register Form -->
-            <div id="register-form" class="form">
-                <div class="form-group">
-                    <label for="register-username">Username</label>
-                    <input type="text" id="register-username" placeholder="Choose a username (3+ chars)">
-                </div>
-                <div class="form-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" placeholder="Choose a password (6+ chars)">
-                </div>
-                <button class="btn" onclick="register()">
-                    <div class="spinner"></div>
-                    <span>Register</span>
-                </button>
-                <div id="register-message" class="message"></div>
-            </div>
-        </div>
+    <!-- Chat Interface will be created by ComponentFactory -->
+    <div id="chat-container-placeholder"></div>
+    
+    <!-- Game Grid Overlay (for testing) -->
+    <div id="game-grid-overlay" class="game-grid-overlay">
+        <div id="game-grid" class="game-grid"></div>
     </div>
-
-    <!-- Full-page chat interface -->
-    <div id="chat-container" class="chat-container">
-        <div class="status-bar">
-            <div class="status-info">
-                Logged in as <span class="username" id="status-username"></span>
-            </div>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-        <div id="chat-messages-full" class="chat-messages-full"></div>
-        <div class="chat-input-container-full">
-            <input type="text" id="chat-input-full" class="chat-input-full" placeholder="Type a message or /? for commands..." maxlength="200">
-            <button id="chat-send-full" class="chat-send-full" onclick="sendMessageFull()">Send</button>
-        </div>
-        
-        <!-- Game Grid Overlay (for testing) -->
-        <div id="game-grid-overlay" class="game-grid-overlay">
-            <div id="game-grid" class="game-grid"></div>
-        </div>
-        
-        <!-- Hidden elements for JavaScript access -->
-        <div style="display: none;">
-            <span id="username-display"></span>
-            <span id="token-display"></span>
-        </div>
+    
+    <!-- Hidden elements for JavaScript access -->
+    <div style="display: none;">
+        <span id="username-display"></span>
+        <span id="token-display"></span>
     </div>
 
     <script>
@@ -799,33 +755,21 @@
         let currentUsername = null;
         let gridSystemInitialized = false;
 
-        // DOM Elements
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
+        // DOM Elements - now using ComponentFactory
+        let loginForm = migratedComponents.loginForm;
+        let registerForm = migratedComponents.registerForm;
 
         function switchTab(tabName) {
-            // Update tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Show clicked tab
-            if (tabName === 'login') {
-                document.querySelector('.tab:nth-child(1)').classList.add('active');
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-            } else {
-                document.querySelector('.tab:nth-child(2)').classList.add('active');
-                loginForm.classList.remove('active');
-                registerForm.classList.add('active');
-            }
+            switchAuthTab(tabName);
         }
 
         function showMessage(formId, message, isError = false) {
-            const messageElement = document.getElementById(`${formId}-message`);
-            messageElement.textContent = message;
-            messageElement.className = `message ${isError ? 'error' : 'success'}`;
-            // Removed auto-hide - messages will stay visible until next attempt
+            const messageComponent = UIComponentFactory.get(`${formId}-message-cf`);
+            if (messageComponent) {
+                messageComponent.config.content.text = message;
+                messageComponent.element.textContent = message;
+                messageComponent.element.style.color = isError ? 'var(--error)' : 'var(--success)';
+            }
         }
 
         function setLoading(button, isLoading) {
@@ -839,17 +783,9 @@
             }
         }
 
-        async function login() {
-            const username = document.getElementById('login-username').value.trim();
-            const password = document.getElementById('login-password').value;
-            const loginBtn = document.querySelector('#login-form .btn');
-
-            if (!username || !password) {
-                showMessage('login', 'Please fill in all fields', true);
-                return;
-            }
-
-            setLoading(loginBtn, true);
+        // Extract login logic to reusable function
+        async function performLogin(username, password, messageComponent, buttonComponent) {
+            setLoading(buttonComponent, true);
 
             try {
                 const response = await fetch(`${API_BASE_URL}/login`, {
@@ -874,18 +810,12 @@
                     document.getElementById('username-display').textContent = username;
                     document.getElementById('token-display').textContent = data.token;
 
-                    // Hide login container, show chat container
-                    document.querySelector('.container').style.display = 'none';
-                    document.body.style.overflow = 'hidden';
-                    const chatContainer = document.getElementById('chat-container');
-                    chatContainer.classList.add('active');
+                    // Hide login, show chat
+                    switchToChatInterface();
                     
                     // Update grid to reflect UI change (remove auth highlighting, add chat highlighting)
                     createGameGrid();
                     
-                    // Update status bar
-                    document.getElementById('status-username').textContent = username;
-
                     // Start chat polling
                     startChatPolling();
                     
@@ -893,69 +823,36 @@
                     setTimeout(showWelcomeMessage, 100);
 
                     // Clear form fields
-                    document.getElementById('login-username').value = '';
-                    document.getElementById('login-password').value = '';
+                    const usernameInput = UIComponentFactory.get('login-username-input');
+                    const passwordInput = UIComponentFactory.get('login-password-input');
+                    usernameInput.element.value = '';
+                    passwordInput.element.value = '';
                 } else {
-                    showMessage('login', data.error || 'Login failed', true);
+                    messageComponent.config.content.text = data.error || 'Login failed';
+                    messageComponent.element.textContent = messageComponent.config.content.text;
+                    messageComponent.element.style.color = 'var(--error)';
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                showMessage('login', 'Network error. Please try again.', true);
+                messageComponent.config.content.text = 'Network error. Please try again.';
+                messageComponent.element.textContent = messageComponent.config.content.text;
+                messageComponent.element.style.color = 'var(--error)';
             } finally {
-                setLoading(loginBtn, false);
+                setLoading(buttonComponent, false);
+            }
+        }
+        
+        async function login() {
+            const loginButton = UIComponentFactory.get('login-button-cf');
+            if (loginButton) {
+                loginMigrated(loginButton);
             }
         }
 
         async function register() {
-            const username = document.getElementById('register-username').value.trim();
-            const password = document.getElementById('register-password').value;
-            const registerBtn = document.querySelector('#register-form .btn');
-
-            if (!username || !password) {
-                showMessage('register', 'Please fill in all fields', true);
-                return;
-            }
-
-            if (username.length < 3) {
-                showMessage('register', 'Username must be at least 3 characters', true);
-                return;
-            }
-
-            if (password.length < 6) {
-                showMessage('register', 'Password must be at least 6 characters', true);
-                return;
-            }
-
-            setLoading(registerBtn, true);
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({username, password})
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showMessage('register', 'Registration successful! You can now login.');
-                    // Switch to login tab
-                    switchTab('login');
-                    // Pre-fill username
-                    document.getElementById('login-username').value = username;
-                    // Clear register form
-                    document.getElementById('register-username').value = '';
-                    document.getElementById('register-password').value = '';
-                } else {
-                    showMessage('register', data.error || 'Registration failed', true);
-                }
-            } catch (error) {
-                console.error('Register error:', error);
-                showMessage('register', 'Network error. Please try again.', true);
-            } finally {
-                setLoading(registerBtn, false);
+            const registerButton = UIComponentFactory.get('register-button-cf');
+            if (registerButton) {
+                registerMigrated(registerButton);
             }
         }
 
@@ -981,39 +878,8 @@
                     localStorage.removeItem('authUsername');
                     localStorage.removeItem('localChatMessages');
 
-                    // Update UI - first hide chat completely
-                    document.getElementById('chat-container').classList.remove('active');
-                    
-                    // Force browser to acknowledge the change
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            // Reset container display 
-                            document.querySelector('.container').style.display = '';
-                            
-                            // Force another reflow
-                            void document.querySelector('.container').offsetHeight;
-                            
-                            // Now set it to flex (should trigger proper layout)
-                            document.querySelector('.container').style.display = 'flex';
-                            document.querySelector('.container').style.margin = '20px auto';
-                            document.querySelector('.container').style.maxWidth = '450px';
-                            
-                            // Reset body to its natural state
-                            document.body.style.display = '';
-                            
-                            // Update grid to reflect UI change (add auth highlighting)
-                            createGameGrid();
-                            
-                            // Stop chat polling
-                            stopChatPolling();
-                            
-                            // Clear chat messages
-                            chatMessages = [];
-                            
-                            // Switch to login tab
-                            switchTab('login');
-                        });
-                    });
+                    // Hide migrated chat, show auth
+                    switchToAuthInterface();
                 }
             } catch (error) {
                 console.error('Logout error:', error);
@@ -1082,15 +948,9 @@
                 document.getElementById('username-display').textContent = savedUsername;
                 document.getElementById('token-display').textContent = savedToken;
                 
-                // Hide login container, show chat container
-                document.querySelector('.container').style.display = 'none';
-                document.body.style.overflow = 'hidden';
-                const chatContainer = document.getElementById('chat-container');
-                chatContainer.classList.add('active');
+                // Switch to chat interface
+                switchToChatInterface();
                 
-                // Update status bar
-                document.getElementById('status-username').textContent = savedUsername;
-
                 // Load saved local messages before starting polling
                 const localMessages = loadLocalMessages();
                 if (localMessages.length > 0) {
@@ -1211,7 +1071,7 @@
         }
 
         function displayChatMessages() {
-            const chatContainer = document.getElementById('chat-messages-full');
+            const chatContainer = migratedComponents.chatMessages.element;
             chatContainer.innerHTML = '';
 
             if (chatMessages.length === 0) {
@@ -1226,41 +1086,41 @@
                 return new Date(a.timestamp) - new Date(b.timestamp);
             });
 
-            // Show last 50 messages
-            const recentMessages = sortedMessages.slice(-50);
-            
-            recentMessages.forEach(msg => {
-                const messageDiv = document.createElement('div');
+                // Show last 50 messages
+                const recentMessages = sortedMessages.slice(-50);
                 
-                if (msg.type === 'system') {
-                    messageDiv.className = 'system-message';
-                    messageDiv.textContent = msg.message;
-                } else if (msg.type === 'command') {
-                    messageDiv.className = 'command-message';
-                    messageDiv.innerHTML = `
-                        <div class="command-title">${msg.command}</div>
-                        <div class="command-desc">${msg.description}</div>
-                    `;
-                } else {
-                    messageDiv.className = 'chat-message';
-                    messageDiv.style.background = 'var(--surface)';
-                    messageDiv.style.marginBottom = '8px';
-                    messageDiv.style.padding = '8px 12px';
-                    messageDiv.style.borderRadius = '6px';
+                recentMessages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
                     
-                    const timestamp = new Date(msg.timestamp).toLocaleTimeString();
+                    if (msg.type === 'system') {
+                        messageDiv.className = 'system-message';
+                        messageDiv.textContent = msg.message;
+                    } else if (msg.type === 'command') {
+                        messageDiv.className = 'command-message';
+                        messageDiv.innerHTML = `
+                            <div class="command-title">${msg.command}</div>
+                            <div class="command-desc">${msg.description}</div>
+                        `;
+                    } else {
+                        messageDiv.className = 'chat-message';
+                        messageDiv.style.background = 'var(--surface)';
+                        messageDiv.style.marginBottom = '8px';
+                        messageDiv.style.padding = '8px 12px';
+                        messageDiv.style.borderRadius = '6px';
+                        
+                        const timestamp = new Date(msg.timestamp).toLocaleTimeString();
+                        
+                        messageDiv.innerHTML = `
+                            <div>
+                                <span style="color: var(--accent); font-weight: 500;">${msg.username}</span>
+                                <span style="color: var(--text-muted); margin-left: 8px;">${timestamp}</span>
+                            </div>
+                            <div style="color: var(--text); margin-top: 4px; word-wrap: break-word;">${msg.message}</div>
+                        `;
+                    }
                     
-                    messageDiv.innerHTML = `
-                        <div>
-                            <span style="color: var(--accent); font-weight: 500;">${msg.username}</span>
-                            <span style="color: var(--text-muted); margin-left: 8px;">${timestamp}</span>
-                        </div>
-                        <div style="color: var(--text); margin-top: 4px; word-wrap: break-word;">${msg.message}</div>
-                    `;
-                }
-                
-                chatContainer.appendChild(messageDiv);
-            });
+                    chatContainer.appendChild(messageDiv);
+                });
 
             // Scroll to bottom
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -1351,10 +1211,18 @@
             }
         }
 
+        // Handle chat input keypress for migrated components
+        function handleChatKeyPress(component, event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessageFull();
+            }
+        }
+        
         async function sendMessageFull() {
             if (!currentToken) return;
 
-            const input = document.getElementById('chat-input-full');
+            const input = migratedComponents.chatInput.element;
             const message = input.value.trim();
             
             if (!message) return;
@@ -1362,7 +1230,7 @@
             // Clear input immediately for better UX
             input.value = '';
 
-            const sendBtn = document.getElementById('chat-send-full');
+            const sendBtn = migratedComponents.chatSendButton.element;
             const originalText = sendBtn.textContent;
             
             sendBtn.disabled = true;
@@ -1446,20 +1314,47 @@
         }
 
         // Add enter key support for chat input
-        document.getElementById('chat-input-full').addEventListener('keypress', (e) => {
+        migratedComponents.chatInput.element.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault(); // Prevent form submission
                 sendMessageFull();
             }
         });
 
+        // Switch to chat interface
+        function switchToChatInterface() {
+            document.body.style.overflow = 'hidden';
+            
+            // Show migrated chat, hide auth
+            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'normal');
+            UIComponentFactory.setState(migratedComponents.authContainer.element, 'hidden');
+            
+            // Update status bar username
+            const statusInfo = UIComponentFactory.get('status-info-cf');
+            statusInfo.config.content.text = 'Logged in as ' + currentUsername;
+            statusInfo.element.textContent = statusInfo.config.content.text;
+        }
+        
+        // Switch to auth interface  
+        function switchToAuthInterface() {
+            // Show migrated auth, hide chat
+            UIComponentFactory.setState(migratedComponents.authContainer.element, 'normal');
+            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'hidden');
+            
+            // Reset body
+            document.body.style.display = '';
+        }
+        
         // Add enter key support for login/register forms
         document.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                if (loginForm.classList.contains('active')) {
-                    login();
-                } else if (registerForm.classList.contains('active')) {
-                    register();
+                const loginState = migratedComponents.loginForm.element.style.display !== 'none';
+                if (loginState) {
+                    const loginButton = UIComponentFactory.get('login-button-cf');
+                    if (loginButton) loginMigrated(loginButton, e);
+                } else {
+                    const registerButton = UIComponentFactory.get('register-button-cf');
+                    if (registerButton) registerMigrated(registerButton, e);
                 }
             }
         });
@@ -1729,8 +1624,8 @@
             }
             
             // Define variables at function scope to prevent ReferenceError
-            const chatMessagesEl = document.getElementById('chat-messages-full');
-            const chatInputEl = document.querySelector('.chat-input-container-full');
+            const chatMessagesEl = document.getElementById('chat-messages');
+            const chatInputEl = document.querySelector('.chat-input-container');
             const headerEl = document.querySelector('.header');
             const authEl = document.querySelector('.container');
             const startRow = 4; // Start after header (first 3 rows)
@@ -1740,7 +1635,7 @@
             
             // Position header in first 3 rows, full width
             if (headerEl) {
-                headerEl.classList.add('header-grid-aligned');
+                headerEl.classList.add('header-aligned');
                 
                 // Position using pixels based on actual grid cell dimensions
                 headerEl.style.position = 'fixed';
@@ -1756,7 +1651,7 @@
             
             // Position auth container in center of viewport (if visible)
             if (authEl && authEl.style.display !== 'none') {
-                authEl.classList.add('auth-grid-aligned');
+                authEl.classList.add('auth-aligned');
                 
                 // Calculate center positioning (60% of viewport)
                 const authStartCol = Math.floor(cols * 0.2);  // 20% from left
@@ -1781,7 +1676,7 @@
             
             // Position chat messages relative to grid (50% horizontal, from top)
             if (chatMessagesEl) {
-                chatMessagesEl.classList.add('chat-messages-grid-aligned');
+                chatMessagesEl.classList.add('chat-messages-aligned');
                 const chatCols = Math.floor(cols * 0.5); // 50% of horizontal cells
                 
                 // Position using pixels based on actual grid cell dimensions
@@ -1795,7 +1690,7 @@
             
             // Position chat input at bottom 3 rows, same width as messages (50%)
             if (chatInputEl) {
-                chatInputEl.classList.add('chat-input-grid-aligned');
+                chatInputEl.classList.add('chat-input-aligned');
                 const inputCols = Math.floor(cols * 0.5); // Same width as messages (50%)
                 
                 chatInputEl.style.position = 'fixed';
@@ -1910,8 +1805,8 @@
             
             // Update element positions only
             const headerEl = document.querySelector('.header');
-            const chatMessagesEl = document.getElementById('chat-messages-full');
-            const chatInputEl = document.querySelector('.chat-input-container-full');
+            const chatMessagesEl = document.getElementById('chat-messages');
+            const chatInputEl = document.querySelector('.chat-input-container');
             
             if (headerEl) {
                 headerEl.style.left = '0';
@@ -2036,6 +1931,1431 @@
                 contrastRatio: 'WCAG AA compliant with theme colors'
             };
         }
+
+        // ===============================================================
+        // UNIFIED UI COMPONENT SYSTEM - ComponentFactory
+        // ===============================================================
+        
+        class ComponentFactory {
+            constructor(colorSystem = ColorAllocationSystem) {
+                this.colorSystem = colorSystem;
+                this.components = new Map();
+                this.componentTypes = new Map();
+                this.gridSystem = null;
+                this.eventDelegators = new Map();
+                
+                // Initialize built-in component types
+                this.initializeBuiltInTypes();
+                
+                // Setup global event delegation
+                this.setupEventDelegation();
+            }
+            
+            initializeBuiltInTypes() {
+                // Button Component
+                this.register('button', {
+                    createElement: (config) => {
+                        const element = document.createElement('button');
+                        element.className = 'component-button';
+                        element.textContent = config.content?.text || 'Button';
+                        return element;
+                    },
+                    defaultStyles: {
+                        padding: '10px 16px',
+                        border: '2px solid var(--text)',
+                        borderRadius: '0',
+                        background: 'var(--surface)',
+                        color: 'var(--text)',
+                        fontSize: '28px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                    },
+                    hoverStyles: {
+                        background: 'var(--accent)',
+                        color: 'var(--bg)',
+                        boxShadow: '0 0 10px var(--accent)'
+                    },
+                    activeStyles: {
+                        transform: 'scale(0.98)'
+                    }
+                });
+                
+                // Panel Component
+                this.register('panel', {
+                    createElement: (config) => {
+                        const element = document.createElement('div');
+                        element.className = 'component-panel';
+                        return element;
+                    },
+                    defaultStyles: {
+                        background: 'var(--surface)',
+                        border: '2px solid var(--text)',
+                        borderRadius: '0',
+                        padding: '16px',
+                        boxShadow: '0 0 10px var(--accent)',
+                        overflow: 'hidden'
+                    }
+                });
+                
+                // Input Component
+                this.register('input', {
+                    createElement: (config) => {
+                        const element = document.createElement('input');
+                        element.className = 'component-input';
+                        element.type = config.inputType || 'text';
+                        element.placeholder = config.content?.placeholder || '';
+                        return element;
+                    },
+                    defaultStyles: {
+                        width: '100%',
+                        padding: '10px 12px',
+                        background: 'var(--bg)',
+                        border: '1px solid var(--text)',
+                        borderRadius: '0',
+                        color: 'var(--text)',
+                        fontSize: '28px',
+                        transition: 'all 0.2s ease',
+                        boxSizing: 'border-box'
+                    },
+                    focusStyles: {
+                        outline: 'none',
+                        borderColor: 'var(--accent)',
+                        boxShadow: '0 0 5px var(--accent)'
+                    }
+                });
+                
+                // Text Component
+                this.register('text', {
+                    createElement: (config) => {
+                        const element = document.createElement('div');
+                        element.className = 'component-text';
+                        element.textContent = config.content?.text || '';
+                        return element;
+                    },
+                    defaultStyles: {
+                        color: 'var(--text)',
+                        fontSize: '28px',
+                        fontFamily: 'inherit',
+                        lineHeight: '1.4'
+                    }
+                });
+                
+                // Container Component
+                this.register('container', {
+                    createElement: (config) => {
+                        const element = document.createElement('div');
+                        element.className = 'component-container';
+                        return element;
+                    },
+                    defaultStyles: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-start',
+                        alignItems: 'stretch',
+                        gap: '8px',
+                        width: '100%',
+                        height: '100%'
+                    },
+                    customStyleApplier: (element, config) => {
+                        // Apply layout-specific styles
+                        if (config.layout) {
+                            element.style.flexDirection = config.layout.direction || 'column';
+                            element.style.justifyContent = config.layout.justify || 'flex-start';
+                            element.style.alignItems = config.layout.align || 'stretch';
+                            element.style.gap = config.layout.gap || '8px';
+                        }
+                    }
+                });
+                
+                // Icon Component
+                this.register('icon', {
+                    createElement: (config) => {
+                        const element = document.createElement('span');
+                        element.className = 'component-icon';
+                        element.textContent = config.content?.symbol || '•';
+                        return element;
+                    },
+                    defaultStyles: {
+                        display: 'inline-block',
+                        fontSize: '24px',
+                        color: 'var(--accent)',
+                        textAlign: 'center',
+                        lineHeight: '1'
+                    },
+                    customStyleApplier: (element, config) => {
+                        if (config.content?.size) {
+                            element.style.fontSize = config.content.size;
+                        }
+                    }
+                });
+            }
+            
+            register(type, definition) {
+                this.componentTypes.set(type, {
+                    createElement: definition.createElement,
+                    defaultStyles: definition.defaultStyles || {},
+                    hoverStyles: definition.hoverStyles || {},
+                    activeStyles: definition.activeStyles || {},
+                    focusStyles: definition.focusStyles || {},
+                    template: definition.template || null
+                });
+            }
+            
+            create(config) {
+                if (!config.id) {
+                    throw new Error('Component config must have an id');
+                }
+                
+                if (this.components.has(config.id)) {
+                    console.warn(`Component with id '${config.id}' already exists`);
+                    return this.components.get(config.id);
+                }
+                
+                const componentType = this.componentTypes.get(config.type);
+                if (!componentType) {
+                    throw new Error(`Unknown component type: ${config.type}`);
+                }
+                
+                // Create element
+                let element;
+                if (componentType.template) {
+                    element = this.createFromTemplate(componentType.template, config);
+                } else {
+                    element = componentType.createElement(config);
+                }
+                
+                // Set component ID and data
+                element.dataset.componentId = config.id;
+                element.dataset.componentType = config.type;
+                
+                // Apply default styles
+                this.applyStyles(element, componentType.defaultStyles);
+                
+                // Apply custom style applier if exists
+                if (componentType.customStyleApplier) {
+                    componentType.customStyleApplier(element, config);
+                }
+                
+                // Apply appearance configuration
+                if (config.appearance) {
+                    this.applyAppearance(element, config.appearance);
+                }
+                
+                // Apply positioning
+                if (config.position) {
+                    this.applyPositioning(element, config.position);
+                }
+                
+                // Apply size
+                if (config.size) {
+                    this.applySize(element, config.size);
+                }
+                
+                // Set initial state
+                if (config.state?.initial) {
+                    this.setState(element, config.state.initial);
+                }
+                
+                // Create component object
+                const component = {
+                    id: config.id,
+                    type: config.type,
+                    element: element,
+                    config: config,
+                    children: [],
+                    parent: null,
+                    state: config.state?.initial || 'normal',
+                    eventHandlers: new Map()
+                };
+                
+                // Register component
+                this.components.set(config.id, component);
+                
+                // Add to DOM
+                document.body.appendChild(element);
+                
+                // Setup event handlers
+                if (config.behavior) {
+                    this.setupEventHandlers(component, config.behavior);
+                }
+                
+                // Add children if any
+                if (config.content?.children) {
+                    config.content.children.forEach(childConfig => {
+                        const child = this.create(childConfig);
+                        this.addChild(component, child);
+                    });
+                }
+                
+                return component;
+            }
+            
+            createFromTemplate(template, config) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = typeof template === 'function' ? template(config) : template;
+                return tempDiv.firstChild;
+            }
+            
+            applyStyles(element, styles) {
+                Object.assign(element.style, styles);
+            }
+            
+            applyAppearance(element, appearance) {
+                // Apply color theme
+                if (appearance.color && appearance.color !== 'auto') {
+                    if (appearance.color === 'specific-color') {
+                        const color = this.colorSystem.getUIElementColor('component', element.dataset.componentId);
+                        element.style.background = `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`;
+                        element.style.borderColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+                    }
+                }
+                
+                // Apply style variant
+                if (appearance.style === 'elevated') {
+                    element.style.boxShadow = '0 0 15px var(--accent)';
+                } else if (appearance.style === 'bordered') {
+                    element.style.border = '2px solid var(--text)';
+                } else if (appearance.style === 'minimal') {
+                    element.style.border = 'none';
+                    element.style.boxShadow = 'none';
+                }
+                
+                // Apply theme
+                if (appearance.theme === 'primary') {
+                    element.style.background = 'var(--surface)';
+                } else if (appearance.theme === 'accent') {
+                    element.style.background = 'var(--accent)';
+                    element.style.color = 'var(--bg)';
+                }
+            }
+            
+            applyPositioning(element, position) {
+                element.style.position = 'fixed';
+                
+                if (position.grid) {
+                    this.applyGridPositioning(element, position.grid);
+                } else if (position.absolute) {
+                    this.applyAbsolutePositioning(element, position.absolute);
+                } else if (position.relative) {
+                    this.applyRelativePositioning(element, position.relative);
+                }
+            }
+            
+            applyGridPositioning(element, gridPos) {
+                // Get current grid dimensions
+                const grid = document.getElementById('game-grid');
+                if (!grid) {
+                    console.warn('Grid system not available for positioning');
+                    return;
+                }
+                
+                const computedStyle = window.getComputedStyle(grid);
+                const gridWidth = grid.offsetWidth;
+                const gridHeight = grid.offsetHeight;
+                
+                // Estimate grid dimensions
+                const cols = Math.ceil(Math.sqrt(gridWidth * gridHeight / 400));
+                const rows = Math.ceil(gridHeight / 20);
+                
+                const cellWidthPx = gridWidth / cols;
+                const cellHeightPx = gridHeight / rows;
+                
+                const { startCol, endCol, startRow, endRow } = gridPos;
+                
+                element.style.left = `${startCol * cellWidthPx}px`;
+                element.style.top = `${startRow * cellHeightPx}px`;
+                element.style.width = `${(endCol - startCol) * cellWidthPx}px`;
+                element.style.height = `${(endRow - startRow) * cellHeightPx}px`;
+                element.style.zIndex = '1000';
+            }
+            
+            applyAbsolutePositioning(element, absolutePos) {
+                const { x, y, width, height } = absolutePos;
+                element.style.left = typeof x === 'string' ? x : `${x}px`;
+                element.style.top = typeof y === 'string' ? y : `${y}px`;
+                element.style.width = typeof width === 'string' ? width : `${width}px`;
+                element.style.height = typeof height === 'string' ? height : `${height}px`;
+                element.style.zIndex = '1000';
+            }
+            
+            applyRelativePositioning(element, relativePos) {
+                // For now, convert to absolute positioning
+                // TODO: Implement true relative positioning
+                console.warn('Relative positioning not fully implemented, using absolute');
+                element.style.position = 'relative';
+            }
+            
+            applySize(element, size) {
+                if (size.width) {
+                    element.style.width = typeof size.width === 'string' ? size.width : `${size.width}px`;
+                }
+                if (size.height) {
+                    element.style.height = typeof size.height === 'string' ? size.height : `${size.height}px`;
+                }
+                if (size.aspectRatio) {
+                    element.style.aspectRatio = size.aspectRatio;
+                }
+            }
+            
+            setState(element, state) {
+                const componentId = element.dataset.componentId;
+                const component = this.components.get(componentId);
+                if (!component) return;
+                
+                // Remove previous state classes
+                element.classList.remove('state-normal', 'state-active', 'state-disabled', 'state-hidden');
+                
+                // Add new state class
+                element.classList.add(`state-${state}`);
+                
+                // Update component state
+                component.state = state;
+                
+                // Apply state-specific styles
+                const componentType = this.componentTypes.get(component.type);
+                
+                if (state === 'active' && componentType.activeStyles) {
+                    this.applyStyles(element, componentType.activeStyles);
+                } else if (state === 'hidden') {
+                    element.style.display = 'none';
+                } else {
+                    element.style.display = '';
+                }
+            }
+            
+            setupEventHandlers(component, behavior) {
+                const element = component.element;
+                
+                // Click handler
+                if (behavior.onClick) {
+                    const clickHandler = (e) => {
+                        e.preventDefault();
+                        this.executeHandler(behavior.onClick, component, e);
+                    };
+                    element.addEventListener('click', clickHandler);
+                    component.eventHandlers.set('click', clickHandler);
+                }
+                
+                // Hover handlers
+                if (behavior.onHover || component.type === 'button') {
+                    const mouseEnterHandler = (e) => {
+                        const componentType = this.componentTypes.get(component.type);
+                        if (componentType.hoverStyles) {
+                            this.applyStyles(element, componentType.hoverStyles);
+                        }
+                        if (behavior.onHover) {
+                            this.executeHandler(behavior.onHover, component, e);
+                        }
+                    };
+                    const mouseLeaveHandler = (e) => {
+                        const componentType = this.componentTypes.get(component.type);
+                        if (componentType.hoverStyles) {
+                            this.applyStyles(element, componentType.defaultStyles);
+                        }
+                    };
+                    
+                    element.addEventListener('mouseenter', mouseEnterHandler);
+                    element.addEventListener('mouseleave', mouseLeaveHandler);
+                    component.eventHandlers.set('mouseenter', mouseEnterHandler);
+                    component.eventHandlers.set('mouseleave', mouseLeaveHandler);
+                }
+                
+                // Focus handlers for inputs
+                if (component.type === 'input' && componentType.focusStyles) {
+                    const focusHandler = (e) => {
+                        this.applyStyles(element, componentType.focusStyles);
+                    };
+                    const blurHandler = (e) => {
+                        this.applyStyles(element, componentType.defaultStyles);
+                    };
+                    
+                    element.addEventListener('focus', focusHandler);
+                    element.addEventListener('blur', blurHandler);
+                    component.eventHandlers.set('focus', focusHandler);
+                    component.eventHandlers.set('blur', blurHandler);
+                }
+                
+                // Custom events
+                if (behavior.events) {
+                    Object.entries(behavior.events).forEach(([eventType, handler]) => {
+                        const customHandler = (e) => {
+                            this.executeHandler(handler, component, e);
+                        };
+                        element.addEventListener(eventType, customHandler);
+                        component.eventHandlers.set(eventType, customHandler);
+                    });
+                }
+            }
+            
+            executeHandler(handler, component, event) {
+                if (typeof handler === 'string') {
+                    // Global function call
+                    if (typeof window[handler] === 'function') {
+                        window[handler](component, event);
+                    } else {
+                        console.warn(`Handler function '${handler}' not found`);
+                    }
+                } else if (typeof handler === 'function') {
+                    // Direct function reference
+                    handler(component, event);
+                } else {
+                    console.warn('Invalid handler type');
+                }
+            }
+            
+            setupEventDelegation() {
+                document.addEventListener('click', (e) => {
+                    const element = e.target.closest('[data-component-id]');
+                    if (element) {
+                        const componentId = element.dataset.componentId;
+                        const component = this.components.get(componentId);
+                        if (component) {
+                            e.component = component;
+                        }
+                    }
+                });
+            }
+            
+            addChild(parent, child) {
+                parent.element.appendChild(child.element);
+                parent.children.push(child);
+                child.parent = parent;
+            }
+            
+            removeChild(parent, childId) {
+                const child = this.components.get(childId);
+                if (!child) return;
+                
+                parent.element.removeChild(child.element);
+                parent.children = parent.children.filter(c => c.id !== childId);
+                child.parent = null;
+            }
+            
+            destroy(componentId) {
+                const component = this.components.get(componentId);
+                if (!component) return;
+                
+                // Remove all event handlers
+                component.eventHandlers.forEach((handler, eventType) => {
+                    component.element.removeEventListener(eventType, handler);
+                });
+                
+                // Destroy all children
+                [...component.children].forEach(child => {
+                    this.destroy(child.id);
+                });
+                
+                // Remove from parent
+                if (component.parent) {
+                    component.parent.children = component.parent.children.filter(c => c.id !== componentId);
+                }
+                
+                // Remove from DOM
+                component.element.remove();
+                
+                // Remove from registry
+                this.components.delete(componentId);
+            }
+            
+            get(componentId) {
+                return this.components.get(componentId);
+            }
+            
+            update(componentId, updates) {
+                const component = this.components.get(componentId);
+                if (!component) return;
+                
+                // Merge updates into config
+                Object.assign(component.config, updates);
+                
+                // Re-apply configuration
+                if (updates.appearance) {
+                    this.applyAppearance(component.element, updates.appearance);
+                }
+                
+                if (updates.position) {
+                    this.applyPositioning(component.element, updates.position);
+                }
+                
+                if (updates.size) {
+                    this.applySize(component.element, updates.size);
+                }
+                
+                if (updates.state) {
+                    this.setState(component.element, updates.state);
+                }
+            }
+            
+            list() {
+                return Array.from(this.components.keys());
+            }
+            
+            clear() {
+                // Destroy all components
+                [...this.components.keys()].forEach(id => {
+                    this.destroy(id);
+                });
+            }
+        }
+        
+        // Initialize the ComponentFactory
+        let UIComponentFactory = null;
+        
+        function initializeComponentFactory() {
+            if (!UIComponentFactory) {
+                UIComponentFactory = new ComponentFactory(ColorAllocationSystem);
+                console.log('ComponentFactory initialized with', UIComponentFactory.componentTypes.size, 'component types');
+            }
+            return UIComponentFactory;
+        }
+        
+        // ===============================================================
+        // COMPONENT FACTORY MIGRATION FUNCTIONS
+        // ===============================================================
+        
+        // Global references to migrated components
+        let migratedComponents = {
+            authContainer: null,
+            loginForm: null,
+            registerForm: null,
+            chatContainer: null,
+            statusBar: null,
+            chatMessages: null,
+            chatInputContainer: null,
+            chatInput: null,
+            chatSendButton: null
+        };
+        
+        // Migrate authentication system to ComponentFactory
+        function migrateAuthSystem() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            // Create main auth container
+            migratedComponents.authContainer = UIComponentFactory.create({
+                id: 'auth-container',
+                type: 'panel',
+                position: {
+                    grid: { startCol: 0, endCol: 20, startRow: 5, endRow: 15 }
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'elevated'
+                }
+            });
+            
+            // Create tabs container
+            const tabsContainer = UIComponentFactory.create({
+                id: 'auth-tabs',
+                type: 'container',
+                layout: {
+                    direction: 'row',
+                    justify: 'space-between',
+                    align: 'center',
+                    gap: '0'
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'bordered'
+                }
+            });
+            
+            // Create login tab
+            const loginTab = UIComponentFactory.create({
+                id: 'login-tab',
+                type: 'button',
+                content: { text: 'Login' },
+                appearance: { theme: 'accent' },
+                behavior: {
+                    onClick: () => switchAuthTab('login')
+                }
+            });
+            
+            // Create register tab
+            const registerTab = UIComponentFactory.create({
+                id: 'register-tab',
+                type: 'button',
+                content: { text: 'Register' },
+                behavior: {
+                    onClick: () => switchAuthTab('register')
+                }
+            });
+            
+            // Create forms container
+            const formsContainer = UIComponentFactory.create({
+                id: 'auth-forms-container',
+                type: 'container',
+                layout: {
+                    direction: 'column',
+                    justify: 'center',
+                    align: 'center',
+                    gap: '16px'
+                }
+            });
+            
+            // Create login form
+            migratedComponents.loginForm = createLoginForm();
+            
+            // Create register form
+            migratedComponents.registerForm = createRegisterForm();
+            
+            // Assemble auth structure
+            UIComponentFactory.addChild(tabsContainer, loginTab);
+            UIComponentFactory.addChild(tabsContainer, registerTab);
+            UIComponentFactory.addChild(formsContainer, migratedComponents.loginForm);
+            UIComponentFactory.addChild(formsContainer, migratedComponents.registerForm);
+            
+            UIComponentFactory.addChild(migratedComponents.authContainer, tabsContainer);
+            UIComponentFactory.addChild(migratedComponents.authContainer, formsContainer);
+            
+            // Initially hide register form
+            UIComponentFactory.setState(migratedComponents.registerForm.element, 'hidden');
+            
+            console.log('Auth system migrated to ComponentFactory');
+            return migratedComponents.authContainer;
+        }
+        
+        // Create login form
+        function createLoginForm() {
+            const loginForm = UIComponentFactory.create({
+                id: 'login-form-cf',
+                type: 'container',
+                layout: {
+                    direction: 'column',
+                    justify: 'center',
+                    align: 'center',
+                    gap: '12px'
+                }
+            });
+            
+            // Username field
+            const usernameGroup = UIComponentFactory.create({
+                id: 'login-username-group',
+                type: 'container',
+                layout: { direction: 'column', gap: '6px' }
+            });
+            
+            const usernameLabel = UIComponentFactory.create({
+                id: 'login-username-label',
+                type: 'text',
+                content: { text: 'Username' }
+            });
+            
+            const usernameInput = UIComponentFactory.create({
+                id: 'login-username-input',
+                type: 'input',
+                inputType: 'text',
+                content: { placeholder: 'Enter your username' }
+            });
+            
+            // Password field
+            const passwordGroup = UIComponentFactory.create({
+                id: 'login-password-group',
+                type: 'container',
+                layout: { direction: 'column', gap: '6px' }
+            });
+            
+            const passwordLabel = UIComponentFactory.create({
+                id: 'login-password-label',
+                type: 'text',
+                content: { text: 'Password' }
+            });
+            
+            const passwordInput = UIComponentFactory.create({
+                id: 'login-password-input',
+                type: 'input',
+                inputType: 'password',
+                content: { placeholder: 'Enter your password' }
+            });
+            
+            // Login button
+            const loginButton = UIComponentFactory.create({
+                id: 'login-button-cf',
+                type: 'button',
+                content: { text: 'Login' },
+                behavior: { onClick: 'loginMigrated' }
+            });
+            
+            // Message display
+            const loginMessage = UIComponentFactory.create({
+                id: 'login-message-cf',
+                type: 'text',
+                content: { text: '' }
+            });
+            
+            // Assemble form
+            UIComponentFactory.addChild(usernameGroup, usernameLabel);
+            UIComponentFactory.addChild(usernameGroup, usernameInput);
+            UIComponentFactory.addChild(passwordGroup, passwordLabel);
+            UIComponentFactory.addChild(passwordGroup, passwordInput);
+            
+            UIComponentFactory.addChild(loginForm, usernameGroup);
+            UIComponentFactory.addChild(loginForm, passwordGroup);
+            UIComponentFactory.addChild(loginForm, loginButton);
+            UIComponentFactory.addChild(loginForm, loginMessage);
+            
+            return loginForm;
+        }
+        
+        // Create register form
+        function createRegisterForm() {
+            const registerForm = UIComponentFactory.create({
+                id: 'register-form-cf',
+                type: 'container',
+                layout: {
+                    direction: 'column',
+                    justify: 'center',
+                    align: 'center',
+                    gap: '12px'
+                }
+            });
+            
+            // Username field
+            const usernameGroup = UIComponentFactory.create({
+                id: 'register-username-group',
+                type: 'container',
+                layout: { direction: 'column', gap: '6px' }
+            });
+            
+            const usernameLabel = UIComponentFactory.create({
+                id: 'register-username-label',
+                type: 'text',
+                content: { text: 'Username' }
+            });
+            
+            const usernameInput = UIComponentFactory.create({
+                id: 'register-username-input',
+                type: 'input',
+                inputType: 'text',
+                content: { placeholder: 'Choose a username (3+ chars)' }
+            });
+            
+            // Password field
+            const passwordGroup = UIComponentFactory.create({
+                id: 'register-password-group',
+                type: 'container',
+                layout: { direction: 'column', gap: '6px' }
+            });
+            
+            const passwordLabel = UIComponentFactory.create({
+                id: 'register-password-label',
+                type: 'text',
+                content: { text: 'Password' }
+            });
+            
+            const passwordInput = UIComponentFactory.create({
+                id: 'register-password-input',
+                type: 'input',
+                inputType: 'password',
+                content: { placeholder: 'Choose a password (6+ chars)' }
+            });
+            
+            // Register button
+            const registerButton = UIComponentFactory.create({
+                id: 'register-button-cf',
+                type: 'button',
+                content: { text: 'Register' },
+                behavior: { onClick: 'registerMigrated' }
+            });
+            
+            // Message display
+            const registerMessage = UIComponentFactory.create({
+                id: 'register-message-cf',
+                type: 'text',
+                content: { text: '' }
+            });
+            
+            // Assemble form
+            UIComponentFactory.addChild(usernameGroup, usernameLabel);
+            UIComponentFactory.addChild(usernameGroup, usernameInput);
+            UIComponentFactory.addChild(passwordGroup, passwordLabel);
+            UIComponentFactory.addChild(passwordGroup, passwordInput);
+            
+            UIComponentFactory.addChild(registerForm, usernameGroup);
+            UIComponentFactory.addChild(registerForm, passwordGroup);
+            UIComponentFactory.addChild(registerForm, registerButton);
+            UIComponentFactory.addChild(registerForm, registerMessage);
+            
+            return registerForm;
+        }
+        
+        // Migrate chat system to ComponentFactory
+        function migrateChatSystem() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            // Create main chat container
+            migratedComponents.chatContainer = UIComponentFactory.create({
+                id: 'chat-container-cf',
+                type: 'container',
+                position: {
+                    grid: { startCol: 0, endCol: 20, startRow: 0, endRow: 50 }
+                },
+                layout: {
+                    direction: 'column',
+                    justify: 'flex-start',
+                    align: 'stretch',
+                    gap: '0'
+                }
+            });
+            
+            // Create status bar
+            migratedComponents.statusBar = createStatusBar();
+            
+            // Create chat messages area
+            migratedComponents.chatMessages = UIComponentFactory.create({
+                id: 'chat-messages-cf',
+                type: 'container',
+                layout: {
+                    direction: 'column',
+                    justify: 'flex-start',
+                    align: 'stretch',
+                    gap: '8px'
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'minimal'
+                }
+            });
+            
+            // Create chat input container
+            migratedComponents.chatInputContainer = createChatInputContainer();
+            
+            // Assemble chat structure
+            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.statusBar);
+            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.chatMessages);
+            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.chatInputContainer);
+            
+            console.log('Chat system migrated to ComponentFactory');
+            return migratedComponents.chatContainer;
+        }
+        
+        // Create status bar
+        function createStatusBar() {
+            const statusBar = UIComponentFactory.create({
+                id: 'status-bar-cf',
+                type: 'container',
+                layout: {
+                    direction: 'row',
+                    justify: 'space-between',
+                    align: 'center',
+                    gap: '16px'
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'bordered'
+                }
+            });
+            
+            // Status info
+            const statusInfo = UIComponentFactory.create({
+                id: 'status-info-cf',
+                type: 'text',
+                content: { text: 'Logged in as ' }
+            });
+            
+            // Logout button
+            const logoutButton = UIComponentFactory.create({
+                id: 'logout-button-cf',
+                type: 'button',
+                content: { text: 'Logout' },
+                appearance: { theme: 'error' },
+                behavior: { onClick: 'logout' }
+            });
+            
+            UIComponentFactory.addChild(statusBar, statusInfo);
+            UIComponentFactory.addChild(statusBar, logoutButton);
+            
+            return statusBar;
+        }
+        
+        // Create chat input container
+        function createChatInputContainer() {
+            const inputContainer = UIComponentFactory.create({
+                id: 'chat-input-container-cf',
+                type: 'container',
+                layout: {
+                    direction: 'row',
+                    justify: 'flex-start',
+                    align: 'center',
+                    gap: '12px'
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'bordered'
+                }
+            });
+            
+            // Chat input
+            migratedComponents.chatInput = UIComponentFactory.create({
+                id: 'chat-input-cf',
+                type: 'input',
+                content: { placeholder: 'Type a message or /? for commands...' },
+                behavior: {
+                    events: {
+                        keypress: 'handleChatKeyPress'
+                    }
+                }
+            });
+            
+            // Send button
+            migratedComponents.chatSendButton = UIComponentFactory.create({
+                id: 'chat-send-button-cf',
+                type: 'button',
+                content: { text: 'Send' },
+                behavior: { onClick: 'sendMessageFull' }
+            });
+            
+            UIComponentFactory.addChild(inputContainer, migratedComponents.chatInput);
+            UIComponentFactory.addChild(inputContainer, migratedComponents.chatSendButton);
+            
+            return inputContainer;
+        }
+        
+        // Auth tab switching
+        function switchAuthTab(tabName) {
+            if (tabName === 'login') {
+                UIComponentFactory.setState(migratedComponents.loginForm.element, 'normal');
+                UIComponentFactory.setState(migratedComponents.registerForm.element, 'hidden');
+                UIComponentFactory.update('login-tab', { appearance: { theme: 'accent' } });
+                UIComponentFactory.update('register-tab', { appearance: { theme: 'primary' } });
+            } else {
+                UIComponentFactory.setState(migratedComponents.loginForm.element, 'hidden');
+                UIComponentFactory.setState(migratedComponents.registerForm.element, 'normal');
+                UIComponentFactory.update('register-tab', { appearance: { theme: 'accent' } });
+                UIComponentFactory.update('login-tab', { appearance: { theme: 'primary' } });
+            }
+        }
+        
+        // Migrated login function
+        function loginMigrated(component, event) {
+            const usernameInput = UIComponentFactory.get('login-username-input');
+            const passwordInput = UIComponentFactory.get('login-password-input');
+            const messageComponent = UIComponentFactory.get('login-message-cf');
+            
+            const username = usernameInput.element.value.trim();
+            const password = passwordInput.element.value;
+            
+            if (!username || !password) {
+                messageComponent.config.content.text = 'Please fill in all fields';
+                messageComponent.element.textContent = messageComponent.config.content.text;
+                messageComponent.element.style.color = 'var(--error)';
+                return;
+            }
+            
+            // Set loading state
+            UIComponentFactory.setState(component.element, 'loading');
+            
+            // Perform login
+            performLogin(username, password, messageComponent, component);
+        }
+        
+        // Migrated register function
+        function registerMigrated(component, event) {
+            const usernameInput = UIComponentFactory.get('register-username-input');
+            const passwordInput = UIComponentFactory.get('register-password-input');
+            const messageComponent = UIComponentFactory.get('register-message-cf');
+            
+            const username = usernameInput.element.value.trim();
+            const password = passwordInput.element.value;
+            
+            if (!username || !password) {
+                messageComponent.config.content.text = 'Please fill in all fields';
+                messageComponent.element.textContent = messageComponent.config.content.text;
+                messageComponent.element.style.color = 'var(--error)';
+                return;
+            }
+            
+            if (username.length < 3) {
+                messageComponent.config.content.text = 'Username must be at least 3 characters';
+                messageComponent.element.textContent = messageComponent.config.content.text;
+                messageComponent.element.style.color = 'var(--error)';
+                return;
+            }
+            
+            if (password.length < 6) {
+                messageComponent.config.content.text = 'Password must be at least 6 characters';
+                messageComponent.element.textContent = messageComponent.config.content.text;
+                messageComponent.element.style.color = 'var(--error)';
+                return;
+            }
+            
+            // Set loading state
+            UIComponentFactory.setState(component.element, 'loading');
+            
+            // Perform register
+            performRegister(username, password, messageComponent, component);
+        }
+        
+        // Initialize migrated systems
+        function initializeMigratedComponents() {
+            // Initialize ComponentFactory
+            initializeComponentFactory();
+            
+            // Create auth system
+            migrateAuthSystem();
+            
+            // Create chat system (initially hidden)
+            migrateChatSystem();
+            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'hidden');
+            
+            console.log('Migrated components initialized');
+        }
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            initializeMigratedComponents();
+        });
+
+        // ===============================================================
+        // COMPONENT FACTORY EXAMPLE USAGE FUNCTIONS
+        // ===============================================================
+        
+        // Example handler functions
+        function handleTestButtonClick(component, event) {
+            console.log('Test button clicked:', component.id);
+            showMessage('component-demo', 'Button clicked successfully!', false);
+        }
+        
+        function handleInputChange(component, event) {
+            console.log('Input changed:', component.id, event.target.value);
+        }
+        
+        function handlePanelHover(component, event) {
+            console.log('Panel hovered:', component.id);
+        }
+        
+        // Create demo components function
+        function createDemoComponents() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            // Create a demo panel
+            const demoPanel = UIComponentFactory.create({
+                id: 'demo-panel',
+                type: 'panel',
+                position: {
+                    grid: { startCol: 2, endCol: 8, startRow: 10, endRow: 18 }
+                },
+                appearance: {
+                    theme: 'primary',
+                    style: 'elevated'
+                },
+                behavior: {
+                    onHover: 'handlePanelHover'
+                }
+            });
+            
+            // Create a text component inside the panel
+            const titleText = UIComponentFactory.create({
+                id: 'demo-title',
+                type: 'text',
+                position: {
+                    grid: { startCol: 3, endCol: 7, startRow: 11, endRow: 12 }
+                },
+                content: {
+                    text: 'Component System Demo'
+                }
+            });
+            
+            // Create an input component
+            const demoInput = UIComponentFactory.create({
+                id: 'demo-input',
+                type: 'input',
+                position: {
+                    grid: { startCol: 3, endCol: 7, startRow: 13, endRow: 14 }
+                },
+                content: {
+                    placeholder: 'Type something...'
+                },
+                behavior: {
+                    events: {
+                        input: 'handleInputChange'
+                    }
+                }
+            });
+            
+            // Create a button component
+            const demoButton = UIComponentFactory.create({
+                id: 'demo-button',
+                type: 'button',
+                position: {
+                    grid: { startCol: 3, endCol: 5, startRow: 15, endRow: 16 }
+                },
+                content: {
+                    text: 'Test Button'
+                },
+                behavior: {
+                    onClick: 'handleTestButtonClick'
+                }
+            });
+            
+            // Create an icon component
+            const demoIcon = UIComponentFactory.create({
+                id: 'demo-icon',
+                type: 'icon',
+                position: {
+                    grid: { startCol: 6, endCol: 7, startRow: 15, endRow: 16 }
+                },
+                content: {
+                    symbol: '⚡',
+                    size: '32px'
+                }
+            });
+            
+            console.log('Demo components created:', [demoPanel, titleText, demoInput, demoButton, demoIcon].map(c => c.id));
+            return [demoPanel, titleText, demoInput, demoButton, demoIcon];
+        }
+        
+        // Create container with nested components
+        function createNestedDemo() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            const container = UIComponentFactory.create({
+                id: 'demo-container',
+                type: 'container',
+                position: {
+                    grid: { startCol: 10, endCol: 20, startRow: 5, endRow: 15 }
+                },
+                layout: {
+                    direction: 'column',
+                    justify: 'center',
+                    align: 'center',
+                    gap: '16px'
+                },
+                appearance: {
+                    theme: 'accent',
+                    style: 'bordered'
+                }
+            });
+            
+            // Add nested components
+            const nestedText = UIComponentFactory.create({
+                id: 'nested-text',
+                type: 'text',
+                content: {
+                    text: 'Nested Component'
+                }
+            });
+            
+            const nestedButton = UIComponentFactory.create({
+                id: 'nested-button',
+                type: 'button',
+                content: {
+                    text: 'Nested Button'
+                },
+                behavior: {
+                    onClick: (component, event) => {
+                        console.log('Nested button clicked!');
+                    }
+                }
+            });
+            
+            UIComponentFactory.addChild(container, nestedText);
+            UIComponentFactory.addChild(container, nestedButton);
+            
+            console.log('Nested demo created with container:', container.id);
+            return container;
+        }
+        
+        // Create floating components (absolute positioning)
+        function createFloatingDemo() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            const floatingButton = UIComponentFactory.create({
+                id: 'floating-button',
+                type: 'button',
+                position: {
+                    absolute: { x: '20px', y: '20px', width: '200px', height: '60px' }
+                },
+                appearance: {
+                    theme: 'accent',
+                    style: 'elevated'
+                },
+                content: {
+                    text: 'Floating'
+                },
+                behavior: {
+                    onClick: () => {
+                        console.log('Floating button clicked!');
+                    }
+                }
+            });
+            
+            return floatingButton;
+        }
+        
+        // Component system demo command
+        function demoComponentSystem() {
+            console.log('Creating Component System Demo...');
+            
+            // Create demo components
+            const demoComponents = createDemoComponents();
+            const nestedDemo = createNestedDemo();
+            const floatingDemo = createFloatingDemo();
+            
+            // Show demo message
+            const demoMessage = {
+                type: 'command',
+                command: 'Component System Demo',
+                description: `Created ${demoComponents.length + 2} components using the ComponentFactory system. Components are positioned on the grid and floating in the viewport. Check the console for details.`,
+                timestamp: new Date().toISOString(),
+                isLocalOnly: true
+            };
+            
+            insertMessageInOrder(demoMessage);
+            
+            return {
+                gridComponents: demoComponents,
+                nestedComponent: nestedDemo,
+                floatingComponent: floatingDemo
+            };
+        }
+        
+        // Component management demo
+        function manageComponentsDemo() {
+            if (!UIComponentFactory) {
+                initializeComponentFactory();
+            }
+            
+            console.log('Current components:', UIComponentFactory.list());
+            console.log('Component count:', UIComponentFactory.components.size);
+            
+            // Update a component
+            const button = UIComponentFactory.get('demo-button');
+            if (button) {
+                UIComponentFactory.update('demo-button', {
+                    content: { text: 'Updated Button!' },
+                    appearance: { theme: 'accent' }
+                });
+                console.log('Updated demo-button');
+            }
+            
+            // Change state of a component
+            const input = UIComponentFactory.get('demo-input');
+            if (input) {
+                UIComponentFactory.setState(input.element, 'active');
+                console.log('Set demo-input to active state');
+            }
+            
+            const managementMessage = {
+                type: 'command',
+                command: 'Component Management Demo',
+                description: `Managing ${UIComponentFactory.components.size} components. Updated button text and input state. Type /clear-components to remove all demo components.`,
+                timestamp: new Date().toISOString(),
+                isLocalOnly: true
+            };
+            
+            insertMessageInOrder(managementMessage);
+        }
+        
+        // Clear demo components
+        function clearDemoComponents() {
+            if (!UIComponentFactory) {
+                console.log('No ComponentFactory initialized');
+                return;
+            }
+            
+            const componentIds = UIComponentFactory.list();
+            const demoIds = componentIds.filter(id => 
+                id.startsWith('demo-') || id.startsWith('nested-') || id.startsWith('floating-')
+            );
+            
+            demoIds.forEach(id => {
+                UIComponentFactory.destroy(id);
+            });
+            
+            console.log(`Cleared ${demoIds.length} demo components`);
+            
+            const clearMessage = {
+                type: 'command',
+                command: 'Components Cleared',
+                description: `Removed ${demoIds.length} demo components from the interface.`,
+                timestamp: new Date().toISOString(),
+                isLocalOnly: true
+            };
+            
+            insertMessageInOrder(clearMessage);
+        }
+        
+        // Register component system commands
+        const COMPONENT_COMMANDS = {
+            '/components': 'Create demo components to test the ComponentFactory system',
+            '/manage-components': 'Show component management examples',
+            '/clear-components': 'Remove all demo components'
+        };
+        
+        // Extend chat commands with component system commands
+        function executeComponentCommand(command) {
+            const commandLower = command.toLowerCase();
+            
+            switch (commandLower) {
+                case '/components':
+                    return demoComponentSystem();
+                case '/manage-components':
+                    return manageComponentsDemo();
+                case '/clear-components':
+                    return clearDemoComponents();
+                default:
+                    return null;
+            }
+        }
+        
+        // Override the existing executeCommand to include component commands
+        const originalExecuteCommand = window.executeCommand || function() {};
+        window.executeCommand = function(command) {
+            // Try component commands first
+            const result = executeComponentCommand(command);
+            if (result !== null) {
+                return;
+            }
+            
+            // Fall back to original command system
+            originalExecuteCommand(command);
+        };
+        
+        // Update help command to include component commands
+        const originalShowCommandHelp = window.showCommandHelp || function() {};
+        window.showCommandHelp = function() {
+            const helpMessages = [];
+            const currentTime = new Date().toISOString();
+            
+            // Add original commands
+            Object.entries(window.CHAT_COMMANDS || {}).forEach(([cmd, desc]) => {
+                helpMessages.push({
+                    type: 'command',
+                    command: cmd,
+                    description: desc,
+                    timestamp: currentTime,
+                    isLocalOnly: true
+                });
+            });
+            
+            // Add component commands
+            Object.entries(COMPONENT_COMMANDS).forEach(([cmd, desc]) => {
+                helpMessages.push({
+                    type: 'command',
+                    command: cmd,
+                    description: desc,
+                    timestamp: currentTime,
+                    isLocalOnly: true
+                });
+            });
+            
+            // Insert all help messages at once
+            window.insertMessagesInOrder(helpMessages);
+            window.saveLocalMessages();
+        };
     </script>
 </body>
 
