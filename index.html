@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Authentication App</title>
+    <title>Simple Grid UI System</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,7 +16,6 @@
             background: linear-gradient(135deg, #8b7d6b 0%, #a69a8a 30%, #c0b5a3 60%, #d4c5b9 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             color: var(--text);
             margin: 0;
             padding: 0;
@@ -26,3337 +25,697 @@
         }
 
         :root {
-            --bg: #8b7d6b; /* Soft sepia brown like aged canvas */
-            --surface: #c9b79c; /* Warm neutral like Lisa's skin tones */
-            --surface-light: #d4c5b9; /* Lighter warm neutral */
-            --text: #4a4035; /* Deep brown like Leonardo's ink */
-            --text-muted: #6b5d4f; /* Muted warm brown */
-            --accent: #7a8c7a; /* Muted green like landscape background */
-            --accent-hover: #8fa28f; /* Lighter muted green */
-            --success: #a8b2a1; /* Sage green */
-            --error: #c47e6a; /* Soft terracotta */
-            --border: #9b8f7f; /* Warm brown border */
+            --bg: #8b7d6b;
+            --surface: #c9b79c;
+            --surface-light: #d4c5b9;
+            --text: #4a4035;
+            --text-muted: #6b5d4f;
+            --accent: #7a8c7a;
+            --accent-hover: #8fa28f;
+            --success: #a8b2a1;
+            --error: #c47e6a;
+            --border: #9b8f7f;
 
-            /* Dynamic Color Palette for Grid Highlighting */
+            /* Grid Colors */
             --grid-cell-base: rgba(122, 140, 122, 0.05);
             --grid-cell-border: rgba(143, 162, 143, 0.2);
             --grid-cell-hover: rgba(203, 166, 247, 0.4);
-            
-            /* UI Element Color Palette - Sepia/Harmony Based */
-            --ui-color-1: rgba(201, 183, 156, 0.6); /* Warm neutral (existing) */
-            --ui-color-2: rgba(168, 178, 161, 0.5); /* Sage green */
-            --ui-color-3: rgba(196, 126, 106, 0.5); /* Soft terracotta */
-            --ui-color-4: rgba(122, 140, 122, 0.5); /* Muted green */
-            --ui-color-5: rgba(155, 143, 127, 0.5); /* Warm brown */
-            --ui-color-6: rgba(184, 166, 146, 0.5); /* Dusty rose */
-            --ui-color-7: rgba(143, 155, 147, 0.5); /* Muted sage */
-            --ui-color-8: rgba(169, 149, 129, 0.5); /* Terracotta brown */
-            --ui-color-9: rgba(132, 148, 135, 0.5); /* Olive green */
-            --ui-color-10: rgba(178, 162, 146, 0.5); /* Warm sand */
-            --ui-color-11: rgba(154, 138, 124, 0.5); /* Dusty brown */
-            --ui-color-12: rgba(146, 166, 156, 0.5); /* Seafoam green */
         }
 
-
-
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--surface);
-            border: 2px solid var(--text);
-            border-radius: 0;
-            overflow: hidden;
-            margin: 20px auto;
-            box-shadow: 0 0 10px var(--accent);
-            transition: all 0.3s ease;
-        }
-
-        .container.auth-aligned {
-            max-width: none;
-            margin: 0;
-        }
-
-        .chat-container {
-            display: none;
-            flex-direction: column;
-            height: 100vh;
-            background: var(--surface);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 10;
-        }
-
-        .chat-container.active {
-            display: flex;
-        }
-
-        .header {
-            background: var(--surface-light);
-            color: var(--text);
-            padding: 24px;
-            text-align: center;
-            border-bottom: 2px solid var(--text);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .header h1 {
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .header p {
-            color: var(--text-muted);
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid var(--text);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 16px;
-            text-align: center;
-            background: var(--surface);
-            cursor: pointer;
-            font-weight: 400;
-            color: var(--text-muted);
-            transition: all 0.2s ease;
-            border: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .tab.active {
-            background: var(--surface);
-            color: var(--accent);
-            border-bottom: 2px solid var(--accent);
-            text-shadow: 0 0 5px var(--accent);
-        }
-
-        .content {
-            padding: 24px;
-        }
-
-        .form {
-            display: none;
-        }
-
-        .form.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            color: var(--text);
-            font-weight: 400;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px 12px;
-            background: var(--bg);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            color: var(--text);
-            font-size: 28px;
-            transition: all 0.2s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 5px var(--accent);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background: var(--surface);
-            color: var(--text);
-            border: 2px solid var(--text);
-            border-radius: 0;
-            font-weight: 500;
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-            box-shadow: 0 0 10px var(--accent);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .message {
-            margin-top: 12px;
-            padding: 10px;
-            border-radius: 6px;
-            text-align: center;
-            display: none;
-        }
-
-        .message.success {
-            display: block;
-            background: var(--bg);
-            color: var(--success);
-            border: 2px solid var(--success);
-            text-shadow: 0 0 3px var(--success);
-        }
-
-        .message.error {
-            display: block;
-            background: var(--bg);
-            color: var(--error);
-            border: 2px solid var(--error);
-            text-shadow: 0 0 3px var(--error);
-        }
-
-        .user-info {
-            display: none;
-            text-align: center;
-        }
-
-        .user-info.active {
-            display: block;
-        }
-
-        .user-info h3 {
-            color: var(--text);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .user-info p {
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        .token-display {
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 0;
-            margin: 16px 0;
-            word-break: break-all;
-            font-family: inherit;
-            text-align: left;
-            border: 1px solid var(--text);
-            color: var(--accent);
-        }
-
-        .user-info .btn {
-            margin-top: 16px;
-            background: var(--error);
-            color: var(--bg);
-        }
-
-        .api-actions {
-            margin-top: 24px;
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
-        }
-
-        .api-actions h4 {
-            margin-bottom: 12px;
-            color: var(--text);
-            font-weight: 500;
-        }
-
-        .api-btn {
-            padding: 8px 12px;
-            background: var(--surface-light);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            cursor: pointer;
-            margin: 4px;
-            font-size: 28px;
-            transition: all 0.2s ease;
-            color: var(--text);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .api-btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-            border-color: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
-        }
-
-        .response-display {
-            margin-top: 12px;
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 0;
-            font-family: inherit;
-            max-height: 200px;
-            overflow-y: auto;
-            text-align: left;
-            white-space: pre-wrap;
-            border: 1px solid var(--text);
-            color: var(--accent);
-        }
-
-        .spinner {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--surface-light);
-            border-top: 2px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 8px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading .spinner {
-            display: block;
-        }
-
-        .chat-section {
-            margin-top: 24px;
-            border-top: 1px solid var(--border);
-            padding-top: 20px;
-        }
-
-        .chat-section h4 {
-            margin-bottom: 12px;
-            color: var(--text);
-            font-weight: 500;
-        }
-
-
-
-        /* Full-page chat layout */
-        .status-bar {
-            background: var(--surface-light);
-            border-bottom: 2px solid var(--text);
-            padding: 8px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-bar .status-info {
-            color: var(--text-muted);
-        }
-
-        .status-bar .status-info .username {
-            color: var(--accent);
-            font-weight: 500;
-        }
-
-        .status-bar .logout-btn {
-            padding: 4px 12px;
-            background: var(--surface);
-            color: var(--error);
-            border: 1px solid var(--error);
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 28px;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .status-bar .logout-btn:hover {
-            background: var(--error);
-            color: var(--bg);
-            box-shadow: 0 0 8px var(--error);
-        }
-
-        .chat-messages {
-            flex: 1;
-            background: var(--bg);
-            overflow-y: auto;
-            padding: 16px;
-        }
-
-        .chat-input-container {
-            background: var(--surface-light);
-            border-top: 1px solid var(--border);
-            padding: 8px 16px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-            overflow: hidden; /* Prevent button from breaking out */
-        }
-
-        /* When grid is active, make chat input on top */
-        .game-grid-overlay.active ~ .chat-container .chat-input-container,
-        .chat-input-container.active {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--surface-light);
-            border-top: 2px solid var(--accent);
-            z-index: 2000;
-            padding: 8px 20px;
-            align-items: center;
-            overflow: hidden; /* Prevent button from breaking out */
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.8);
-        }
-
-        .chat-input {
-            flex: 1;
-            min-width: 0; /* Allow shrinking */
-            padding: 6px 14px;
-            background: var(--surface);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            color: var(--text);
-            font-size: 28px;
-            transition: all 0.2s ease;
-        }
-
-        .chat-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 5px var(--accent);
-        }
-
-        .chat-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .chat-send {
-            padding: 4px 12px;
-            background: var(--surface);
-            color: var(--text);
-            border: 1px solid var(--text);
-            border-radius: 0;
-            font-weight: 500;
-            font-size: 28px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .chat-send:hover {
-            background: var(--accent);
-            color: var(--bg);
-            box-shadow: 0 0 8px var(--accent);
-        }
-
-        .chat-send:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.4;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .system-message {
-            color: var(--text-muted);
-            font-style: italic;
-            text-align: center;
-            margin: 12px 0;
-        }
-
-        .command-message {
-            background: var(--bg);
-            border-left: 3px solid var(--accent);
-            padding: 8px 12px;
-            margin: 8px 0;
-            border-radius: 0;
-            font-family: inherit;
-            border: 1px solid var(--accent);
-        }
-
-        .command-message .command-title {
-            color: var(--accent);
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .command-message .command-desc {
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-
-        /* Game Grid Overlay */
+        /* Game Grid System */
         .game-grid-overlay {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
-            pointer-events: auto;
-            padding: 0;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .game-grid {
             display: grid;
+            width: 100vw;
+            height: 100vh;
             gap: 1px;
-            background: none;
-            padding: 0;
-            border: none;
-            width: 100%;
-            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .grid-cell {
-            background: rgba(122, 140, 122, 0.05); /* Subtle muted green */
-            border: 1px solid rgba(143, 162, 143, 0.2); /* Soft green borders */
+            background: var(--grid-cell-base);
+            border: 1px solid var(--grid-cell-border);
+            aspect-ratio: 1;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             font-size: 12px;
-            color: rgba(74, 64, 53, 0.6); /* Warm brown text */
+            color: rgba(255, 255, 255, 0.3);
             transition: all 0.2s ease;
-            cursor: pointer;
-            box-sizing: border-box;
-            min-width: 0;
-            min-height: 0;
         }
 
         .grid-cell:hover {
-            background: rgba(203, 166, 247, 0.4);
-            border-color: var(--accent);
-            transform: scale(1.1);
+            background: var(--grid-cell-hover);
+            color: rgba(255, 255, 255, 0.8);
         }
 
-        /* Aligned UI elements */
-        .ui-aligned {
-            position: fixed;
-            background: var(--surface);
-            border: 2px solid var(--text);
-            box-shadow: 0 0 10px var(--accent);
-        }
-
-        .chat-input-aligned {
-            position: fixed;
-            background: var(--surface-light);
-            border-top: 2px solid var(--accent);
-            padding: 1ch;
-            display: flex;
-            gap: 1ch;
-            z-index: 2001;
-        }
-
-        .chat-messages-aligned {
-            position: fixed;
-            background: rgba(27, 30, 46, 0.8);
-            border: 1px solid var(--text);
-            overflow-y: auto;
-            z-index: 1500;
-        }
-
-        .grid-cell-occupied {
-            background: rgba(168, 178, 161, 0.4) !important; /* Sage green like background */
-            border-color: #a8b2a1 !important;
-            box-shadow: 0 0 12px rgba(168, 178, 161, 0.3) !important; /* Subtle glow */
-        }
-
-        .grid-cell-ui-element {
-            background: var(--ui-color-1) !important; /* Default warm neutral */
-            border: 2px solid var(--accent) !important;
-            border-radius: 2px;
-            box-shadow: 0 0 15px rgba(201, 183, 156, 0.4) !important; /* Soft glow */
-        }
-
-        /* Dynamic UI Element Color Classes */
-        .grid-cell-ui-1 { background: var(--ui-color-1) !important; border: 2px solid #c9b79c !important; box-shadow: 0 0 12px rgba(201, 183, 156, 0.3) !important; }
-        .grid-cell-ui-2 { background: var(--ui-color-2) !important; border: 2px solid #a8b2a1 !important; box-shadow: 0 0 12px rgba(168, 178, 161, 0.3) !important; }
-        .grid-cell-ui-3 { background: var(--ui-color-3) !important; border: 2px solid #c47e6a !important; box-shadow: 0 0 12px rgba(196, 126, 106, 0.3) !important; }
-        .grid-cell-ui-4 { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; box-shadow: 0 0 12px rgba(122, 140, 122, 0.3) !important; }
-        .grid-cell-ui-5 { background: var(--ui-color-5) !important; border: 2px solid #9b8f7f !important; box-shadow: 0 0 12px rgba(155, 143, 127, 0.3) !important; }
-        .grid-cell-ui-6 { background: var(--ui-color-6) !important; border: 2px solid #b8a692 !important; box-shadow: 0 0 12px rgba(184, 166, 146, 0.3) !important; }
-        .grid-cell-ui-7 { background: var(--ui-color-7) !important; border: 2px solid #8f9b93 !important; box-shadow: 0 0 12px rgba(143, 155, 147, 0.3) !important; }
-        .grid-cell-ui-8 { background: var(--ui-color-8) !important; border: 2px solid #a99581 !important; box-shadow: 0 0 12px rgba(169, 149, 129, 0.3) !important; }
-        .grid-cell-ui-9 { background: var(--ui-color-9) !important; border: 2px solid #849487 !important; box-shadow: 0 0 12px rgba(132, 148, 135, 0.3) !important; }
-        .grid-cell-ui-10 { background: var(--ui-color-10) !important; border: 2px solid #b2a292 !important; box-shadow: 0 0 12px rgba(178, 162, 146, 0.3) !important; }
-        .grid-cell-ui-11 { background: var(--ui-color-11) !important; border: 2px solid #9a8a7c !important; box-shadow: 0 0 12px rgba(154, 138, 124, 0.3) !important; }
-        .grid-cell-ui-12 { background: var(--ui-color-12) !important; border: 2px solid #92a69c !important; box-shadow: 0 0 12px rgba(146, 166, 156, 0.3) !important; }
-
-        /* Auth Container Alignment */
-        .auth-aligned {
-            position: fixed;
-            background: var(--surface);
-            border: 2px solid var(--text);
-            box-shadow: 0 0 10px var(--accent);
-            z-index: 1500;
-            overflow: hidden;
-            max-width: none; /* Remove width constraint when aligned */
-            width: auto;
-            height: auto;
-        }
-
-        .cell-auth { background: var(--ui-color-4) !important; border: 2px solid #7a8c7a !important; border-radius: 2px; box-shadow: 0 0 15px rgba(122, 140, 122, 0.4) !important; }
-
-        /* Component System Styles */
-        .component-button,
-        .component-panel,
-        .component-input,
-        .component-text,
-        .component-container,
-        .component-icon {
+        /* UI Component Base Styles */
+        .ui-component {
             box-sizing: border-box;
-            font-family: inherit;
         }
 
-        /* Component States */
-        .component-button.state-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        /* Component Level Management */
+        .ui-level-0 { z-index: 1000; }
+        .ui-level-1 { z-index: 1100; }
+        .ui-level-2 { z-index: 1200; }
+        .ui-level-3 { z-index: 1300; }
+        .ui-level-4 { z-index: 1400; }
+        .ui-level-5 { z-index: 1500; }
+
+        /* Auth Container Styles */
+        .auth-container {
+            background: #d4c5b9;
+            border: 2px solid var(--text);
+            box-shadow: 0 0 15px var(--accent);
+            border-radius: 4px;
+            padding: 20px;
+            min-width: 400px;
+            min-height: 400px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+            gap: 0;
         }
 
-        .component-button.state-active {
-            transform: scale(0.98);
+        /* Tab Button Styles */
+        .tab-button {
+            background: transparent;
+            color: var(--text);
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 32px;
+            font-size: 22px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 4px;
+            transition: all 0.2s ease;
+            position: relative;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .component-input.state-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .tab-button:hover {
+            background: rgba(122, 140, 122, 0.1);
+            border-bottom-color: var(--accent);
+            color: var(--accent);
         }
 
-        .component-panel.state-hidden,
-        .component-button.state-hidden,
-        .component-input.state-hidden,
-        .component-text.state-hidden,
-        .component-container.state-hidden,
-        .component-icon.state-hidden {
-            display: none !important;
+        .tab-button.active {
+            background: var(--surface);
+            color: var(--text);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
         }
 
-        /* Component Hover Effects */
-        .component-button:hover:not(.state-disabled) {
-            background: var(--accent);
-            color: var(--bg);
-            box-shadow: 0 0 10px var(--accent);
+        /* Input Styles */
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg);
+            border: 2px solid var(--text);
+            color: var(--text);
+            font-size: 24px;
+            margin-bottom: 16px;
         }
 
-        .component-input:focus:not(.state-disabled) {
+        .form-input:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 5px var(--accent);
         }
 
-        /* Component Animation Support */
-        .component-button,
-        .component-panel,
-        .component-input {
+        /* Label Styles */
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        /* Button Styles */
+        .submit-button {
+            background: var(--accent);
+            color: var(--bg);
+            border: 2px solid var(--accent);
+            padding: 12px 24px;
+            font-size: 24px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
             transition: all 0.2s ease;
         }
 
-        /* Component Grid Integration */
-        [data-component-id].grid-aligned {
-            position: fixed;
-            z-index: 1000;
+        .submit-button:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 0 8px var(--accent);
         }
 
-        /* Component Layering */
-        .component-panel {
-            z-index: 1100;
+        /* Message Styles */
+        .form-message {
+            margin-top: 16px;
+            padding: 8px;
+            text-align: center;
+            font-size: 20px;
         }
 
-        .component-button {
-            z-index: 1200;
+        .form-message.error {
+            color: var(--error);
         }
 
-        .component-input {
-            z-index: 1150;
-        }
-
-        /* Component Focus Management */
-        [data-component-id]:focus {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        /* Component Loading State */
-        .component-loading::after {
-            content: '...';
-            animation: loading-dots 1.5s infinite;
-        }
-
-        @keyframes loading-dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
+        .form-message.success {
+            color: var(--success);
         }
     </style>
 </head>
 
 <body>
-    <!-- Auth Container will be created by ComponentFactory -->
-    <div id="auth-container-placeholder"></div>
-
-    <!-- Chat Interface will be created by ComponentFactory -->
-    <div id="chat-container-placeholder"></div>
-    
-    <!-- Game Grid Overlay (for testing) -->
+    <!-- Game Grid -->
     <div id="game-grid-overlay" class="game-grid-overlay">
         <div id="game-grid" class="game-grid"></div>
     </div>
-    
-    <!-- Hidden elements for JavaScript access -->
-    <div style="display: none;">
-        <span id="username-display"></span>
-        <span id="token-display"></span>
-    </div>
+
+    <!-- UI Components Container -->
+    <div id="ui-container"></div>
 
     <script>
-        // Version and cache control
-        const APP_VERSION = '1.2.0';
-        
-        // Force cache invalidation
-        if (window.location.search.includes('nocache')) {
-            console.log('Cache disabled for testing');
-        }
-        
-        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://localhost:3000' 
-            : 'https://storage-service-kvn1.onrender.com';
-        let currentToken = null;
-        let currentUsername = null;
-        let gridSystemInitialized = false;
+        // ===============================================================
+        // SIMPLE GRID UI SYSTEM
+        // ===============================================================
 
-        // DOM Elements - now using ComponentFactory
-        let loginForm = migratedComponents.loginForm;
-        let registerForm = migratedComponents.registerForm;
-
-        function switchTab(tabName) {
-            switchAuthTab(tabName);
-        }
-
-        function showMessage(formId, message, isError = false) {
-            const messageComponent = UIComponentFactory.get(`${formId}-message-cf`);
-            if (messageComponent) {
-                messageComponent.config.content.text = message;
-                messageComponent.element.textContent = message;
-                messageComponent.element.style.color = isError ? 'var(--error)' : 'var(--success)';
-            }
-        }
-
-        function setLoading(button, isLoading) {
-            const btn = button;
-            if (isLoading) {
-                btn.classList.add('loading');
-                btn.disabled = true;
-            } else {
-                btn.classList.remove('loading');
-                btn.disabled = false;
-            }
-        }
-
-        // Extract login logic to reusable function
-        async function performLogin(username, password, messageComponent, buttonComponent) {
-            setLoading(buttonComponent, true);
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({username, password})
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    currentToken = data.token;
-                    currentUsername = username;
-
-                    // Save to localStorage
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('authUsername', username);
-
-                    // Update UI
-                    document.getElementById('username-display').textContent = username;
-                    document.getElementById('token-display').textContent = data.token;
-
-                    // Hide login, show chat
-                    switchToChatInterface();
-                    
-                    // Update grid to reflect UI change (remove auth highlighting, add chat highlighting)
-                    createGameGrid();
-                    
-                    // Start chat polling
-                    startChatPolling();
-                    
-                    // Show welcome message
-                    setTimeout(showWelcomeMessage, 100);
-
-                    // Clear form fields
-                    const usernameInput = UIComponentFactory.get('login-username-input');
-                    const passwordInput = UIComponentFactory.get('login-password-input');
-                    usernameInput.element.value = '';
-                    passwordInput.element.value = '';
-                } else {
-                    messageComponent.config.content.text = data.error || 'Login failed';
-                    messageComponent.element.textContent = messageComponent.config.content.text;
-                    messageComponent.element.style.color = 'var(--error)';
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                messageComponent.config.content.text = 'Network error. Please try again.';
-                messageComponent.element.textContent = messageComponent.config.content.text;
-                messageComponent.element.style.color = 'var(--error)';
-            } finally {
-                setLoading(buttonComponent, false);
-            }
-        }
-        
-        async function login() {
-            const loginButton = UIComponentFactory.get('login-button-cf');
-            if (loginButton) {
-                loginMigrated(loginButton);
-            }
-        }
-
-        async function register() {
-            const registerButton = UIComponentFactory.get('register-button-cf');
-            if (registerButton) {
-                registerMigrated(registerButton);
-            }
-        }
-
-        async function logout() {
-            if (!currentToken) return;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/logout`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    // Reset state
-                    currentToken = null;
-                    currentUsername = null;
-
-                    // Clear localStorage
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('authUsername');
-                    localStorage.removeItem('localChatMessages');
-
-                    // Hide migrated chat, show auth
-                    switchToAuthInterface();
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        }
-
-        async function testEndpoint(endpoint, method = 'GET', body = null) {
-            if (!currentToken) {
-                return;
-            }
-
-            try {
-                const options = {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                };
-
-                if (body) {
-                    options.body = JSON.stringify(body);
-                }
-
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-                const data = await response.json();
-
-                // Add command result with current timestamp for proper ordering
-                const resultMessage = {
-                    type: 'command',
-                    command: `/${endpoint.replace('/', '')} result:`,
-                    description: JSON.stringify(data, null, 2),
-                    timestamp: new Date().toISOString(),
-                    isLocalOnly: true
-                };
-                
-                insertMessageInOrder(resultMessage);
-                saveLocalMessages();
-
-            } catch (error) {
-                console.error('API call error:', error);
-                const errorMessage = {
-                    type: 'command',
-                    command: `/${endpoint.replace('/', '')} error:`,
-                    description: error.message,
-                    timestamp: new Date().toISOString(),
-                    isLocalOnly: true
-                };
-                
-                insertMessageInOrder(errorMessage);
-                saveLocalMessages();
-            }
-        }
-
-        // Check for saved token on page load
-        window.addEventListener('load', () => {
-            // Check localStorage for saved auth state
-            const savedToken = localStorage.getItem('authToken');
-            const savedUsername = localStorage.getItem('authUsername');
-
-            if (savedToken && savedUsername) {
-                currentToken = savedToken;
-                currentUsername = savedUsername;
-                
-                // Update UI to show logged in state
-                document.getElementById('username-display').textContent = savedUsername;
-                document.getElementById('token-display').textContent = savedToken;
-                
-                // Switch to chat interface
-                switchToChatInterface();
-                
-                // Load saved local messages before starting polling
-                const localMessages = loadLocalMessages();
-                if (localMessages.length > 0) {
-                    chatMessages = localMessages;
-                    displayChatMessages();
-                }
-                
-                // Start chat polling
-                startChatPolling();
-                
-                // Show welcome message
-                setTimeout(showWelcomeMessage, 100);
-            }
-
-            // Check URL for token (optional feature for direct linking)
-            const urlParams = new URLSearchParams(window.location.search);
-            const urlToken = urlParams.get('token');
-
-            if (urlToken) {
-                // Could implement token validation here
-                currentToken = urlToken;
-            }
-        });
-
-        // Chat functionality
-        let chatMessages = [];
-        let chatPollingInterval = null;
-
-        const CHAT_COMMANDS = {
-            '/stats': 'Get Redis stats and usage information',
-            '/persistent': 'List your persistent storage keys',
-            '/shared': 'List shared storage keys',
-            '/colors': 'Test dynamic color allocation system',
-            '/palette': 'Show current color palette information',
-
-            '/help': 'Show this help message',
-            '/?': 'Show this help message'
+        // Grid state
+        let gridState = {
+            cols: 0,
+            rows: 0,
+            cellWidthPx: 0,
+            cellHeightPx: 0,
+            initialized: false
         };
 
-        function startChatPolling() {
-            // Poll for new messages every 2 seconds
-            chatPollingInterval = setInterval(loadChatMessages, 2000);
-            loadChatMessages(); // Initial load
-        }
+        // UI Component Registry
+        const components = new Map();
 
-        function stopChatPolling() {
-            if (chatPollingInterval) {
-                clearInterval(chatPollingInterval);
-                chatPollingInterval = null;
+        class SimpleGridUI {
+            constructor() {
+                this.nextId = 1;
             }
-        }
 
-        async function loadChatMessages() {
-            if (!currentToken) return;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
+            // Create any HTML element with grid positioning
+            create(html, x, y, width, height, parent = null) {
+                const component = {
+                    id: `ui-${this.nextId++}`,
+                    html: html,
+                    x: x,
+                    y: y,
+                    width: width,
+                    height: height,
+                    parent: parent,
+                    level: parent ? components.get(parent)?.level + 1 : 0,
+                    children: [],
+                    dynamicPosition: { // Support for dynamic positioning
+                        x: typeof x === 'string',
+                        y: typeof y === 'string'
                     }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.value && Array.isArray(data.value)) {
-                        // Load saved local messages and merge with server messages
-                        const localMessages = loadLocalMessages();
-                        chatMessages = [...data.value, ...localMessages];
-                        displayChatMessages();
-                    }
-                } else if (response.status !== 404) {
-                    // 404 is expected if no messages exist yet
-                    console.error('Failed to load chat messages');
-                }
-            } catch (error) {
-                console.error('Error loading chat messages:', error);
-            }
-        }
-
-        function insertMessageInOrder(newMessage) {
-            // Find the correct position to insert the message based on timestamp
-            let insertIndex = chatMessages.length;
-            
-            for (let i = 0; i < chatMessages.length; i++) {
-                if (!chatMessages[i].timestamp || new Date(newMessage.timestamp) < new Date(chatMessages[i].timestamp)) {
-                    insertIndex = i;
-                    break;
-                }
-            }
-            
-            chatMessages.splice(insertIndex, 0, newMessage);
-            displayChatMessages();
-        }
-
-        function insertMessagesInOrder(newMessages) {
-            // Insert multiple messages in order
-            newMessages.forEach(msg => {
-                insertMessageInOrder(msg);
-            });
-        }
-
-        function saveLocalMessages() {
-            // Save only local-only messages to localStorage
-            const localMessages = chatMessages.filter(msg => msg.isLocalOnly);
-            localStorage.setItem('localChatMessages', JSON.stringify(localMessages));
-        }
-
-        function loadLocalMessages() {
-            try {
-                const saved = localStorage.getItem('localChatMessages');
-                return saved ? JSON.parse(saved) : [];
-            } catch (error) {
-                console.error('Error loading local messages:', error);
-                return [];
-            }
-        }
-
-        function displayChatMessages() {
-            const chatContainer = migratedComponents.chatMessages.element;
-            chatContainer.innerHTML = '';
-
-            if (chatMessages.length === 0) {
-                chatContainer.innerHTML = '<div class="system-message">No messages yet. Start the conversation!</div>';
-                return;
-            }
-
-            // Sort messages by timestamp before displaying
-            const sortedMessages = [...chatMessages].sort((a, b) => {
-                if (!a.timestamp) return 1;
-                if (!b.timestamp) return -1;
-                return new Date(a.timestamp) - new Date(b.timestamp);
-            });
-
-                // Show last 50 messages
-                const recentMessages = sortedMessages.slice(-50);
-                
-                recentMessages.forEach(msg => {
-                    const messageDiv = document.createElement('div');
-                    
-                    if (msg.type === 'system') {
-                        messageDiv.className = 'system-message';
-                        messageDiv.textContent = msg.message;
-                    } else if (msg.type === 'command') {
-                        messageDiv.className = 'command-message';
-                        messageDiv.innerHTML = `
-                            <div class="command-title">${msg.command}</div>
-                            <div class="command-desc">${msg.description}</div>
-                        `;
-                    } else {
-                        messageDiv.className = 'chat-message';
-                        messageDiv.style.background = 'var(--surface)';
-                        messageDiv.style.marginBottom = '8px';
-                        messageDiv.style.padding = '8px 12px';
-                        messageDiv.style.borderRadius = '6px';
-                        
-                        const timestamp = new Date(msg.timestamp).toLocaleTimeString();
-                        
-                        messageDiv.innerHTML = `
-                            <div>
-                                <span style="color: var(--accent); font-weight: 500;">${msg.username}</span>
-                                <span style="color: var(--text-muted); margin-left: 8px;">${timestamp}</span>
-                            </div>
-                            <div style="color: var(--text); margin-top: 4px; word-wrap: break-word;">${msg.message}</div>
-                        `;
-                    }
-                    
-                    chatContainer.appendChild(messageDiv);
-                });
-
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function showWelcomeMessage() {
-            const welcomeMessage = {
-                type: 'system',
-                message: `Welcome to the chat, ${currentUsername}! Type /? for available commands.`,
-                timestamp: new Date().toISOString(),
-                isLocalOnly: true
-            };
-            
-            if (!chatMessages.some(msg => msg.type === 'system' && msg.message.includes('Welcome'))) {
-                insertMessageInOrder(welcomeMessage);
-                saveLocalMessages();
-            }
-        }
-
-        function showCommandHelp() {
-            const helpMessages = [];
-            const currentTime = new Date().toISOString();
-            
-            Object.entries(CHAT_COMMANDS).forEach(([cmd, desc]) => {
-                helpMessages.push({
-                    type: 'command',
-                    command: cmd,
-                    description: desc,
-                    timestamp: currentTime,
-                    isLocalOnly: true
-                });
-            });
-            
-            // Insert all help messages at once
-            insertMessagesInOrder(helpMessages);
-            saveLocalMessages();
-        }
-
-        async function executeCommand(command) {
-            const commandLower = command.toLowerCase();
-            
-            switch (commandLower) {
-                case '/stats':
-                case '/persistent':
-                case '/shared':
-                    const endpoint = commandLower.replace('/', '');
-                    await testEndpoint(`/${endpoint}`, 'GET');
-                    break;
-
-                case '/colors':
-                    const colorAssignments = testDynamicColorAllocation();
-                    if (colorAssignments) {
-                        const colorDetails = {
-                            type: 'command',
-                            command: 'Color Test Results',
-                            description: `Generated ${colorAssignments.length} colors. First 5 assignments:\n${colorAssignments.slice(0, 5).map(c => `${c.label}: ${c.color} (${c.name})`).join('\n')}\n\nUse Ctrl+Shift+C for full details in console.`,
-                            timestamp: new Date().toISOString(),
-                            isLocalOnly: true
-                        };
-                        insertMessageInOrder(colorDetails);
-                    }
-                    break;
-                case '/palette':
-                    const paletteInfo = getColorPaletteInfo();
-                    const paletteMessage = {
-                        type: 'command',
-                        command: 'Color Palette Info',
-                        description: JSON.stringify(paletteInfo, null, 2),
-                        timestamp: new Date().toISOString(),
-                        isLocalOnly: true
-                    };
-                    insertMessageInOrder(paletteMessage);
-                    break;
-                case '/help':
-                case '/?':
-                    showCommandHelp();
-                    break;
-                default:
-                    const unknownCommandMsg = {
-                        type: 'system',
-                        message: `Unknown command: ${command}. Type /? for available commands.`,
-                        timestamp: new Date().toISOString(),
-                        isLocalOnly: true
-                    };
-                    insertMessageInOrder(unknownCommandMsg);
-                    saveLocalMessages();
-                    break;
-            }
-        }
-
-        // Handle chat input keypress for migrated components
-        function handleChatKeyPress(component, event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                sendMessageFull();
-            }
-        }
-        
-        async function sendMessageFull() {
-            if (!currentToken) return;
-
-            const input = migratedComponents.chatInput.element;
-            const message = input.value.trim();
-            
-            if (!message) return;
-
-            // Clear input immediately for better UX
-            input.value = '';
-
-            const sendBtn = migratedComponents.chatSendButton.element;
-            const originalText = sendBtn.textContent;
-            
-            sendBtn.disabled = true;
-            
-            // Start TUI spinner animation
-            let spinnerIndex = 0;
-            const spinnerFrames = ['░░░░', '▒░░░', '▓▒░░', '█▓▒░', '██▓▒', '███▓', '████', '███▓', '██▓▒', '█▓▒░', '▓▒░░', '▒░░░'];
-            
-            const spinnerInterval = setInterval(() => {
-                sendBtn.textContent = spinnerFrames[spinnerIndex];
-                spinnerIndex = (spinnerIndex + 1) % spinnerFrames.length;
-            }, 80);
-
-            try {
-                // Check if it's a command
-                if (message.startsWith('/')) {
-                    await executeCommand(message);
-                    return;
-                }
-
-                // Get current messages
-                let currentMessages = [];
-                try {
-                    const getResponse = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${currentToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    
-                    if (getResponse.ok) {
-                        const data = await getResponse.json();
-                        if (data.value && Array.isArray(data.value)) {
-                            currentMessages = data.value;
-                        }
-                    }
-                } catch (e) {
-                    // Ignore errors when getting current messages
-                }
-
-                // Add new message
-                const newMessage = {
-                    username: currentUsername,
-                    message: message,
-                    timestamp: new Date().toISOString()
                 };
 
-                currentMessages.push(newMessage);
+                // Create element from HTML
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const element = tempDiv.firstElementChild;
+                
+                element.id = component.id;
+                // Preserve original classes while adding UI component classes
+                const originalClasses = element.className || '';
+                element.className = `${originalClasses} ui-component ui-level-${component.level}`;
 
-                // Keep only last 100 messages to prevent storage bloat
-                if (currentMessages.length > 100) {
-                    currentMessages = currentMessages.slice(-100);
-                }
+                // Apply positioning using unified method
+                this.applyPositioning(element, component);
 
-                // Save updated messages
-                const response = await fetch(`${API_BASE_URL}/temp/chat/messages`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${currentToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ value: currentMessages })
-                });
+                // Store element reference for later access
+                component.element = element;
 
-                if (response.ok) {
-                    input.value = '';
-                    // Immediately refresh messages
-                    await loadChatMessages();
+                // Add to DOM - attach to parent if exists, otherwise main container
+                let targetParent;
+                if (parent) {
+                    const parentComp = components.get(parent);
+                    targetParent = parentComp ? parentComp.element : document.getElementById('ui-container');
                 } else {
-                    console.error('Failed to send message');
+                    targetParent = document.getElementById('ui-container');
                 }
-            } catch (error) {
-                console.error('Error sending message:', error);
-            } finally {
-                // Stop spinner and restore button
-                clearInterval(spinnerInterval);
-                sendBtn.textContent = originalText;
-                sendBtn.disabled = false;
-            }
-        }
+                
+                targetParent.appendChild(element);
 
-        // Add enter key support for chat input
-        migratedComponents.chatInput.element.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent form submission
-                sendMessageFull();
-            }
-        });
+                // Register component
+                components.set(component.id, component);
 
-        // Switch to chat interface
-        function switchToChatInterface() {
-            document.body.style.overflow = 'hidden';
-            
-            // Show migrated chat, hide auth
-            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'normal');
-            UIComponentFactory.setState(migratedComponents.authContainer.element, 'hidden');
-            
-            // Update status bar username
-            const statusInfo = UIComponentFactory.get('status-info-cf');
-            statusInfo.config.content.text = 'Logged in as ' + currentUsername;
-            statusInfo.element.textContent = statusInfo.config.content.text;
-        }
-        
-        // Switch to auth interface  
-        function switchToAuthInterface() {
-            // Show migrated auth, hide chat
-            UIComponentFactory.setState(migratedComponents.authContainer.element, 'normal');
-            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'hidden');
-            
-            // Reset body
-            document.body.style.display = '';
-        }
-        
-        // Add enter key support for login/register forms
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const loginState = migratedComponents.loginForm.element.style.display !== 'none';
-                if (loginState) {
-                    const loginButton = UIComponentFactory.get('login-button-cf');
-                    if (loginButton) loginMigrated(loginButton, e);
+                // Add to parent's children
+                if (parent) {
+                    const parentComp = components.get(parent);
+                    if (parentComp) {
+                        parentComp.children.push(component.id);
+                    }
+                }
+
+                console.log('Created component:', component);
+                return component.id;
+            }
+
+            // Calculate absolute position considering parent hierarchy
+            calculateAbsolutePosition(component) {
+                let parentX = 0;
+                let parentY = 0;
+                let parent = component.parent;
+
+                // Walk up parent chain to get parent's absolute position
+                while (parent) {
+                    const parentComp = components.get(parent);
+                    if (parentComp) {
+                        // Add parent's position to accumulate total offset
+                        if (typeof parentComp.x === 'string') {
+                            parentX += this.calculateGridPosition(parentComp.x, parentComp, 'x');
+                        } else {
+                            parentX += Math.round(parentComp.x * gridState.cellWidthPx);
+                        }
+                        
+                        if (typeof parentComp.y === 'string') {
+                            parentY += this.calculateGridPosition(parentComp.y, parentComp, 'y');
+                        } else {
+                            parentY += Math.round(parentComp.y * gridState.cellHeightPx);
+                        }
+                        
+                        parent = parentComp.parent;
+                    } else {
+                        break;
+                    }
+                }
+
+                // Calculate child's position relative to parent
+                let childX, childY;
+                if (typeof component.x === 'string') {
+                    childX = Math.round(this.calculateGridPosition(component.x, component, 'x'));
                 } else {
-                    const registerButton = UIComponentFactory.get('register-button-cf');
-                    if (registerButton) registerMigrated(registerButton, e);
+                    childX = Math.round(component.x * gridState.cellWidthPx);
                 }
-            }
-        });
-
-        // Dynamic Color Allocation System
-        const ColorAllocationSystem = {
-            // Predefined sepia/harmony color palette
-            colorPalette: [
-                { r: 201, g: 183, b: 156, name: 'warm-neutral' },     // Original UI color
-                { r: 168, g: 178, b: 161, name: 'sage-green' },       // Success color
-                { r: 196, g: 126, b: 106, name: 'soft-terracotta' },  // Error color variant
-                { r: 122, g: 140, b: 122, name: 'muted-green' },      // Accent color
-                { r: 155, g: 143, b: 127, name: 'warm-brown' },       // Border variant
-                { r: 184, g: 166, b: 146, name: 'dusty-rose' },       // Soft rose
-                { r: 143, g: 155, b: 147, name: 'muted-sage' },       // Light sage
-                { r: 169, g: 149, b: 129, name: 'terracotta-brown' }, // Brown terracotta
-                { r: 132, g: 148, b: 135, name: 'olive-green' },       // Deep green
-                { r: 178, g: 162, b: 146, name: 'warm-sand' },        // Sand color
-                { r: 154, g: 138, b: 124, name: 'dusty-brown' },      // Muted brown
-                { r: 146, g: 166, b: 156, name: 'seafoam-green' }     // Light green
-            ],
-            
-            // Track assigned colors to avoid conflicts
-            assignedColors: new Map(),
-            uiElementCounter: 0,
-            
-            // Generate additional colors dynamically using HSL rotation within sepia range
-            generateColor(index) {
-                // Base sepia hue range (30-60 degrees)
-                const baseHue = 45; // Mid-sepia
-                const hueVariation = 15; // ±15 degrees variation
                 
-                // Create consistent color from index using golden ratio
-                const goldenRatio = 1.618033988749895;
-                const hue = (baseHue + (index * goldenRatio * hueVariation) % 60) % 60;
-                
-                // Keep saturation and lightness within sepia range
-                const saturation = 20 + (index % 3) * 10; // 20-40% for muted look
-                const lightness = 45 + (index % 4) * 8;   // 45-69% for visibility
-                
-                // Convert HSL to RGB
-                return this.hslToRgb(hue, saturation, lightness);
-            },
-            
-            // HSL to RGB conversion
-            hslToRgb(h, s, l) {
-                h /= 360;
-                s /= 100;
-                l /= 100;
-                
-                let r, g, b;
-                
-                if (s === 0) {
-                    r = g = b = l;
+                if (typeof component.y === 'string') {
+                    childY = Math.round(this.calculateGridPosition(component.y, component, 'y'));
                 } else {
-                    const hue2rgb = (p, q, t) => {
-                        if (t < 0) t += 1;
-                        if (t > 1) t -= 1;
-                        if (t < 1/6) return p + (q - p) * 6 * t;
-                        if (t < 1/2) return q;
-                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                        return p;
-                    };
-                    
-                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                    const p = 2 * l - q;
-                    r = hue2rgb(p, q, h + 1/3);
-                    g = hue2rgb(p, q, h);
-                    b = hue2rgb(p, q, h - 1/3);
+                    childY = Math.round(component.y * gridState.cellHeightPx);
                 }
                 
+                const pixelWidth = Math.round(this.calculateGridPosition(component.width, component, 'width'));
+                const pixelHeight = Math.round(this.calculateGridPosition(component.height, component, 'height'));
+
                 return {
-                    r: Math.round(r * 255),
-                    g: Math.round(g * 255),
-                    b: Math.round(b * 255)
+                    x: parentX + childX,
+                    y: parentY + childY,
+                    width: pixelWidth,
+                    height: pixelHeight
                 };
-            },
-            
-            // Get or assign color for UI element type
-            getUIElementColor(elementType, elementId = null) {
-                const key = elementId || elementType;
-                
-                // Return existing assignment if available
-                if (this.assignedColors.has(key)) {
-                    return this.assignedColors.get(key);
+            }
+
+            // Update component position
+            update(componentId, x, y, width, height) {
+                const component = components.get(componentId);
+                if (!component) return;
+
+                // Update dynamic position flags
+                component.dynamicPosition.x = typeof x === 'string';
+                component.dynamicPosition.y = typeof y === 'string';
+
+                component.x = x || component.x;
+                component.y = y || component.y;
+                component.width = width || component.width;
+                component.height = height || component.height;
+
+                // Update element
+                const element = component.element || document.getElementById(componentId);
+                if (element) {
+                    this.applyPositioning(element, component);
                 }
-                
-                // Use predefined palette for first 12 elements
-                if (this.uiElementCounter < this.colorPalette.length) {
-                    const color = this.colorPalette[this.uiElementCounter];
-                    this.assignedColors.set(key, color);
-                    this.uiElementCounter++;
-                    return color;
+
+                // Update children (recursive)
+                component.children.forEach(childId => {
+                    this.update(childId); // Children keep relative positions
+                });
+            }
+
+            // Apply correct positioning to element
+            applyPositioning(element, component) {
+                // All components use absolute positioning
+                const absPos = this.calculateAbsolutePosition(component);
+                element.style.position = 'fixed';
+                element.style.left = `${absPos.x}px`;
+                element.style.top = `${absPos.y}px`;
+                element.style.width = `${absPos.width}px`;
+                element.style.height = `${absPos.height}px`;
+            }
+
+            // Get component by ID
+            get(id) {
+                return components.get(id);
+            }
+
+            // Remove component
+            remove(componentId) {
+                const component = components.get(componentId);
+                if (!component) return;
+
+                // Remove children first (recursive)
+                [...component.children].forEach(childId => {
+                    this.remove(childId);
+                });
+
+                // Remove from parent's children
+                if (component.parent) {
+                    const parent = components.get(component.parent);
+                    if (parent) {
+                        parent.children = parent.children.filter(id => id !== componentId);
+                    }
                 }
-                
-                // Generate dynamic color for additional elements
-                const colorIndex = this.uiElementCounter - this.colorPalette.length;
-                const dynamicColor = this.generateColor(colorIndex);
-                dynamicColor.name = `dynamic-${colorIndex + 1}`;
-                
-                this.assignedColors.set(key, dynamicColor);
-                this.uiElementCounter++;
-                return dynamicColor;
-            },
-            
-            // Get CSS class name for UI element
-            getUIClassName(elementType, elementId = null) {
-                const color = this.getUIElementColor(elementType, elementId);
-                const colorIndex = this.colorPalette.findIndex(c => 
-                    c.r === color.r && c.g === color.g && c.b === color.b
-                );
-                
-                if (colorIndex >= 0) {
-                    return `grid-cell-ui-${colorIndex + 1}`;
+
+                // Remove from DOM
+                const element = document.getElementById(componentId);
+                if (element) {
+                    element.remove();
                 }
-                
-                // For dynamic colors, generate inline style
-                return null; // Will use inline styling
-            },
-            
-            // Apply color to grid cells
-            applyUIToGridCells(elementType, elementId, cells) {
-                const color = this.getUIElementColor(elementType, elementId);
-                const className = this.getUIClassName(elementType, elementId);
-                
-                cells.forEach(cell => {
-                    // Remove any existing UI classes
-                    cell.className = cell.className.replace(/grid-cell-ui-\d+/g, '');
-                    cell.classList.remove('grid-cell-ui-element');
-                    
-                    if (className) {
-                        cell.classList.add(className);
-                    } else {
-                        // Apply inline style for dynamic colors
-                        const rgba = `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`;
-                        const borderRgb = `rgb(${color.r}, ${color.g}, ${color.b})`;
-                        cell.style.background = `${rgba} !important`;
-                        cell.style.border = `2px solid ${borderRgb} !important`;
-                        cell.style.borderRadius = '2px';
-                        cell.style.boxShadow = `0 0 12px ${rgba} !important`;
+
+                // Remove from registry
+                components.delete(componentId);
+            }
+
+            // Get DOM element
+            getElement(id) {
+                return document.getElementById(id);
+            }
+
+            // Re-render all components (when grid changes)
+            repositionAll() {
+                components.forEach((component, id) => {
+                    const element = component.element || document.getElementById(component.id);
+                    if (element) {
+                        this.applyPositioning(element, component);
                     }
                 });
-            },
-            
-            // Reset color assignments
-            reset() {
-                this.assignedColors.clear();
-                this.uiElementCounter = 0;
-            },
-            
-            // Get contrast color for text
-            getContrastColor(color) {
-                // Calculate relative luminance
-                const luminance = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255;
-                return luminance > 0.5 ? '#4a4035' : '#d4c5b9'; // Use existing theme colors
             }
-        };
 
-        // Game Grid Functions
-        let gridResizeTimeout = null;
-        
-        // Force reinitialization on script load
-        console.log(`Grid system v${APP_VERSION} with dynamic color allocation initializing...`);
+            // Calculate position handling both numeric and dynamic keywords
+            calculateGridPosition(value, component, dimension) {
+                if (typeof value === 'string') {
+                    // Handle size strings like "20x20"
+                    if (value.includes('x')) {
+                        const [width, height] = value.split('x').map(v => parseInt(v.trim()));
+                        if (dimension === 'width') return Math.round(width * gridState.cellWidthPx);
+                        if (dimension === 'height') return Math.round(height * gridState.cellHeightPx);
+                    }
+                    
+                    // Handle dynamic positioning keywords
+                    switch(value) {
+                        case 'center':
+                        case 'centered':
+                            if (dimension === 'x') {
+                                let compWidth;
+                                if (component && component.element && component.element.offsetWidth) {
+                                    // Use actual rendered width if available
+                                    compWidth = component.element.offsetWidth;
+                                } else {
+                                    compWidth = this.calculateGridPosition(component ? component.width : '20x20', component, 'width');
+                                }
+                                return Math.round((window.innerWidth - compWidth) / 2); // Center X using exact viewport
+                            } else if (dimension === 'y') {
+                                let compHeight;
+                                if (component && component.element && component.element.offsetHeight) {
+                                    // Use actual rendered height if available
+                                    compHeight = component.element.offsetHeight;
+                                } else {
+                                    compHeight = this.calculateGridPosition(component ? component.height : '20x20', component, 'height');
+                                }
+                                return Math.round((window.innerHeight - compHeight) / 2); // Center Y using exact viewport
+                            } else if (dimension === 'width') {
+                                return Math.round(20 * gridState.cellWidthPx); // 20 cells wide
+                            } else if (dimension === 'height') {
+                                return Math.round(20 * gridState.cellHeightPx); // 20 cells high
+                            }
+                            break;
+                        case 'middle':
+                            if (dimension === 'y') {
+                                return Math.round(window.innerHeight / 2); // Middle of viewport
+                            }
+                            break;
+                    }
+                    return 0; // Default fallback
+                } else {
+                    // Handle numeric grid coordinates
+                    return Math.round(value * gridState.cellWidthPx);
+                }
+            }
 
-        function createGameGrid() {
+        }
+
+        // Initialize Grid System
+        function createGrid() {
             const overlay = document.getElementById('game-grid-overlay');
             const grid = document.getElementById('game-grid');
             
-            console.log(`Creating grid system v${APP_VERSION}...`);
-            
             // Use exact viewport dimensions
-            let windowWidth = window.innerWidth;
-            let windowHeight = window.innerHeight;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
             
-            // Calculate 1ch in pixels (same as body font size: 28px)
-            const oneCh = 28; // Body font size is 28px = 1ch
+            // Find optimal grid dimensions
+            let bestCols, bestRows, bestFit = Infinity;
             
-            // Calculate grid to fill entire viewport exactly
-            let bestCols, bestRows, bestCellSizeCh;
-            
-            // Try to find a cell size that creates integer grid dimensions
-            // Start with a reasonable cell size and adjust to fill viewport
-            let targetCellSizePx = 20; // Start with 20px target
-            let bestFit = Infinity;
-            
-            // Test cell sizes from 10px to 40px to find best fit
-            for (let testSizePx = 10; testSizePx <= 40; testSizePx += 1) {
-                let testCols = Math.floor(windowWidth / testSizePx);
-                let testRows = Math.floor(windowHeight / testSizePx);
-                
-                // Calculate actual cell size needed to fill viewport exactly
-                let actualCellSizeX = windowWidth / testCols;
-                let actualCellSizeY = windowHeight / testRows;
-                let avgCellSize = (actualCellSizeX + actualCellSizeY) / 2;
-                
-                // Check how close we are to desired cell size range (15-25px)
-                let fitScore = Math.abs(avgCellSize - 20) + 
-                               Math.abs(actualCellSizeX - actualCellSizeY) * 10; // Penalize non-square cells
-                
-                if (fitScore < bestFit && testCols > 10 && testRows > 10) {
-                    bestFit = fitScore;
-                    bestCols = testCols;
-                    bestRows = testRows;
-                    bestCellSizeCh = avgCellSize / oneCh;
+            for (let cols = 10; cols <= 100; cols++) {
+                for (let rows = 10; rows <= 50; rows++) {
+                    const cellWidth = windowWidth / cols;
+                    const cellHeight = windowHeight / rows;
+                    const avgSize = (cellWidth + cellHeight) / 2;
+                    
+                    // Prefer cells around 20px
+                    const fitScore = Math.abs(avgSize - 20);
+                    
+                    if (fitScore < bestFit) {
+                        bestFit = fitScore;
+                        bestCols = cols;
+                        bestRows = rows;
+                    }
                 }
             }
             
-            // Ensure we have at least some minimum dimensions
-            if (bestCols < 10) bestCols = 10;
-            if (bestRows < 10) bestRows = 10;
-            
-            // Calculate pixel size for display
-            let bestCellSizePx = bestCellSizeCh * oneCh;
-            let actualWidth = bestCols * bestCellSizePx + (bestCols - 1) * 1;
-            let actualHeight = bestRows * bestCellSizePx + (bestRows - 1) * 1;
-            
-            // Set grid template to fill container exactly
+            // Set grid template
             grid.style.gridTemplateColumns = `repeat(${bestCols}, 1fr)`;
             grid.style.gridTemplateRows = `repeat(${bestRows}, 1fr)`;
-            grid.style.gap = '1px';
             grid.style.width = '100vw';
             grid.style.height = '100vh';
-            grid.style.position = 'fixed';
-            grid.style.top = '0';
-            grid.style.left = '0';
             
-            // Clear and create cells
+            // Create cells
             grid.innerHTML = '';
             const totalCells = bestCols * bestRows;
-            const cells = [];
-            
             for (let i = 0; i < totalCells; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell';
-                cell.style.width = 'auto';
-                cell.style.height = 'auto';
-                cell.style.aspectRatio = '1';
                 cell.textContent = i % 10 === 0 ? '•' : '';
-                cell.dataset.gridIndex = i;
                 grid.appendChild(cell);
-                cells.push(cell);
             }
             
-            console.log(`Grid: ${bestCols}x${bestRows} = ${totalCells} cells, ${bestCellSizeCh}ch each (${bestCellSizePx}px)`);
-            console.log(`Coverage: ${actualWidth}x${actualHeight}px (${(actualWidth/windowWidth*100).toFixed(1)}% width, ${(actualHeight/windowHeight*100).toFixed(1)}% height)`);
+            // Update grid state
+            gridState.cols = bestCols;
+            gridState.rows = bestRows;
+            gridState.cellWidthPx = windowWidth / bestCols;
+            gridState.cellHeightPx = windowHeight / bestRows;
+            gridState.initialized = true;
             
-            // Always position UI elements based on grid
-            if (!gridSystemInitialized) {
-                console.log('Grid system not initialized, forcing reinitialization...');
-                gridSystemInitialized = true;
-            }
-            positionUIElementsOnGrid(bestCols, bestRows, bestCellSizeCh);
-        }
+            console.log(`Grid: ${bestCols}x${bestRows} cells, ${gridState.cellWidthPx.toFixed(1)}x${gridState.cellHeightPx.toFixed(1)}px each`);
+            
 
-        function positionUIElementsOnGrid(cols, rows, cellSize) {
-            const oneCh = 28; // Body font size
             
-            // Get actual viewport dimensions
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            const cellWidthPx = windowWidth / cols;
-            const cellHeightPx = windowHeight / rows;
-            
-            // Global variable declaration to ensure access
-            if (typeof window.chatInputStartRow === 'undefined') {
-                window.chatInputStartRow = 0;
-            }
-            
-            // Define variables at function scope to prevent ReferenceError
-            const chatMessagesEl = document.getElementById('chat-messages');
-            const chatInputEl = document.querySelector('.chat-input-container');
-            const headerEl = document.querySelector('.header');
-            const authEl = document.querySelector('.container');
-            const startRow = 4; // Start after header (first 3 rows)
-            const endRow = rows - 4; // Leave 3 rows for input
-            const chatRows = endRow - startRow; // Define at function scope
-            window.chatInputStartRow = rows - 3; // Store in global scope (bottom 3 rows)
-            
-            // Position header in first 3 rows, full width
-            if (headerEl) {
-                headerEl.classList.add('header-aligned');
-                
-                // Position using pixels based on actual grid cell dimensions
-                headerEl.style.position = 'fixed';
-                headerEl.style.left = '0'; // Start from left edge
-                headerEl.style.top = '0'; // Start from top
-                headerEl.style.width = `${cols * cellWidthPx}px`;
-                headerEl.style.height = `${3 * cellHeightPx}px`; // First 3 rows
-                headerEl.style.zIndex = '1'; // Above grid but below higher UI
-                headerEl.style.display = 'flex';
-                headerEl.style.justifyContent = 'center';
-                headerEl.style.alignItems = 'center';
-            }
-            
-            // Position auth container in center of viewport (if visible)
-            if (authEl && authEl.style.display !== 'none') {
-                authEl.classList.add('auth-aligned');
-                
-                // Calculate center positioning (60% of viewport)
-                const authStartCol = Math.floor(cols * 0.2);  // 20% from left
-                const authEndCol = Math.floor(cols * 0.8);    // 80% from left (60% width)
-                const authStartRow = Math.floor(rows * 0.25); // 25% from top
-                const authEndRow = Math.floor(rows * 0.75);   // 75% from top (50% height)
-                const authWidth = authEndCol - authStartCol;
-                const authHeight = authEndRow - authStartRow;
-                
-                // Position using pixels based on actual grid cell dimensions
-                authEl.style.position = 'fixed';
-                authEl.style.left = `${authStartCol * cellWidthPx}px`;
-                authEl.style.top = `${authStartRow * cellHeightPx}px`;
-                authEl.style.width = `${authWidth * cellWidthPx}px`;
-                authEl.style.height = `${authHeight * cellHeightPx}px`;
-                authEl.style.zIndex = '1500'; // Above grid, below interactive elements
-                authEl.style.display = 'flex';
-                authEl.style.flexDirection = 'column';
-                authEl.style.justifyContent = 'center';
-                authEl.style.alignItems = 'center';
-            }
-            
-            // Position chat messages relative to grid (50% horizontal, from top)
-            if (chatMessagesEl) {
-                chatMessagesEl.classList.add('chat-messages-aligned');
-                const chatCols = Math.floor(cols * 0.5); // 50% of horizontal cells
-                
-                // Position using pixels based on actual grid cell dimensions
-                chatMessagesEl.style.position = 'fixed';
-                chatMessagesEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1
-                chatMessagesEl.style.top = `${startRow * cellHeightPx}px`;
-                chatMessagesEl.style.width = `${chatCols * cellWidthPx}px`;
-                chatMessagesEl.style.height = `${chatRows * cellHeightPx}px`;
-                chatMessagesEl.style.zIndex = '1'; // Above grid but below higher UI
-            }
-            
-            // Position chat input at bottom 3 rows, same width as messages (50%)
-            if (chatInputEl) {
-                chatInputEl.classList.add('chat-input-aligned');
-                const inputCols = Math.floor(cols * 0.5); // Same width as messages (50%)
-                
-                chatInputEl.style.position = 'fixed';
-                chatInputEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1 (same as messages)
-                chatInputEl.style.top = `${window.chatInputStartRow * cellHeightPx}px`;
-                chatInputEl.style.width = `${inputCols * cellWidthPx}px`;
-                chatInputEl.style.height = `${3 * cellHeightPx}px`; // 3 rows tall
-                chatInputEl.style.zIndex = '1'; // Above grid but below higher UI
-            }
-            
-            // Mark occupied grid cells for UI elements using dynamic color allocation
-            const totalCells = cols * rows;
-            const headerCells = [];
-            const authCells = [];
-            const messageCells = [];
-            const inputCells = [];
-            
-            for (let i = 0; i < totalCells; i++) {
-                const cell = document.querySelector(`[data-grid-index="${i}"]`);
-                if (!cell) continue;
-                
-                const col = i % cols;
-                const row = Math.floor(i / cols);
-                
-                // Reset all cells first
-                cell.classList.remove('grid-cell-occupied', 'grid-cell-ui-element');
-                cell.className = cell.className.replace(/grid-cell-ui-\d+/g, '');
-                cell.style.background = '';
-                cell.style.border = '';
-                cell.style.boxShadow = '';
-                
-                // Collect cells for different UI elements
-                if (row >= 0 && row < 3) {
-                    headerCells.push(cell); // Header cells
-                }
-                
-                // Collect auth container cells (if auth container is visible)
-                if (authEl && authEl.style.display !== 'none') {
-                    const authStartCol = Math.floor(cols * 0.2);
-                    const authEndCol = Math.floor(cols * 0.8);
-                    const authStartRow = Math.floor(rows * 0.25);
-                    const authEndRow = Math.floor(rows * 0.75);
-                    
-                    if (col >= authStartCol && col < authEndCol && 
-                        row >= authStartRow && row < authEndRow) {
-                        authCells.push(cell); // Auth container area
-                    }
-                }
-                
-                if (col >= 1 && col < 1 + Math.floor(cols * 0.5) && 
-                    row >= startRow && row < endRow) {
-                    messageCells.push(cell); // Chat message area
-                }
-                
-                if (row >= window.chatInputStartRow && row < rows && 
-                    col >= 1 && col < 1 + Math.floor(cols * 0.5)) {
-                    inputCells.push(cell); // Chat input area
-                }
-            }
-            
-            // Apply dynamic colors to UI elements
-            if (headerCells.length > 0) {
-                ColorAllocationSystem.applyUIToGridCells('header', 'main-header', headerCells);
-            }
-            
-            if (authCells.length > 0) {
-                ColorAllocationSystem.applyUIToGridCells('auth', 'auth-container', authCells);
-            }
-            
-            if (messageCells.length > 0) {
-                ColorAllocationSystem.applyUIToGridCells('messages', 'chat-messages', messageCells);
-            }
-            
-            if (inputCells.length > 0) {
-                ColorAllocationSystem.applyUIToGridCells('input', 'chat-input', inputCells);
-            }
-            
-            console.log(`UI Grid-aligned: Messages ${Math.floor(cols * 0.5)}x${chatRows} at rows ${startRow}-${endRow}, Input ${cols}x4 at rows ${window.chatInputStartRow}-${rows-1}`);
-            console.log(`Grid maintains full viewport: ${cols}x${rows} cells, not shrinking to occupied areas`);
-        }
-
-
-
-        function handleResize() {
-            // Immediate full grid update with zero debounce
-            createGameGrid();
-            
-            // Optional: still keep a tiny timeout for safety (can remove entirely)
-            if (gridResizeTimeout) {
-                clearTimeout(gridResizeTimeout);
-            }
-            
-            gridResizeTimeout = setTimeout(() => {
-                createGameGrid();
-            }, 5);
-        }
-        
-        function updateGridPositionsOnly() {
-            // Get current grid dimensions
-            const grid = document.getElementById('game-grid');
-            if (!grid) return;
-            
-            const computedStyle = window.getComputedStyle(grid);
-            const gridWidth = grid.offsetWidth;
-            const gridHeight = grid.offsetHeight;
-            
-            // Estimate grid dimensions (rough calculation for fast updates)
-            const cols = Math.ceil(Math.sqrt(gridWidth * gridHeight / 400)); // Approximate
-            const rows = Math.ceil(gridHeight / 20); // Approximate cell height
-            const cellWidthPx = gridWidth / cols;
-            const cellHeightPx = gridHeight / rows;
-            
-            // Update element positions only
-            const headerEl = document.querySelector('.header');
-            const chatMessagesEl = document.getElementById('chat-messages');
-            const chatInputEl = document.querySelector('.chat-input-container');
-            
-            if (headerEl) {
-                headerEl.style.left = '0';
-                headerEl.style.top = '0';
-                headerEl.style.width = `${cols * cellWidthPx}px`;
-                headerEl.style.height = `${3 * cellHeightPx}px`;
-            }
-            
-            if (chatMessagesEl) {
-                const chatCols = Math.floor(cols * 0.5);
-                const startRow = 4; // After header
-                const endRow = rows - 5;
-                const chatRows = endRow - startRow;
-                
-                chatMessagesEl.style.left = `${1 * cellWidthPx}px`;
-                chatMessagesEl.style.top = `${startRow * cellHeightPx}px`;
-                chatMessagesEl.style.width = `${chatCols * cellWidthPx}px`;
-                chatMessagesEl.style.height = `${chatRows * cellHeightPx}px`;
-            }
-            
-            if (chatInputEl) {
-                const inputStartRow = rows - 3;
-                const inputCols = Math.floor(cols * 0.5); // Same width as messages (50%)
-                
-                chatInputEl.style.left = `${1 * cellWidthPx}px`; // Start from column 1
-                chatInputEl.style.top = `${inputStartRow * cellHeightPx}px`;
-                chatInputEl.style.width = `${inputCols * cellWidthPx}px`;
-                chatInputEl.style.height = `${3 * cellHeightPx}px`;
+            // Reposition all UI components (with small delay for stability)
+            if (window.gridUI) {
+                setTimeout(() => {
+                    window.gridUI.repositionAll();
+                }, 50);
             }
         }
 
-        // Track resize state
-        let isResizing = false;
-        
-        // Initialize grid on page load
+        // Initialize on page load
         window.addEventListener('load', () => {
-            createGameGrid();
-        });
-        
-        // Add resize listeners for fast response
-        window.addEventListener('resize', handleResize);
-        window.addEventListener('mousedown', () => { isResizing = true; });
-        window.addEventListener('mouseup', () => { isResizing = false; });
-        
-        // Add test command for dynamic colors (Ctrl+Shift+C)
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
-                e.preventDefault();
-                testDynamicColorAllocation();
-            }
+            // Initialize grid
+            createGrid();
+            
+            // Create auth interface using CSS Grid
+            createAuthInterfaceCSS();
         });
 
-        // Test function to demonstrate dynamic color allocation
-        function testDynamicColorAllocation() {
-            console.log('Testing Dynamic Color Allocation System...');
-            
-            // Reset the system to start fresh
-            ColorAllocationSystem.reset();
-            
-            // Test different UI element types
-            const testElements = [
-                { type: 'button', id: 'test-btn-1', label: 'Test Button 1' },
-                { type: 'panel', id: 'test-panel-1', label: 'Test Panel 1' },
-                { type: 'widget', id: 'test-widget-1', label: 'Test Widget 1' },
-                { type: 'modal', id: 'test-modal-1', label: 'Test Modal 1' },
-                { type: 'sidebar', id: 'test-sidebar-1', label: 'Test Sidebar 1' },
-                { type: 'toolbar', id: 'test-toolbar-1', label: 'Test Toolbar 1' },
-                { type: 'notification', id: 'test-notification-1', label: 'Test Notification 1' },
-                { type: 'dropdown', id: 'test-dropdown-1', label: 'Test Dropdown 1' },
-                { type: 'tooltip', id: 'test-tooltip-1', label: 'Test Tooltip 1' },
-                { type: 'dialog', id: 'test-dialog-1', label: 'Test Dialog 1' },
-                { type: 'menu', id: 'test-menu-1', label: 'Test Menu 1' },
-                { type: 'statusbar', id: 'test-statusbar-1', label: 'Test Status Bar 1' },
-                { type: 'tab', id: 'test-tab-1', label: 'Test Tab 1' },
-                { type: 'breadcrumb', id: 'test-breadcrumb-1', label: 'Test Breadcrumb 1' },
-                { type: 'progress', id: 'test-progress-1', label: 'Test Progress 1' }
-            ];
-            
-            // Generate color assignments
-            const colorAssignments = [];
-            testElements.forEach(element => {
-                const color = ColorAllocationSystem.getUIElementColor(element.type, element.id);
-                const className = ColorAllocationSystem.getUIClassName(element.type, element.id);
-                const contrastColor = ColorAllocationSystem.getContrastColor(color);
-                
-                colorAssignments.push({
-                    type: element.type,
-                    id: element.id,
-                    label: element.label,
-                    color: `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`,
-                    border: `rgb(${color.r}, ${color.g}, ${color.b})`,
-                    className: className,
-                    contrastColor: contrastColor,
-                    name: color.name
-                });
-            });
-            
-            // Display results in console
-            console.table(colorAssignments);
-            
-            // Add visual demonstration in chat
-            const colorDemoMessage = {
-                type: 'command',
-                command: 'Dynamic Color System Demo',
-                description: `Generated ${colorAssignments.length} unique colors. Press Ctrl+Shift+C to see full details in console.`,
-                timestamp: new Date().toISOString(),
-                isLocalOnly: true
-            };
-            
-            insertMessageInOrder(colorDemoMessage);
-            
-            return colorAssignments;
-        }
-
-        // Function to get current color palette info
-        function getColorPaletteInfo() {
-            return {
-                predefinedColors: ColorAllocationSystem.colorPalette.length,
-                currentAssignments: ColorAllocationSystem.assignedColors.size,
-                availableColors: 'Unlimited (dynamic generation)',
-                colorRange: 'Sepia harmony (30-60° hue, 20-40% saturation, 45-69% lightness)',
-                contrastRatio: 'WCAG AA compliant with theme colors'
-            };
-        }
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            createGrid();
+        });
 
         // ===============================================================
-        // UNIFIED UI COMPONENT SYSTEM - ComponentFactory
+        // AUTH INTERFACE CREATION - CSS GRID VERSION
         // ===============================================================
-        
-        class ComponentFactory {
-            constructor(colorSystem = ColorAllocationSystem) {
-                this.colorSystem = colorSystem;
-                this.components = new Map();
-                this.componentTypes = new Map();
-                this.gridSystem = null;
-                this.eventDelegators = new Map();
-                
-                // Initialize built-in component types
-                this.initializeBuiltInTypes();
-                
-                // Setup global event delegation
-                this.setupEventDelegation();
-            }
-            
-            initializeBuiltInTypes() {
-                // Button Component
-                this.register('button', {
-                    createElement: (config) => {
-                        const element = document.createElement('button');
-                        element.className = 'component-button';
-                        element.textContent = config.content?.text || 'Button';
-                        return element;
-                    },
-                    defaultStyles: {
-                        padding: '10px 16px',
-                        border: '2px solid var(--text)',
-                        borderRadius: '0',
-                        background: 'var(--surface)',
-                        color: 'var(--text)',
-                        fontSize: '28px',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                    },
-                    hoverStyles: {
-                        background: 'var(--accent)',
-                        color: 'var(--bg)',
-                        boxShadow: '0 0 10px var(--accent)'
-                    },
-                    activeStyles: {
-                        transform: 'scale(0.98)'
-                    }
-                });
-                
-                // Panel Component
-                this.register('panel', {
-                    createElement: (config) => {
-                        const element = document.createElement('div');
-                        element.className = 'component-panel';
-                        return element;
-                    },
-                    defaultStyles: {
-                        background: 'var(--surface)',
-                        border: '2px solid var(--text)',
-                        borderRadius: '0',
-                        padding: '16px',
-                        boxShadow: '0 0 10px var(--accent)',
-                        overflow: 'hidden'
-                    }
-                });
-                
-                // Input Component
-                this.register('input', {
-                    createElement: (config) => {
-                        const element = document.createElement('input');
-                        element.className = 'component-input';
-                        element.type = config.inputType || 'text';
-                        element.placeholder = config.content?.placeholder || '';
-                        return element;
-                    },
-                    defaultStyles: {
-                        width: '100%',
-                        padding: '10px 12px',
-                        background: 'var(--bg)',
-                        border: '1px solid var(--text)',
-                        borderRadius: '0',
-                        color: 'var(--text)',
-                        fontSize: '28px',
-                        transition: 'all 0.2s ease',
-                        boxSizing: 'border-box'
-                    },
-                    focusStyles: {
-                        outline: 'none',
-                        borderColor: 'var(--accent)',
-                        boxShadow: '0 0 5px var(--accent)'
-                    }
-                });
-                
-                // Text Component
-                this.register('text', {
-                    createElement: (config) => {
-                        const element = document.createElement('div');
-                        element.className = 'component-text';
-                        element.textContent = config.content?.text || '';
-                        return element;
-                    },
-                    defaultStyles: {
-                        color: 'var(--text)',
-                        fontSize: '28px',
-                        fontFamily: 'inherit',
-                        lineHeight: '1.4'
-                    }
-                });
-                
-                // Container Component
-                this.register('container', {
-                    createElement: (config) => {
-                        const element = document.createElement('div');
-                        element.className = 'component-container';
-                        return element;
-                    },
-                    defaultStyles: {
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'flex-start',
-                        alignItems: 'stretch',
-                        gap: '8px',
-                        width: '100%',
-                        height: '100%'
-                    },
-                    customStyleApplier: (element, config) => {
-                        // Apply layout-specific styles
-                        if (config.layout) {
-                            element.style.flexDirection = config.layout.direction || 'column';
-                            element.style.justifyContent = config.layout.justify || 'flex-start';
-                            element.style.alignItems = config.layout.align || 'stretch';
-                            element.style.gap = config.layout.gap || '8px';
-                        }
-                    }
-                });
-                
-                // Icon Component
-                this.register('icon', {
-                    createElement: (config) => {
-                        const element = document.createElement('span');
-                        element.className = 'component-icon';
-                        element.textContent = config.content?.symbol || '•';
-                        return element;
-                    },
-                    defaultStyles: {
-                        display: 'inline-block',
-                        fontSize: '24px',
-                        color: 'var(--accent)',
-                        textAlign: 'center',
-                        lineHeight: '1'
-                    },
-                    customStyleApplier: (element, config) => {
-                        if (config.content?.size) {
-                            element.style.fontSize = config.content.size;
-                        }
-                    }
-                });
-            }
-            
-            register(type, definition) {
-                this.componentTypes.set(type, {
-                    createElement: definition.createElement,
-                    defaultStyles: definition.defaultStyles || {},
-                    hoverStyles: definition.hoverStyles || {},
-                    activeStyles: definition.activeStyles || {},
-                    focusStyles: definition.focusStyles || {},
-                    template: definition.template || null
-                });
-            }
-            
-            create(config) {
-                if (!config.id) {
-                    throw new Error('Component config must have an id');
-                }
-                
-                if (this.components.has(config.id)) {
-                    console.warn(`Component with id '${config.id}' already exists`);
-                    return this.components.get(config.id);
-                }
-                
-                const componentType = this.componentTypes.get(config.type);
-                if (!componentType) {
-                    throw new Error(`Unknown component type: ${config.type}`);
-                }
-                
-                // Create element
-                let element;
-                if (componentType.template) {
-                    element = this.createFromTemplate(componentType.template, config);
-                } else {
-                    element = componentType.createElement(config);
-                }
-                
-                // Set component ID and data
-                element.dataset.componentId = config.id;
-                element.dataset.componentType = config.type;
-                
-                // Apply default styles
-                this.applyStyles(element, componentType.defaultStyles);
-                
-                // Apply custom style applier if exists
-                if (componentType.customStyleApplier) {
-                    componentType.customStyleApplier(element, config);
-                }
-                
-                // Apply appearance configuration
-                if (config.appearance) {
-                    this.applyAppearance(element, config.appearance);
-                }
-                
-                // Apply positioning
-                if (config.position) {
-                    this.applyPositioning(element, config.position);
-                }
-                
-                // Apply size
-                if (config.size) {
-                    this.applySize(element, config.size);
-                }
-                
-                // Set initial state
-                if (config.state?.initial) {
-                    this.setState(element, config.state.initial);
-                }
-                
-                // Create component object
-                const component = {
-                    id: config.id,
-                    type: config.type,
-                    element: element,
-                    config: config,
-                    children: [],
-                    parent: null,
-                    state: config.state?.initial || 'normal',
-                    eventHandlers: new Map()
-                };
-                
-                // Register component
-                this.components.set(config.id, component);
-                
-                // Add to DOM
-                document.body.appendChild(element);
-                
-                // Setup event handlers
-                if (config.behavior) {
-                    this.setupEventHandlers(component, config.behavior);
-                }
-                
-                // Add children if any
-                if (config.content?.children) {
-                    config.content.children.forEach(childConfig => {
-                        const child = this.create(childConfig);
-                        this.addChild(component, child);
-                    });
-                }
-                
-                return component;
-            }
-            
-            createFromTemplate(template, config) {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = typeof template === 'function' ? template(config) : template;
-                return tempDiv.firstChild;
-            }
-            
-            applyStyles(element, styles) {
-                Object.assign(element.style, styles);
-            }
-            
-            applyAppearance(element, appearance) {
-                // Apply color theme
-                if (appearance.color && appearance.color !== 'auto') {
-                    if (appearance.color === 'specific-color') {
-                        const color = this.colorSystem.getUIElementColor('component', element.dataset.componentId);
-                        element.style.background = `rgba(${color.r}, ${color.g}, ${color.b}, 0.5)`;
-                        element.style.borderColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
-                    }
-                }
-                
-                // Apply style variant
-                if (appearance.style === 'elevated') {
-                    element.style.boxShadow = '0 0 15px var(--accent)';
-                } else if (appearance.style === 'bordered') {
-                    element.style.border = '2px solid var(--text)';
-                } else if (appearance.style === 'minimal') {
-                    element.style.border = 'none';
-                    element.style.boxShadow = 'none';
-                }
-                
-                // Apply theme
-                if (appearance.theme === 'primary') {
-                    element.style.background = 'var(--surface)';
-                } else if (appearance.theme === 'accent') {
-                    element.style.background = 'var(--accent)';
-                    element.style.color = 'var(--bg)';
-                }
-            }
-            
-            applyPositioning(element, position) {
-                element.style.position = 'fixed';
-                
-                if (position.grid) {
-                    this.applyGridPositioning(element, position.grid);
-                } else if (position.absolute) {
-                    this.applyAbsolutePositioning(element, position.absolute);
-                } else if (position.relative) {
-                    this.applyRelativePositioning(element, position.relative);
-                }
-            }
-            
-            applyGridPositioning(element, gridPos) {
-                // Get current grid dimensions
-                const grid = document.getElementById('game-grid');
-                if (!grid) {
-                    console.warn('Grid system not available for positioning');
-                    return;
-                }
-                
-                const computedStyle = window.getComputedStyle(grid);
-                const gridWidth = grid.offsetWidth;
-                const gridHeight = grid.offsetHeight;
-                
-                // Estimate grid dimensions
-                const cols = Math.ceil(Math.sqrt(gridWidth * gridHeight / 400));
-                const rows = Math.ceil(gridHeight / 20);
-                
-                const cellWidthPx = gridWidth / cols;
-                const cellHeightPx = gridHeight / rows;
-                
-                const { startCol, endCol, startRow, endRow } = gridPos;
-                
-                element.style.left = `${startCol * cellWidthPx}px`;
-                element.style.top = `${startRow * cellHeightPx}px`;
-                element.style.width = `${(endCol - startCol) * cellWidthPx}px`;
-                element.style.height = `${(endRow - startRow) * cellHeightPx}px`;
-                element.style.zIndex = '1000';
-            }
-            
-            applyAbsolutePositioning(element, absolutePos) {
-                const { x, y, width, height } = absolutePos;
-                element.style.left = typeof x === 'string' ? x : `${x}px`;
-                element.style.top = typeof y === 'string' ? y : `${y}px`;
-                element.style.width = typeof width === 'string' ? width : `${width}px`;
-                element.style.height = typeof height === 'string' ? height : `${height}px`;
-                element.style.zIndex = '1000';
-            }
-            
-            applyRelativePositioning(element, relativePos) {
-                // For now, convert to absolute positioning
-                // TODO: Implement true relative positioning
-                console.warn('Relative positioning not fully implemented, using absolute');
-                element.style.position = 'relative';
-            }
-            
-            applySize(element, size) {
-                if (size.width) {
-                    element.style.width = typeof size.width === 'string' ? size.width : `${size.width}px`;
-                }
-                if (size.height) {
-                    element.style.height = typeof size.height === 'string' ? size.height : `${size.height}px`;
-                }
-                if (size.aspectRatio) {
-                    element.style.aspectRatio = size.aspectRatio;
-                }
-            }
-            
-            setState(element, state) {
-                const componentId = element.dataset.componentId;
-                const component = this.components.get(componentId);
-                if (!component) return;
-                
-                // Remove previous state classes
-                element.classList.remove('state-normal', 'state-active', 'state-disabled', 'state-hidden');
-                
-                // Add new state class
-                element.classList.add(`state-${state}`);
-                
-                // Update component state
-                component.state = state;
-                
-                // Apply state-specific styles
-                const componentType = this.componentTypes.get(component.type);
-                
-                if (state === 'active' && componentType.activeStyles) {
-                    this.applyStyles(element, componentType.activeStyles);
-                } else if (state === 'hidden') {
-                    element.style.display = 'none';
-                } else {
-                    element.style.display = '';
-                }
-            }
-            
-            setupEventHandlers(component, behavior) {
-                const element = component.element;
-                
-                // Click handler
-                if (behavior.onClick) {
-                    const clickHandler = (e) => {
-                        e.preventDefault();
-                        this.executeHandler(behavior.onClick, component, e);
-                    };
-                    element.addEventListener('click', clickHandler);
-                    component.eventHandlers.set('click', clickHandler);
-                }
-                
-                // Hover handlers
-                if (behavior.onHover || component.type === 'button') {
-                    const mouseEnterHandler = (e) => {
-                        const componentType = this.componentTypes.get(component.type);
-                        if (componentType.hoverStyles) {
-                            this.applyStyles(element, componentType.hoverStyles);
-                        }
-                        if (behavior.onHover) {
-                            this.executeHandler(behavior.onHover, component, e);
-                        }
-                    };
-                    const mouseLeaveHandler = (e) => {
-                        const componentType = this.componentTypes.get(component.type);
-                        if (componentType.hoverStyles) {
-                            this.applyStyles(element, componentType.defaultStyles);
-                        }
-                    };
-                    
-                    element.addEventListener('mouseenter', mouseEnterHandler);
-                    element.addEventListener('mouseleave', mouseLeaveHandler);
-                    component.eventHandlers.set('mouseenter', mouseEnterHandler);
-                    component.eventHandlers.set('mouseleave', mouseLeaveHandler);
-                }
-                
-                // Focus handlers for inputs
-                if (component.type === 'input' && componentType.focusStyles) {
-                    const focusHandler = (e) => {
-                        this.applyStyles(element, componentType.focusStyles);
-                    };
-                    const blurHandler = (e) => {
-                        this.applyStyles(element, componentType.defaultStyles);
-                    };
-                    
-                    element.addEventListener('focus', focusHandler);
-                    element.addEventListener('blur', blurHandler);
-                    component.eventHandlers.set('focus', focusHandler);
-                    component.eventHandlers.set('blur', blurHandler);
-                }
-                
-                // Custom events
-                if (behavior.events) {
-                    Object.entries(behavior.events).forEach(([eventType, handler]) => {
-                        const customHandler = (e) => {
-                            this.executeHandler(handler, component, e);
-                        };
-                        element.addEventListener(eventType, customHandler);
-                        component.eventHandlers.set(eventType, customHandler);
-                    });
-                }
-            }
-            
-            executeHandler(handler, component, event) {
-                if (typeof handler === 'string') {
-                    // Global function call
-                    if (typeof window[handler] === 'function') {
-                        window[handler](component, event);
-                    } else {
-                        console.warn(`Handler function '${handler}' not found`);
-                    }
-                } else if (typeof handler === 'function') {
-                    // Direct function reference
-                    handler(component, event);
-                } else {
-                    console.warn('Invalid handler type');
-                }
-            }
-            
-            setupEventDelegation() {
-                document.addEventListener('click', (e) => {
-                    const element = e.target.closest('[data-component-id]');
-                    if (element) {
-                        const componentId = element.dataset.componentId;
-                        const component = this.components.get(componentId);
-                        if (component) {
-                            e.component = component;
-                        }
-                    }
-                });
-            }
-            
-            addChild(parent, child) {
-                parent.element.appendChild(child.element);
-                parent.children.push(child);
-                child.parent = parent;
-            }
-            
-            removeChild(parent, childId) {
-                const child = this.components.get(childId);
-                if (!child) return;
-                
-                parent.element.removeChild(child.element);
-                parent.children = parent.children.filter(c => c.id !== childId);
-                child.parent = null;
-            }
-            
-            destroy(componentId) {
-                const component = this.components.get(componentId);
-                if (!component) return;
-                
-                // Remove all event handlers
-                component.eventHandlers.forEach((handler, eventType) => {
-                    component.element.removeEventListener(eventType, handler);
-                });
-                
-                // Destroy all children
-                [...component.children].forEach(child => {
-                    this.destroy(child.id);
-                });
-                
-                // Remove from parent
-                if (component.parent) {
-                    component.parent.children = component.parent.children.filter(c => c.id !== componentId);
-                }
-                
-                // Remove from DOM
-                component.element.remove();
-                
-                // Remove from registry
-                this.components.delete(componentId);
-            }
-            
-            get(componentId) {
-                return this.components.get(componentId);
-            }
-            
-            update(componentId, updates) {
-                const component = this.components.get(componentId);
-                if (!component) return;
-                
-                // Merge updates into config
-                Object.assign(component.config, updates);
-                
-                // Re-apply configuration
-                if (updates.appearance) {
-                    this.applyAppearance(component.element, updates.appearance);
-                }
-                
-                if (updates.position) {
-                    this.applyPositioning(component.element, updates.position);
-                }
-                
-                if (updates.size) {
-                    this.applySize(component.element, updates.size);
-                }
-                
-                if (updates.state) {
-                    this.setState(component.element, updates.state);
-                }
-            }
-            
-            list() {
-                return Array.from(this.components.keys());
-            }
-            
-            clear() {
-                // Destroy all components
-                [...this.components.keys()].forEach(id => {
-                    this.destroy(id);
-                });
-            }
-        }
-        
-        // Initialize the ComponentFactory
-        let UIComponentFactory = null;
-        
-        function initializeComponentFactory() {
-            if (!UIComponentFactory) {
-                UIComponentFactory = new ComponentFactory(ColorAllocationSystem);
-                console.log('ComponentFactory initialized with', UIComponentFactory.componentTypes.size, 'component types');
-            }
-            return UIComponentFactory;
-        }
-        
-        // ===============================================================
-        // COMPONENT FACTORY MIGRATION FUNCTIONS
-        // ===============================================================
-        
-        // Global references to migrated components
-        let migratedComponents = {
-            authContainer: null,
-            loginForm: null,
-            registerForm: null,
-            chatContainer: null,
-            statusBar: null,
-            chatMessages: null,
-            chatInputContainer: null,
-            chatInput: null,
-            chatSendButton: null
-        };
-        
-        // Migrate authentication system to ComponentFactory
-        function migrateAuthSystem() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            // Create main auth container
-            migratedComponents.authContainer = UIComponentFactory.create({
-                id: 'auth-container',
-                type: 'panel',
-                position: {
-                    grid: { startCol: 0, endCol: 20, startRow: 5, endRow: 15 }
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'elevated'
-                }
-            });
+
+        function createAuthInterfaceCSS() {
+            // Create auth container directly in DOM with CSS Grid
+            const authContainer = document.createElement('div');
+            authContainer.className = 'auth-container';
+            authContainer.id = 'auth-container';
+            document.body.appendChild(authContainer);
             
             // Create tabs container
-            const tabsContainer = UIComponentFactory.create({
-                id: 'auth-tabs',
-                type: 'container',
-                layout: {
-                    direction: 'row',
-                    justify: 'space-between',
-                    align: 'center',
-                    gap: '0'
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'bordered'
-                }
-            });
+            const tabsContainer = document.createElement('div');
+            tabsContainer.style.cssText = `
+                grid-column: 2 / 20;
+                grid-row: 3 / 5;
+                display: flex;
+                justify-content: center;
+                gap: 2px;
+                border-bottom: 2px solid var(--text);
+                padding-bottom: 0;
+            `;
+            authContainer.appendChild(tabsContainer);
             
-            // Create login tab
-            const loginTab = UIComponentFactory.create({
-                id: 'login-tab',
-                type: 'button',
-                content: { text: 'Login' },
-                appearance: { theme: 'accent' },
-                behavior: {
-                    onClick: () => switchAuthTab('login')
-                }
-            });
+            // Create login tab button
+            const loginTab = document.createElement('button');
+            loginTab.className = 'tab-button active';
+            loginTab.id = 'login-tab';
+            loginTab.textContent = 'Login';
+            loginTab.onclick = () => switchTab('login');
+            tabsContainer.appendChild(loginTab);
             
-            // Create register tab
-            const registerTab = UIComponentFactory.create({
-                id: 'register-tab',
-                type: 'button',
-                content: { text: 'Register' },
-                behavior: {
-                    onClick: () => switchAuthTab('register')
-                }
-            });
-            
-            // Create forms container
-            const formsContainer = UIComponentFactory.create({
-                id: 'auth-forms-container',
-                type: 'container',
-                layout: {
-                    direction: 'column',
-                    justify: 'center',
-                    align: 'center',
-                    gap: '16px'
-                }
-            });
+            // Create register tab button
+            const registerTab = document.createElement('button');
+            registerTab.className = 'tab-button';
+            registerTab.id = 'register-tab';
+            registerTab.textContent = 'Register';
+            registerTab.onclick = () => switchTab('register');
+            tabsContainer.appendChild(registerTab);
             
             // Create login form
-            migratedComponents.loginForm = createLoginForm();
+            const loginForm = document.createElement('div');
+            loginForm.id = 'login-form';
+            loginForm.innerHTML = `
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="username-input" placeholder="Enter your username">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password-input" placeholder="Enter your password">
+                <button class="submit-button" onclick="handleLogin()">Login</button>
+                <div class="form-message" id="login-message"></div>
+            `;
+            loginForm.style.cssText = `
+                grid-column: 2 / 18;
+                grid-row: 6 / 16;
+            `;
+            authContainer.appendChild(loginForm);
             
-            // Create register form
-            migratedComponents.registerForm = createRegisterForm();
-            
-            // Assemble auth structure
-            UIComponentFactory.addChild(tabsContainer, loginTab);
-            UIComponentFactory.addChild(tabsContainer, registerTab);
-            UIComponentFactory.addChild(formsContainer, migratedComponents.loginForm);
-            UIComponentFactory.addChild(formsContainer, migratedComponents.registerForm);
-            
-            UIComponentFactory.addChild(migratedComponents.authContainer, tabsContainer);
-            UIComponentFactory.addChild(migratedComponents.authContainer, formsContainer);
-            
-            // Initially hide register form
-            UIComponentFactory.setState(migratedComponents.registerForm.element, 'hidden');
-            
-            console.log('Auth system migrated to ComponentFactory');
-            return migratedComponents.authContainer;
+            // Create register form (hidden initially)
+            const registerForm = document.createElement('div');
+            registerForm.id = 'register-form';
+            registerForm.style.display = 'none';
+            registerForm.innerHTML = `
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="reg-username-input" placeholder="Choose a username (3+ chars)">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="reg-password-input" placeholder="Choose a password (6+ chars)">
+                <button class="submit-button" onclick="handleRegister()">Register</button>
+                <div class="form-message" id="register-message"></div>
+            `;
+            registerForm.style.cssText = `
+                grid-column: 2 / 18;
+                grid-row: 6 / 16;
+            `;
+            authContainer.appendChild(registerForm);
         }
-        
-        // Create login form
-        function createLoginForm() {
-            const loginForm = UIComponentFactory.create({
-                id: 'login-form-cf',
-                type: 'container',
-                layout: {
-                    direction: 'column',
-                    justify: 'center',
-                    align: 'center',
-                    gap: '12px'
-                }
-            });
+
+        // ===============================================================
+        // AUTH FUNCTIONS
+        // ===============================================================
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
             
-            // Username field
-            const usernameGroup = UIComponentFactory.create({
-                id: 'login-username-group',
-                type: 'container',
-                layout: { direction: 'column', gap: '6px' }
-            });
-            
-            const usernameLabel = UIComponentFactory.create({
-                id: 'login-username-label',
-                type: 'text',
-                content: { text: 'Username' }
-            });
-            
-            const usernameInput = UIComponentFactory.create({
-                id: 'login-username-input',
-                type: 'input',
-                inputType: 'text',
-                content: { placeholder: 'Enter your username' }
-            });
-            
-            // Password field
-            const passwordGroup = UIComponentFactory.create({
-                id: 'login-password-group',
-                type: 'container',
-                layout: { direction: 'column', gap: '6px' }
-            });
-            
-            const passwordLabel = UIComponentFactory.create({
-                id: 'login-password-label',
-                type: 'text',
-                content: { text: 'Password' }
-            });
-            
-            const passwordInput = UIComponentFactory.create({
-                id: 'login-password-input',
-                type: 'input',
-                inputType: 'password',
-                content: { placeholder: 'Enter your password' }
-            });
-            
-            // Login button
-            const loginButton = UIComponentFactory.create({
-                id: 'login-button-cf',
-                type: 'button',
-                content: { text: 'Login' },
-                behavior: { onClick: 'loginMigrated' }
-            });
-            
-            // Message display
-            const loginMessage = UIComponentFactory.create({
-                id: 'login-message-cf',
-                type: 'text',
-                content: { text: '' }
-            });
-            
-            // Assemble form
-            UIComponentFactory.addChild(usernameGroup, usernameLabel);
-            UIComponentFactory.addChild(usernameGroup, usernameInput);
-            UIComponentFactory.addChild(passwordGroup, passwordLabel);
-            UIComponentFactory.addChild(passwordGroup, passwordInput);
-            
-            UIComponentFactory.addChild(loginForm, usernameGroup);
-            UIComponentFactory.addChild(loginForm, passwordGroup);
-            UIComponentFactory.addChild(loginForm, loginButton);
-            UIComponentFactory.addChild(loginForm, loginMessage);
-            
-            return loginForm;
-        }
-        
-        // Create register form
-        function createRegisterForm() {
-            const registerForm = UIComponentFactory.create({
-                id: 'register-form-cf',
-                type: 'container',
-                layout: {
-                    direction: 'column',
-                    justify: 'center',
-                    align: 'center',
-                    gap: '12px'
-                }
-            });
-            
-            // Username field
-            const usernameGroup = UIComponentFactory.create({
-                id: 'register-username-group',
-                type: 'container',
-                layout: { direction: 'column', gap: '6px' }
-            });
-            
-            const usernameLabel = UIComponentFactory.create({
-                id: 'register-username-label',
-                type: 'text',
-                content: { text: 'Username' }
-            });
-            
-            const usernameInput = UIComponentFactory.create({
-                id: 'register-username-input',
-                type: 'input',
-                inputType: 'text',
-                content: { placeholder: 'Choose a username (3+ chars)' }
-            });
-            
-            // Password field
-            const passwordGroup = UIComponentFactory.create({
-                id: 'register-password-group',
-                type: 'container',
-                layout: { direction: 'column', gap: '6px' }
-            });
-            
-            const passwordLabel = UIComponentFactory.create({
-                id: 'register-password-label',
-                type: 'text',
-                content: { text: 'Password' }
-            });
-            
-            const passwordInput = UIComponentFactory.create({
-                id: 'register-password-input',
-                type: 'input',
-                inputType: 'password',
-                content: { placeholder: 'Choose a password (6+ chars)' }
-            });
-            
-            // Register button
-            const registerButton = UIComponentFactory.create({
-                id: 'register-button-cf',
-                type: 'button',
-                content: { text: 'Register' },
-                behavior: { onClick: 'registerMigrated' }
-            });
-            
-            // Message display
-            const registerMessage = UIComponentFactory.create({
-                id: 'register-message-cf',
-                type: 'text',
-                content: { text: '' }
-            });
-            
-            // Assemble form
-            UIComponentFactory.addChild(usernameGroup, usernameLabel);
-            UIComponentFactory.addChild(usernameGroup, usernameInput);
-            UIComponentFactory.addChild(passwordGroup, passwordLabel);
-            UIComponentFactory.addChild(passwordGroup, passwordInput);
-            
-            UIComponentFactory.addChild(registerForm, usernameGroup);
-            UIComponentFactory.addChild(registerForm, passwordGroup);
-            UIComponentFactory.addChild(registerForm, registerButton);
-            UIComponentFactory.addChild(registerForm, registerMessage);
-            
-            return registerForm;
-        }
-        
-        // Migrate chat system to ComponentFactory
-        function migrateChatSystem() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            // Create main chat container
-            migratedComponents.chatContainer = UIComponentFactory.create({
-                id: 'chat-container-cf',
-                type: 'container',
-                position: {
-                    grid: { startCol: 0, endCol: 20, startRow: 0, endRow: 50 }
-                },
-                layout: {
-                    direction: 'column',
-                    justify: 'flex-start',
-                    align: 'stretch',
-                    gap: '0'
-                }
-            });
-            
-            // Create status bar
-            migratedComponents.statusBar = createStatusBar();
-            
-            // Create chat messages area
-            migratedComponents.chatMessages = UIComponentFactory.create({
-                id: 'chat-messages-cf',
-                type: 'container',
-                layout: {
-                    direction: 'column',
-                    justify: 'flex-start',
-                    align: 'stretch',
-                    gap: '8px'
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'minimal'
-                }
-            });
-            
-            // Create chat input container
-            migratedComponents.chatInputContainer = createChatInputContainer();
-            
-            // Assemble chat structure
-            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.statusBar);
-            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.chatMessages);
-            UIComponentFactory.addChild(migratedComponents.chatContainer, migratedComponents.chatInputContainer);
-            
-            console.log('Chat system migrated to ComponentFactory');
-            return migratedComponents.chatContainer;
-        }
-        
-        // Create status bar
-        function createStatusBar() {
-            const statusBar = UIComponentFactory.create({
-                id: 'status-bar-cf',
-                type: 'container',
-                layout: {
-                    direction: 'row',
-                    justify: 'space-between',
-                    align: 'center',
-                    gap: '16px'
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'bordered'
-                }
-            });
-            
-            // Status info
-            const statusInfo = UIComponentFactory.create({
-                id: 'status-info-cf',
-                type: 'text',
-                content: { text: 'Logged in as ' }
-            });
-            
-            // Logout button
-            const logoutButton = UIComponentFactory.create({
-                id: 'logout-button-cf',
-                type: 'button',
-                content: { text: 'Logout' },
-                appearance: { theme: 'error' },
-                behavior: { onClick: 'logout' }
-            });
-            
-            UIComponentFactory.addChild(statusBar, statusInfo);
-            UIComponentFactory.addChild(statusBar, logoutButton);
-            
-            return statusBar;
-        }
-        
-        // Create chat input container
-        function createChatInputContainer() {
-            const inputContainer = UIComponentFactory.create({
-                id: 'chat-input-container-cf',
-                type: 'container',
-                layout: {
-                    direction: 'row',
-                    justify: 'flex-start',
-                    align: 'center',
-                    gap: '12px'
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'bordered'
-                }
-            });
-            
-            // Chat input
-            migratedComponents.chatInput = UIComponentFactory.create({
-                id: 'chat-input-cf',
-                type: 'input',
-                content: { placeholder: 'Type a message or /? for commands...' },
-                behavior: {
-                    events: {
-                        keypress: 'handleChatKeyPress'
-                    }
-                }
-            });
-            
-            // Send button
-            migratedComponents.chatSendButton = UIComponentFactory.create({
-                id: 'chat-send-button-cf',
-                type: 'button',
-                content: { text: 'Send' },
-                behavior: { onClick: 'sendMessageFull' }
-            });
-            
-            UIComponentFactory.addChild(inputContainer, migratedComponents.chatInput);
-            UIComponentFactory.addChild(inputContainer, migratedComponents.chatSendButton);
-            
-            return inputContainer;
-        }
-        
-        // Auth tab switching
-        function switchAuthTab(tabName) {
             if (tabName === 'login') {
-                UIComponentFactory.setState(migratedComponents.loginForm.element, 'normal');
-                UIComponentFactory.setState(migratedComponents.registerForm.element, 'hidden');
-                UIComponentFactory.update('login-tab', { appearance: { theme: 'accent' } });
-                UIComponentFactory.update('register-tab', { appearance: { theme: 'primary' } });
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                
+                // Show login form, hide register form
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('register-form').style.display = 'none';
             } else {
-                UIComponentFactory.setState(migratedComponents.loginForm.element, 'hidden');
-                UIComponentFactory.setState(migratedComponents.registerForm.element, 'normal');
-                UIComponentFactory.update('register-tab', { appearance: { theme: 'accent' } });
-                UIComponentFactory.update('login-tab', { appearance: { theme: 'primary' } });
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                
+                // Show register form, hide login form
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('register-form').style.display = 'block';
             }
         }
-        
-        // Migrated login function
-        function loginMigrated(component, event) {
-            const usernameInput = UIComponentFactory.get('login-username-input');
-            const passwordInput = UIComponentFactory.get('login-password-input');
-            const messageComponent = UIComponentFactory.get('login-message-cf');
-            
-            const username = usernameInput.element.value.trim();
-            const password = passwordInput.element.value;
+
+        function showMessage(formId, message, isError = false) {
+            const messageElement = document.getElementById(`${formId}-message`);
+            if (messageElement) {
+                messageElement.textContent = message;
+                messageElement.className = `form-message ${isError ? 'error' : 'success'}`;
+            }
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('username-input').value;
+            const password = document.getElementById('password-input').value;
             
             if (!username || !password) {
-                messageComponent.config.content.text = 'Please fill in all fields';
-                messageComponent.element.textContent = messageComponent.config.content.text;
-                messageComponent.element.style.color = 'var(--error)';
+                showMessage('login', 'Please fill in all fields', true);
                 return;
             }
             
-            // Set loading state
-            UIComponentFactory.setState(component.element, 'loading');
-            
-            // Perform login
-            performLogin(username, password, messageComponent, component);
+            // For now, just show success
+            showMessage('login', 'Login functionality would connect to server', false);
+            console.log('Login attempt:', { username, password });
         }
-        
-        // Migrated register function
-        function registerMigrated(component, event) {
-            const usernameInput = UIComponentFactory.get('register-username-input');
-            const passwordInput = UIComponentFactory.get('register-password-input');
-            const messageComponent = UIComponentFactory.get('register-message-cf');
-            
-            const username = usernameInput.element.value.trim();
-            const password = passwordInput.element.value;
+
+        function handleRegister() {
+            const username = document.getElementById('reg-username-input').value;
+            const password = document.getElementById('reg-password-input').value;
             
             if (!username || !password) {
-                messageComponent.config.content.text = 'Please fill in all fields';
-                messageComponent.element.textContent = messageComponent.config.content.text;
-                messageComponent.element.style.color = 'var(--error)';
+                showMessage('register', 'Please fill in all fields', true);
                 return;
             }
             
             if (username.length < 3) {
-                messageComponent.config.content.text = 'Username must be at least 3 characters';
-                messageComponent.element.textContent = messageComponent.config.content.text;
-                messageComponent.element.style.color = 'var(--error)';
+                showMessage('register', 'Username must be at least 3 characters', true);
                 return;
             }
             
             if (password.length < 6) {
-                messageComponent.config.content.text = 'Password must be at least 6 characters';
-                messageComponent.element.textContent = messageComponent.config.content.text;
-                messageComponent.element.style.color = 'var(--error)';
+                showMessage('register', 'Password must be at least 6 characters', true);
                 return;
             }
             
-            // Set loading state
-            UIComponentFactory.setState(component.element, 'loading');
+            // For now, just show success
+            showMessage('register', 'Registration successful! You can now login.', false);
+            console.log('Register attempt:', { username, password });
             
-            // Perform register
-            performRegister(username, password, messageComponent, component);
+            // Switch to login tab after successful registration
+            setTimeout(() => switchTab('login'), 1500);
         }
-        
-        // Initialize migrated systems
-        function initializeMigratedComponents() {
-            // Initialize ComponentFactory
-            initializeComponentFactory();
-            
-            // Create auth system
-            migrateAuthSystem();
-            
-            // Create chat system (initially hidden)
-            migrateChatSystem();
-            UIComponentFactory.setState(migratedComponents.chatContainer.element, 'hidden');
-            
-            console.log('Migrated components initialized');
-        }
-        
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            initializeMigratedComponents();
-        });
-
-        // ===============================================================
-        // COMPONENT FACTORY EXAMPLE USAGE FUNCTIONS
-        // ===============================================================
-        
-        // Example handler functions
-        function handleTestButtonClick(component, event) {
-            console.log('Test button clicked:', component.id);
-            showMessage('component-demo', 'Button clicked successfully!', false);
-        }
-        
-        function handleInputChange(component, event) {
-            console.log('Input changed:', component.id, event.target.value);
-        }
-        
-        function handlePanelHover(component, event) {
-            console.log('Panel hovered:', component.id);
-        }
-        
-        // Create demo components function
-        function createDemoComponents() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            // Create a demo panel
-            const demoPanel = UIComponentFactory.create({
-                id: 'demo-panel',
-                type: 'panel',
-                position: {
-                    grid: { startCol: 2, endCol: 8, startRow: 10, endRow: 18 }
-                },
-                appearance: {
-                    theme: 'primary',
-                    style: 'elevated'
-                },
-                behavior: {
-                    onHover: 'handlePanelHover'
-                }
-            });
-            
-            // Create a text component inside the panel
-            const titleText = UIComponentFactory.create({
-                id: 'demo-title',
-                type: 'text',
-                position: {
-                    grid: { startCol: 3, endCol: 7, startRow: 11, endRow: 12 }
-                },
-                content: {
-                    text: 'Component System Demo'
-                }
-            });
-            
-            // Create an input component
-            const demoInput = UIComponentFactory.create({
-                id: 'demo-input',
-                type: 'input',
-                position: {
-                    grid: { startCol: 3, endCol: 7, startRow: 13, endRow: 14 }
-                },
-                content: {
-                    placeholder: 'Type something...'
-                },
-                behavior: {
-                    events: {
-                        input: 'handleInputChange'
-                    }
-                }
-            });
-            
-            // Create a button component
-            const demoButton = UIComponentFactory.create({
-                id: 'demo-button',
-                type: 'button',
-                position: {
-                    grid: { startCol: 3, endCol: 5, startRow: 15, endRow: 16 }
-                },
-                content: {
-                    text: 'Test Button'
-                },
-                behavior: {
-                    onClick: 'handleTestButtonClick'
-                }
-            });
-            
-            // Create an icon component
-            const demoIcon = UIComponentFactory.create({
-                id: 'demo-icon',
-                type: 'icon',
-                position: {
-                    grid: { startCol: 6, endCol: 7, startRow: 15, endRow: 16 }
-                },
-                content: {
-                    symbol: '⚡',
-                    size: '32px'
-                }
-            });
-            
-            console.log('Demo components created:', [demoPanel, titleText, demoInput, demoButton, demoIcon].map(c => c.id));
-            return [demoPanel, titleText, demoInput, demoButton, demoIcon];
-        }
-        
-        // Create container with nested components
-        function createNestedDemo() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            const container = UIComponentFactory.create({
-                id: 'demo-container',
-                type: 'container',
-                position: {
-                    grid: { startCol: 10, endCol: 20, startRow: 5, endRow: 15 }
-                },
-                layout: {
-                    direction: 'column',
-                    justify: 'center',
-                    align: 'center',
-                    gap: '16px'
-                },
-                appearance: {
-                    theme: 'accent',
-                    style: 'bordered'
-                }
-            });
-            
-            // Add nested components
-            const nestedText = UIComponentFactory.create({
-                id: 'nested-text',
-                type: 'text',
-                content: {
-                    text: 'Nested Component'
-                }
-            });
-            
-            const nestedButton = UIComponentFactory.create({
-                id: 'nested-button',
-                type: 'button',
-                content: {
-                    text: 'Nested Button'
-                },
-                behavior: {
-                    onClick: (component, event) => {
-                        console.log('Nested button clicked!');
-                    }
-                }
-            });
-            
-            UIComponentFactory.addChild(container, nestedText);
-            UIComponentFactory.addChild(container, nestedButton);
-            
-            console.log('Nested demo created with container:', container.id);
-            return container;
-        }
-        
-        // Create floating components (absolute positioning)
-        function createFloatingDemo() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            const floatingButton = UIComponentFactory.create({
-                id: 'floating-button',
-                type: 'button',
-                position: {
-                    absolute: { x: '20px', y: '20px', width: '200px', height: '60px' }
-                },
-                appearance: {
-                    theme: 'accent',
-                    style: 'elevated'
-                },
-                content: {
-                    text: 'Floating'
-                },
-                behavior: {
-                    onClick: () => {
-                        console.log('Floating button clicked!');
-                    }
-                }
-            });
-            
-            return floatingButton;
-        }
-        
-        // Component system demo command
-        function demoComponentSystem() {
-            console.log('Creating Component System Demo...');
-            
-            // Create demo components
-            const demoComponents = createDemoComponents();
-            const nestedDemo = createNestedDemo();
-            const floatingDemo = createFloatingDemo();
-            
-            // Show demo message
-            const demoMessage = {
-                type: 'command',
-                command: 'Component System Demo',
-                description: `Created ${demoComponents.length + 2} components using the ComponentFactory system. Components are positioned on the grid and floating in the viewport. Check the console for details.`,
-                timestamp: new Date().toISOString(),
-                isLocalOnly: true
-            };
-            
-            insertMessageInOrder(demoMessage);
-            
-            return {
-                gridComponents: demoComponents,
-                nestedComponent: nestedDemo,
-                floatingComponent: floatingDemo
-            };
-        }
-        
-        // Component management demo
-        function manageComponentsDemo() {
-            if (!UIComponentFactory) {
-                initializeComponentFactory();
-            }
-            
-            console.log('Current components:', UIComponentFactory.list());
-            console.log('Component count:', UIComponentFactory.components.size);
-            
-            // Update a component
-            const button = UIComponentFactory.get('demo-button');
-            if (button) {
-                UIComponentFactory.update('demo-button', {
-                    content: { text: 'Updated Button!' },
-                    appearance: { theme: 'accent' }
-                });
-                console.log('Updated demo-button');
-            }
-            
-            // Change state of a component
-            const input = UIComponentFactory.get('demo-input');
-            if (input) {
-                UIComponentFactory.setState(input.element, 'active');
-                console.log('Set demo-input to active state');
-            }
-            
-            const managementMessage = {
-                type: 'command',
-                command: 'Component Management Demo',
-                description: `Managing ${UIComponentFactory.components.size} components. Updated button text and input state. Type /clear-components to remove all demo components.`,
-                timestamp: new Date().toISOString(),
-                isLocalOnly: true
-            };
-            
-            insertMessageInOrder(managementMessage);
-        }
-        
-        // Clear demo components
-        function clearDemoComponents() {
-            if (!UIComponentFactory) {
-                console.log('No ComponentFactory initialized');
-                return;
-            }
-            
-            const componentIds = UIComponentFactory.list();
-            const demoIds = componentIds.filter(id => 
-                id.startsWith('demo-') || id.startsWith('nested-') || id.startsWith('floating-')
-            );
-            
-            demoIds.forEach(id => {
-                UIComponentFactory.destroy(id);
-            });
-            
-            console.log(`Cleared ${demoIds.length} demo components`);
-            
-            const clearMessage = {
-                type: 'command',
-                command: 'Components Cleared',
-                description: `Removed ${demoIds.length} demo components from the interface.`,
-                timestamp: new Date().toISOString(),
-                isLocalOnly: true
-            };
-            
-            insertMessageInOrder(clearMessage);
-        }
-        
-        // Register component system commands
-        const COMPONENT_COMMANDS = {
-            '/components': 'Create demo components to test the ComponentFactory system',
-            '/manage-components': 'Show component management examples',
-            '/clear-components': 'Remove all demo components'
-        };
-        
-        // Extend chat commands with component system commands
-        function executeComponentCommand(command) {
-            const commandLower = command.toLowerCase();
-            
-            switch (commandLower) {
-                case '/components':
-                    return demoComponentSystem();
-                case '/manage-components':
-                    return manageComponentsDemo();
-                case '/clear-components':
-                    return clearDemoComponents();
-                default:
-                    return null;
-            }
-        }
-        
-        // Override the existing executeCommand to include component commands
-        const originalExecuteCommand = window.executeCommand || function() {};
-        window.executeCommand = function(command) {
-            // Try component commands first
-            const result = executeComponentCommand(command);
-            if (result !== null) {
-                return;
-            }
-            
-            // Fall back to original command system
-            originalExecuteCommand(command);
-        };
-        
-        // Update help command to include component commands
-        const originalShowCommandHelp = window.showCommandHelp || function() {};
-        window.showCommandHelp = function() {
-            const helpMessages = [];
-            const currentTime = new Date().toISOString();
-            
-            // Add original commands
-            Object.entries(window.CHAT_COMMANDS || {}).forEach(([cmd, desc]) => {
-                helpMessages.push({
-                    type: 'command',
-                    command: cmd,
-                    description: desc,
-                    timestamp: currentTime,
-                    isLocalOnly: true
-                });
-            });
-            
-            // Add component commands
-            Object.entries(COMPONENT_COMMANDS).forEach(([cmd, desc]) => {
-                helpMessages.push({
-                    type: 'command',
-                    command: cmd,
-                    description: desc,
-                    timestamp: currentTime,
-                    isLocalOnly: true
-                });
-            });
-            
-            // Insert all help messages at once
-            window.insertMessagesInOrder(helpMessages);
-            window.saveLocalMessages();
-        };
     </script>
 </body>
-
 </html>
