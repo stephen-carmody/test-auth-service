@@ -1285,8 +1285,11 @@
                 const responseData = await response.json();
                 console.log(`[${user.username}] Store response data:`, responseData);
                 
-                // Add to local display immediately for better UX
-                addChatMessage(text, 'user', user.username);
+                // Don't add to local display immediately
+                // Let polling handle all message updates from gateway
+                const sendTime = new Date().toISOString();
+                console.log(`[${user.username}] Message sent at ${sendTime}, waiting for polling to display...`);
+                console.log(`[${user.username}] Message object:`, message);
                 
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -1327,7 +1330,8 @@
                 }
                 
                 const data = await response.json();
-                console.log(`[${user.username}] Raw response:`, data);
+                const responseTime = new Date().toISOString();
+                console.log(`[${user.username}] Raw response at ${responseTime}:`, data);
                 
                 // New API format: {operation: "read", key: "chat/messages", result: {value: ..., version: ...}}
                 let messages = [];
@@ -1487,22 +1491,35 @@
             isPolling = true;
             
             try {
-                // Single API call instead of two redundant calls
-                const { messages: newMessages, version: currentVersion } = await getMessages();
+                // Get all current messages from gateway
+                const { messages: allMessages, version: currentVersion } = await getMessages();
+                const currentUser = getCurrentUser()?.username || 'unknown';
+                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway at ${new Date().toISOString()}`);
+                console.log(`[${currentUser}] Message IDs:`, allMessages.map(m => m.id));
                 
                 // Clean up old messages periodically
                 if (Date.now() - lastCleanup > 5 * 60 * 1000) { // Every 5 minutes
-                    await cleanupOldMessages(newMessages);
+                    await cleanupOldMessages(allMessages);
                     lastCleanup = Date.now();
                 }
-                newMessages.forEach(message => {
-                    if (!lastProcessedMessageIds.has(message.id)) {
-                        lastProcessedMessageIds.add(message.id);
-                        
-                        if (message.type === 'message' && message.username !== getCurrentUser()?.username) {
-                            addChatMessage(message.message, 'user', message.username);
-                        }
+                
+                // Clear chat display and rebuild with all messages from gateway
+                const chatMessages = document.getElementById('chat-messages');
+                chatMessages.innerHTML = ''; // Clear all existing messages
+                
+                // Add all messages returned by gateway (source of truth)
+                allMessages.forEach(message => {
+                    if (message.type === 'message') {
+                        addChatMessage(message.message, 'user', message.username);
+                    } else if (message.type === 'system') {
+                        addChatMessage(message.message, 'system');
                     }
+                });
+                
+                // Track processed message IDs for future deduplication
+                lastProcessedMessageIds.clear();
+                allMessages.forEach(message => {
+                    lastProcessedMessageIds.add(message.id);
                 });
                 
                 // Update online users list
@@ -1624,6 +1641,9 @@
         }
 
         function addChatMessage(message, type = 'user', sender = null) {
+            const displayTime = new Date().toISOString();
+            console.log(`[${sender || 'system'}] Adding message to UI at ${displayTime}: "${message}"`);
+            
             const chatMessages = document.getElementById('chat-messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `chat-message ${type}`;
