@@ -1305,6 +1305,22 @@
             
             try {
                 if (isOnline) {
+                    // First ensure the shared key exists
+                    try {
+                        await fetch('http://localhost:3000/shared/users/online', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${user.token}`
+                            },
+                            body: JSON.stringify({
+                                value: []
+                            })
+                        });
+                    } catch (e) {
+                        // Key might already exist, that's fine
+                    }
+                    
                     // Add to online users set
                     await fetch('http://localhost:3000/shared/users/online/atomic', {
                         method: 'POST',
@@ -1355,7 +1371,8 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to get online users');
+                    // If online users endpoint doesn't exist yet, return just current user
+                    return [{ username: user.username }];
                 }
                 
                 const data = await response.json();
@@ -1363,7 +1380,8 @@
                 
             } catch (error) {
                 console.error('Error getting online users:', error);
-                return [];
+                // Return just current user as fallback
+                return [{ username: user.username }];
             }
         }
 
@@ -1434,13 +1452,32 @@
             }
         }
 
-        function startPolling() {
+        async function startPolling() {
             if (pollingInterval) {
                 clearInterval(pollingInterval);
             }
             
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            // Initialise storage if needed
+            try {
+                await fetch('http://localhost:3000/shared/chat/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({
+                        value: []
+                    })
+                });
+            } catch (e) {
+                // Key might already exist, that's fine
+            }
+            
             // Update online status
-            updateOnlineStatus(true);
+            await updateOnlineStatus(true);
             
             // Poll every 2 seconds
             pollingInterval = setInterval(() => {
