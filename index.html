@@ -1209,6 +1209,8 @@
 
         async function sendMessage(text, user) {
             try {
+                // First get current messages with version
+                const { messages: currentMessages, version: currentVersion } = await getMessages();
                 const message = {
                     id: `${Date.now()}-${user.username}`,
                     username: user.username,
@@ -1217,36 +1219,55 @@
                     type: 'message'
                 };
                 
-                console.log(`[${user.username}] Sending message via atomic append:`, message);
+                console.log(`[${user.username}] Current messages:`, currentMessages);
+                console.log(`[${user.username}] Current version:`, currentVersion);
+                console.log(`[${user.username}] Adding message:`, message);
                 
-                // Use atomic append - Redis handles this atomically without versioning
-                const response = await fetch('http://localhost:3000/shared/chat/messages/atomic', {
-                    method: 'POST',
+                // Add new message to array and store back with current version
+                const updatedMessages = [...currentMessages, message];
+                
+                // Update with optimistic locking using current version
+                const response = await fetch('http://localhost:3000/shared/chat/messages', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
                     },
                     body: JSON.stringify({
-                        operation: 'append',
-                        field: 'list',
-                        value: message
+                        value: updatedMessages,
+                        version: currentVersion
                     })
                 });
                 
-                console.log(`[${user.username}] Atomic append response status:`, response.status);
+                console.log(`[${user.username}] Store response status:`, response.status);
                 
                 if (!response.ok) {
                     const errorData = await response.text();
-                    console.error(`[${user.username}] Atomic append error:`, errorData);
+                    console.error(`[${user.username}] Store error:`, errorData);
                     
-                    // Handle rate limiting
-                    if (response.status === 429) {
-                        const retryData = JSON.parse(errorData);
-                        const retryAfter = retryData.retryAfter || 5;
-                        addChatMessage(`Rate limited. Retrying in ${retryAfter} seconds...`, 'system');
-                        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-                        return sendMessage(text, user); // Retry after delay
+                    // If version conflict, retry with latest data
+                    if (errorData.includes('Version conflict')) {
+                        console.log(`[${user.username}] Version conflict, retrying...`);
+                        await new Promise(resolve => setTimeout(resolve, 100)); // Brief delay
+                        return sendMessage(text, user); // Retry
                     }
+                    
+                    throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
+                }
+                
+                const responseData = await response.json();
+                console.log(`[${user.username}] Store response data:`, responseData);
+                
+                // Add to local display immediately for better UX
+                addChatMessage(text, 'user', user.username);
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                if (!error.message.includes('Version conflict')) {
+                    addChatMessage('Failed to send message', 'system');
+                }
+            }
+        }
                     
                     throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
                 }
@@ -1265,13 +1286,11 @@
 
         async function getMessages() {
             const user = getCurrentUser();
-            if (!user) return [];
+            if (!user) return { messages: [], version: 0 };
             
             try {
-                console.log(`[${user.username}] Getting messages from atomic list`);
-                
-                // Try GET on the atomic list key directly
-                const response = await fetch('http://localhost:3000/shared/chat/messages/list', {
+                console.log(`[${user.username}] Getting messages from shared storage`);
+                const response = await fetch('http://localhost:3000/shared/chat/messages', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -1279,49 +1298,30 @@
                 });
                 
                 if (!response.ok) {
-                    // Fallback to regular GET
-                    console.log(`[${user.username}] Fallback to regular GET`);
-                    const fallbackResponse = await fetch('http://localhost:3000/shared/chat/messages', {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${user.token}`
-                        }
-                    });
-                    
-                    if (!fallbackResponse.ok) {
-                        throw new Error('Failed to get messages');
-                    }
-                    
-                    const data = await fallbackResponse.json();
-                    console.log(`[${user.username}] Fallback response:`, data);
-                    
-                    let messages = [];
-                    if (data.value) {
-                        if (Array.isArray(data.value)) {
-                            messages = data.value;
-                        } else if (data.value.list) {
-                            messages = data.value.list;
-                        }
-                    }
-                    
-                    console.log(`[${user.username}] Fallback messages:`, messages);
-                    return messages;
+                    throw new Error('Failed to get messages');
                 }
                 
                 const data = await response.json();
-                console.log(`[${user.username}] Atomic list response:`, data);
+                console.log(`[${user.username}] Raw response:`, data);
                 
+                // Handle both direct array and list structure
                 let messages = [];
+                let version = data.version || 0;
+                
                 if (data.value) {
-                    messages = Array.isArray(data.value) ? data.value : [];
+                    if (Array.isArray(data.value)) {
+                        messages = data.value;
+                    } else if (data.value.list) {
+                        messages = data.value.list;
+                    }
                 }
                 
-                console.log(`[${user.username}] Parsed messages:`, messages);
-                return messages;
+                console.log(`[${user.username}] Parsed messages:`, messages, `version: ${version}`);
+                return { messages, version };
                 
             } catch (error) {
                 console.error('Error getting messages:', error);
-                return [];
+                return { messages: [], version: 0 };
             }
         }
 
@@ -1478,7 +1478,7 @@
                 }
                 
                 // Process new messages
-                const newMessages = await getMessages();
+                const { messages: newMessages, version: currentVersion } = await getMessages();
                 newMessages.forEach(message => {
                     if (!lastProcessedMessageIds.has(message.id)) {
                         lastProcessedMessageIds.add(message.id);
