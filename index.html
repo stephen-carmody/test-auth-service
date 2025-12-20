@@ -1219,6 +1219,7 @@
                 
                 console.log('Sending message:', message);
                 
+                // Send via atomic append to list field
                 const response = await fetch('http://localhost:3000/shared/chat/messages/atomic', {
                     method: 'POST',
                     headers: {
@@ -1227,6 +1228,7 @@
                     },
                     body: JSON.stringify({
                         operation: 'append',
+                        field: 'list',
                         value: message
                     })
                 });
@@ -1265,7 +1267,15 @@
                 }
                 
                 const data = await response.json();
-                return data.value || [];
+                // Handle both direct array and list structure
+                if (data.value) {
+                    if (Array.isArray(data.value)) {
+                        return data.value;
+                    } else if (data.value.list) {
+                        return data.value.list;
+                    }
+                }
+                return [];
                 
             } catch (error) {
                 console.error('Error getting messages:', error);
@@ -1485,6 +1495,7 @@
                         },
                         body: JSON.stringify({
                             operation: 'append',
+                            field: 'list',
                             value: {
                                 id: 'init',
                                 username: 'system',
