@@ -1498,9 +1498,9 @@
             
             try {
                 // Get all current messages from gateway
-                const { messages: allMessages, version: currentVersion } = await getMessages();
+                const { messages: allMessages, version: currentVersion, source } = await getMessages();
                 const currentUser = getCurrentUser()?.username || 'unknown';
-                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway (source: ${version}) at ${new Date().toISOString()}`);
+                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway (source: ${source}) at ${new Date().toISOString()}`);
                 console.log(`[${currentUser}] Message IDs:`, allMessages.map(m => m.id));
                 
                 // Clean up old messages periodically
