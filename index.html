@@ -862,6 +862,83 @@
             showMessage('login', 'Logged out successfully', false);
         }
 
+        // ===============================================================
+        // AUTH INTERFACE CREATION - CSS GRID VERSION
+        // ==============================================================
+
+        function createAuthInterfaceCSS() {
+            // Create auth container directly in DOM with CSS Grid
+            const authContainer = document.createElement('div');
+            authContainer.className = 'auth-container';
+            authContainer.id = 'auth-container';
+            document.body.appendChild(authContainer);
+            
+            // Create tabs container
+            const tabsContainer = document.createElement('div');
+            tabsContainer.className = 'tab-container';
+            tabsContainer.style.cssText = `
+                grid-column: 2 / 20;
+                grid-row: 3 / 5;
+                display: flex;
+                justify-content: center;
+                gap: 2px;
+                border-bottom: 2px solid var(--text);
+                padding-bottom: 0;
+            `;
+            authContainer.appendChild(tabsContainer);
+            
+            // Create login tab button
+            const loginTab = document.createElement('button');
+            loginTab.className = 'tab-button active';
+            loginTab.id = 'login-tab';
+            loginTab.textContent = 'Login';
+            loginTab.onclick = () => switchTab('login');
+            tabsContainer.appendChild(loginTab);
+            
+            // Create register tab button
+            const registerTab = document.createElement('button');
+            registerTab.className = 'tab-button';
+            registerTab.id = 'register-tab';
+            registerTab.textContent = 'Register';
+            registerTab.onclick = () => switchTab('register');
+            tabsContainer.appendChild(registerTab);
+            
+            // Create login form
+            const loginForm = document.createElement('div');
+            loginForm.id = 'login-form';
+            loginForm.innerHTML = `
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="username-input" placeholder="Enter your username">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password-input" placeholder="Enter your password">
+                <button class="submit-button" onclick="handleLogin()">Login</button>
+                <div class="form-message" id="login-message"></div>
+            `;
+            loginForm.style.cssText = `
+                grid-column: 2 / 18;
+                grid-row: 6 / 16;
+            `;
+            authContainer.appendChild(loginForm);
+            
+            // Create register form (hidden initially)
+            const registerForm = document.createElement('div');
+            registerForm.id = 'register-form';
+            registerForm.style.display = 'none';
+            registerForm.innerHTML = `
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="reg-username-input" placeholder="Choose a username (3+ chars)">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="reg-password-input" placeholder="Choose a password (6+ chars)">
+                <button class="submit-button" onclick="handleRegister()">Register</button>
+                <div class="form-message" id="register-message"></div>
+            `;
+            registerForm.style.cssText = `
+                grid-column: 2 / 18;
+                grid-row: 6 / 16;
+            `;
+            authContainer.appendChild(registerForm);
+        }
+
         // Initialize on page load
         window.addEventListener('load', () => {
             // Initialize grid
@@ -877,10 +954,6 @@
                 showAuthenticationState();
             }
         });
-
-        // ===============================================================
-        // AUTH INTERFACE CREATION - CSS GRID VERSION
-        // ==============================================================
 
         // Handle window resize
         window.addEventListener('resize', () => {
