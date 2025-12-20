@@ -216,6 +216,13 @@
             animation: dots 1.5s steps(4, end) infinite;
         }
 
+        /* Chat Input Styles */
+        #chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 3px var(--accent);
+        }
+
         @keyframes dots {
             0%, 20% { content: ''; }
             40% { content: '.'; }
@@ -675,6 +682,35 @@
                         Refresh Status
                     </button>
                 </div>
+                <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+                    <h3 style="color: var(--text); margin-bottom: 10px;">Terminal Commands</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 15px;">Type /logout or press Enter to send a command.</p>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="chat-input" class="form-input" 
+                               placeholder="Enter command..." 
+                               style="font-size: 18px; margin-bottom: 0;"
+                               onkeypress="handleChatInput(event)">
+                        <button class="submit-button" onclick="sendCommand()" 
+                                style="font-size: 18px; padding: 8px 16px;">
+                            Send
+                        </button>
+                    </div>
+                    <div id="chat-history" style="
+                        background: var(--surface);
+                        border: 1px solid var(--border);
+                        border-radius: 4px;
+                        padding: 10px;
+                        height: 200px;
+                        overflow-y: auto;
+                        font-size: 14px;
+                        font-family: monospace;
+                        color: var(--text);
+                    ">
+                        <div style="color: var(--accent); font-weight: 600; margin-bottom: 5px;">
+                            Welcome, ${user.username}! Type /? for available commands.
+                        </div>
+                    </div>
+                </div>
             `;
         }
 
@@ -934,6 +970,60 @@
                 grid-row: 6 / 16;
             `;
             authContainer.appendChild(registerForm);
+        }
+
+        // ===============================================================
+        // CHAT FUNCTIONS
+        // ==============================================================
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendCommand();
+            }
+        }
+
+        function sendCommand() {
+            const input = document.getElementById('chat-input');
+            const command = input.value.trim();
+            
+            if (!command) return;
+            
+            // Handle logout command
+            if (command.toLowerCase() === '/logout') {
+                const chatHistory = document.getElementById('chat-history');
+                addChatMessage('System: Logging out...', 'system');
+                
+                setTimeout(() => {
+                    handleLogout();
+                    input.value = '';
+                    addChatMessage('Logged out successfully.', 'system');
+                }, 500);
+                return;
+            }
+            
+            // Add unknown command message for now
+            addChatMessage(`${user.username}: ${command}`, 'user');
+            input.value = '';
+        }
+
+        function addChatMessage(message, type = 'user') {
+            const chatHistory = document.getElementById('chat-history');
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `
+                padding: 5px 8px;
+                margin-bottom: 5px;
+                border-radius: 3px;
+                font-size: 14px;
+                ${type === 'user' ? 
+                    'background: var(--accent); color: white; margin-left: auto;' : 
+                    'background: var(--surface-light); color: var(--text); font-style: italic; margin-left: auto;'
+                }
+            `;
+            messageDiv.textContent = message;
+            
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
         // Initialize on page load
