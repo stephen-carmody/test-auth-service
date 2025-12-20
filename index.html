@@ -619,10 +619,13 @@
         function showAuthenticationState() {
             const authContainer = document.getElementById('auth-container');
             
-            // Hide tabs container if it exists
+            // Make auth container visible
+            authContainer.style.display = 'block';
+            
+            // Show tabs container if it exists
             const tabsContainer = authContainer.querySelector('.tab-container');
             if (tabsContainer) {
-                tabsContainer.style.display = 'none';
+                tabsContainer.style.display = 'flex';
             }
             
             // Show authentication forms
