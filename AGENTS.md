@@ -2,6 +2,10 @@
 
 A test authentication service with frontend interface and backend gateway integration.
 
+## Global AGENTS Rules
+
+**FIRST RULE**: Read global AGENTS.md from ~/.config/opencode/AGENTS.md (if exists) before proceeding with any task. Follow both global and local rules, with global rules taking precedence.
+
 ## Project Overview
 
 This repository contains a frontend authentication interface that integrates with a separate gateway service backend. The frontend uses vanilla JavaScript with a custom SimpleGridUI system, while the backend provides Node.js/Express authentication endpoints with Redis storage.

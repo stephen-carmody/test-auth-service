@@ -989,6 +989,8 @@
             
             if (!command) return;
             
+            const user = getCurrentUser();
+            
             // Handle logout command
             if (command.toLowerCase() === '/logout') {
                 const chatHistory = document.getElementById('chat-history');
