@@ -1252,23 +1252,6 @@
                 addChatMessage('Failed to send message', 'system');
             }
         }
-                    
-                    throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
-                }
-                
-                const responseData = await response.json();
-                console.log(`[${user.username}] Store response data:`, responseData);
-                
-                // Add to local display immediately for better UX
-                addChatMessage(text, 'user', user.username);
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                if (!error.message.includes('Version conflict')) {
-                    addChatMessage('Failed to send message', 'system');
-                }
-            }
-        }
 
         async function getMessages() {
             const user = getCurrentUser();
