@@ -644,9 +644,7 @@
                 tabsContainer.style.display = 'none';
             }
             
-            // Hide the entire auth container when user is logged in
-            authContainer.style.display = 'none';
-            
+            // Don't hide auth container - we'll replace its content
             // Create authenticated user view
             let authenticatedView = document.getElementById('authenticated-view');
             if (!authenticatedView) {
