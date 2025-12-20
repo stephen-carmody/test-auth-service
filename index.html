@@ -1227,32 +1227,36 @@
                 const updatedMessages = [...currentMessages, message];
                 
                 // Update with optimistic locking using current version
-                const response = await fetch('http://localhost:3000/shared/chat/messages', {
-                    method: 'PUT',
+                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
+                        'Authorization': `Bearer ${user.token}`,
+                        'Cache-Control': 'persist=true' // Force persistence for chat messages
                     },
                     body: JSON.stringify({
+                        operation: 'write',
                         value: updatedMessages,
-                        version: currentVersion
+                        options: {
+                            version: currentVersion
+                        }
                     })
                 });
                 
                 console.log(`[${user.username}] Store response status:`, response.status);
                 
                 if (!response.ok) {
-                    const errorData = await response.text();
+                    const errorData = await response.status === 409 ? await response.json() : await response.text();
                     console.error(`[${user.username}] Store error:`, errorData);
                     
                     // If version conflict, retry with latest data
-                    if (errorData.includes('Version conflict')) {
+                    if (response.status === 409 && (errorData.error === 'VERSION_CONFLICT' || errorData.error?.includes('Version conflict'))) {
                         console.log(`[${user.username}] Version conflict, retrying...`);
                         await new Promise(resolve => setTimeout(resolve, 100)); // Brief delay
                         return sendMessage(text, user); // Retry
                     }
                     
-                    throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
+                    throw new Error(`Failed to send message: ${response.status} - ${JSON.stringify(errorData)}`);
                 }
                 
                 const responseData = await response.json();
@@ -1269,51 +1273,47 @@
             }
         }
                     
-                    throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
-                }
-                
-                const responseData = await response.json();
-                console.log(`[${user.username}] Atomic append response data:`, responseData);
-                
-                // Add to local display immediately for better UX
-                addChatMessage(text, 'user', user.username);
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                addChatMessage('Failed to send message', 'system');
-            }
-        }
+
 
         async function getMessages() {
             const user = getCurrentUser();
             if (!user) return { messages: [], version: 0 };
             
             try {
-                console.log(`[${user.username}] Getting messages from shared storage`);
-                const response = await fetch('http://localhost:3000/shared/chat/messages', {
-                    method: 'GET',
+                console.log(`[${user.username}] Getting messages from unified API`);
+                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
+                    method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
-                    }
+                    },
+                    body: JSON.stringify({
+                        operation: 'read'
+                    })
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to get messages');
+                    if (response.status === 404) {
+                        // Key doesn't exist yet, return empty
+                        return { messages: [], version: 0 };
+                    }
+                    throw new Error(`Failed to get messages: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 console.log(`[${user.username}] Raw response:`, data);
                 
-                // Handle both direct array and list structure
+                // New API format: {operation: "read", key: "chat/messages", result: {value: ..., version: ...}}
                 let messages = [];
-                let version = data.version || 0;
+                let version = 0;
                 
-                if (data.value) {
-                    if (Array.isArray(data.value)) {
-                        messages = data.value;
-                    } else if (data.value.list) {
-                        messages = data.value.list;
+                if (data.result && data.result.value) {
+                    if (Array.isArray(data.result.value)) {
+                        messages = data.result.value;
+                    } else if (data.result.value.list) {
+                        messages = data.result.value.list;
                     }
+                    version = data.result.version || 0;
                 }
                 
                 console.log(`[${user.username}] Parsed messages:`, messages, `version: ${version}`);
@@ -1327,30 +1327,39 @@
 
         async function cleanupOldMessages(messages) {
             const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
-            const oldMessages = messages.filter(msg => msg.timestamp < twelveHoursAgo);
+            const filteredMessages = messages.filter(msg => msg.timestamp >= twelveHoursAgo);
             
-            if (oldMessages.length === 0) return;
+            if (filteredMessages.length === messages.length) return; // No old messages to remove
             
             const user = getCurrentUser();
             if (!user) return;
             
             try {
-                // Clean up old messages in batches
-                for (const oldMessage of oldMessages) {
-                    await fetch('http://localhost:3000/shared/chat/messages/atomic', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`
-                        },
-                        body: JSON.stringify({
-                            operation: 'remove',
-                            value: oldMessage
-                        })
-                    });
-                }
+                // Get current version and write filtered messages back
+                const { version: currentVersion } = await getMessages();
                 
-                console.log(`Cleaned up ${oldMessages.length} old messages`);
+                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`,
+                        'Cache-Control': 'persist=true'
+                    },
+                    body: JSON.stringify({
+                        operation: 'write',
+                        value: filteredMessages,
+                        options: {
+                            version: currentVersion
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    const removedCount = messages.length - filteredMessages.length;
+                    console.log(`Cleaned up ${removedCount} old messages`);
+                } else {
+                    console.error('Failed to clean up old messages');
+                }
                 
             } catch (error) {
                 console.error('Error cleaning up messages:', error);
@@ -1364,11 +1373,12 @@
             try {
                 if (isOnline) {
                     // Add to online users set
-                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                    await fetch('http://localhost:3000/api/v1/store/users/online', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`
+                            'Authorization': `Bearer ${user.token}`,
+                            'Cache-Control': 'persist=true'
                         },
                         body: JSON.stringify({
                             operation: 'addToSet',
@@ -1381,11 +1391,12 @@
                     });
                 } else {
                     // Remove from online users set
-                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                    await fetch('http://localhost:3000/api/v1/store/users/online', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`
+                            'Authorization': `Bearer ${user.token}`,
+                            'Cache-Control': 'persist=true'
                         },
                         body: JSON.stringify({
                             operation: 'removeFromSet',
@@ -1436,17 +1447,22 @@
                 console.error('Error updating online status:', error);
             }
         }
+        }
 
         async function getOnlineUsers() {
             const user = getCurrentUser();
             if (!user) return [];
             
             try {
-                const response = await fetch('http://localhost:3000/shared/users/online/users', {
-                    method: 'GET',
+                const response = await fetch('http://localhost:3000/api/v1/store/users/online', {
+                    method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
-                    }
+                    },
+                    body: JSON.stringify({
+                        operation: 'read'
+                    })
                 });
                 
                 if (!response.ok) {
@@ -1455,7 +1471,18 @@
                 }
                 
                 const data = await response.json();
-                return Array.isArray(data.value) ? data.value : [];
+                
+                // New API format: {operation: "read", key: "users/online", result: {value: ..., version: ...}}
+                let users = [];
+                if (data.result && data.result.value) {
+                    if (data.result.value.users && Array.isArray(data.result.value.users)) {
+                        users = data.result.value.users;
+                    } else if (Array.isArray(data.result.value)) {
+                        users = data.result.value;
+                    }
+                }
+                
+                return users.length > 0 ? users : [{ username: user.username }];
                 
             } catch (error) {
                 console.error('Error getting online users:', error);
@@ -1552,31 +1579,35 @@
             
             // Initialise storage if needed
             try {
-                const response = await fetch('http://localhost:3000/shared/chat/messages', {
-                    method: 'GET',
+                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
+                    method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
-                    }
+                    },
+                    body: JSON.stringify({
+                        operation: 'read'
+                    })
                 });
                 
                 if (!response.ok) {
-                    // Key doesn't exist, create it as a list
-                    await fetch('http://localhost:3000/shared/chat/messages/atomic', {
+                    // Key doesn't exist, create it with an initial message
+                    await fetch('http://localhost:3000/api/v1/store/chat/messages', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`
+                            'Authorization': `Bearer ${user.token}`,
+                            'Cache-Control': 'persist=true'
                         },
                         body: JSON.stringify({
-                            operation: 'append',
-                            field: 'list',
-                            value: {
+                            operation: 'write',
+                            value: [{
                                 id: 'init',
                                 username: 'system',
                                 message: 'Chat initialized',
                                 timestamp: Date.now(),
                                 type: 'system'
-                            }
+                            }]
                         })
                     });
                 }
