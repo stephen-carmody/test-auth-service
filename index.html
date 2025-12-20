@@ -193,14 +193,34 @@
             padding: 8px;
             text-align: center;
             font-size: 20px;
+            transition: all 0.3s ease;
         }
 
         .form-message.error {
             color: var(--error);
+            font-weight: 500;
         }
 
         .form-message.success {
             color: var(--success);
+            font-weight: 500;
+        }
+
+        .form-message.loading {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .form-message.loading::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
         }
     </style>
 </head>
@@ -559,6 +579,13 @@
             
             // Create auth interface using CSS Grid
             createAuthInterfaceCSS();
+            
+            // Check authentication state and show appropriate UI
+            if (isAuthenticated()) {
+                showAuthenticatedState();
+            } else {
+                showAuthenticationState();
+            }
         });
 
         // Handle window resize
@@ -579,6 +606,7 @@
             
             // Create tabs container
             const tabsContainer = document.createElement('div');
+            tabsContainer.className = 'tab-container';
             tabsContainer.style.cssText = `
                 grid-column: 2 / 20;
                 grid-row: 3 / 5;
@@ -643,6 +671,127 @@
         }
 
         // ===============================================================
+        // SESSION MANAGEMENT
+        // ===============================================================
+
+        function isAuthenticated() {
+            const token = localStorage.getItem('authToken');
+            const loginTime = localStorage.getItem('loginTime');
+            
+            if (!token || !loginTime) return false;
+            
+            // Check if token is older than 24 hours
+            const tokenAge = Date.now() - parseInt(loginTime);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+            
+            return tokenAge < maxAge;
+        }
+
+        function getCurrentUser() {
+            if (!isAuthenticated()) return null;
+            
+            return {
+                username: localStorage.getItem('username'),
+                token: localStorage.getItem('authToken'),
+                loginTime: parseInt(localStorage.getItem('loginTime'))
+            };
+        }
+
+        function clearSession() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('loginTime');
+        }
+
+        // ===============================================================
+        // UI STATE MANAGEMENT
+        // ===============================================================
+
+        function showAuthenticationState() {
+            const authContainer = document.getElementById('auth-container');
+            
+            // Hide tabs container if it exists
+            const tabsContainer = authContainer.querySelector('.tab-container');
+            if (tabsContainer) {
+                tabsContainer.style.display = 'none';
+            }
+            
+            // Show authentication forms
+            showLoginForm();
+        }
+
+        function showAuthenticatedState() {
+            const user = getCurrentUser();
+            if (!user) {
+                showAuthenticationState();
+                return;
+            }
+            
+            const authContainer = document.getElementById('auth-container');
+            
+            // Hide tabs container
+            const tabsContainer = authContainer.querySelector('.tab-container');
+            if (tabsContainer) {
+                tabsContainer.style.display = 'none';
+            }
+            
+            // Hide both forms
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            if (loginForm) loginForm.style.display = 'none';
+            if (registerForm) registerForm.style.display = 'none';
+            
+            // Create authenticated user view
+            let authenticatedView = document.getElementById('authenticated-view');
+            if (!authenticatedView) {
+                authenticatedView = document.createElement('div');
+                authenticatedView.id = 'authenticated-view';
+                authenticatedView.style.cssText = `
+                    grid-column: 2 / 18;
+                    grid-row: 6 / 16;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                `;
+                authContainer.appendChild(authenticatedView);
+            }
+            
+            // Calculate login duration
+            const loginTime = new Date(user.loginTime);
+            const duration = Math.floor((Date.now() - user.loginTime) / 60000); // minutes
+            
+            authenticatedView.innerHTML = `
+                <h2 style="color: var(--text); margin-bottom: 20px;">Welcome, ${user.username}!</h2>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">
+                    Logged in for ${duration} minute${duration !== 1 ? 's' : ''}
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+                    <button class="submit-button" onclick="handleLogout()">
+                        Logout
+                    </button>
+                    <button class="submit-button" style="background: var(--surface-light); color: var(--text);" 
+                            onclick="window.location.reload()">
+                        Refresh Status
+                    </button>
+                </div>
+            `;
+        }
+
+        function showLoginForm() {
+            const tabsContainer = document.querySelector('.tab-container');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const authenticatedView = document.getElementById('authenticated-view');
+            
+            if (tabsContainer) tabsContainer.style.display = 'flex';
+            if (loginForm) loginForm.style.display = 'block';
+            if (registerForm) registerForm.style.display = 'none';
+            if (authenticatedView) authenticatedView.style.display = 'none';
+        }
+
+        // ===============================================================
         // AUTH FUNCTIONS
         // ===============================================================
 
@@ -668,15 +817,26 @@
             }
         }
 
-        function showMessage(formId, message, isError = false) {
+        function showMessage(formId, message, isError = false, isLoading = false) {
             const messageElement = document.getElementById(`${formId}-message`);
             if (messageElement) {
                 messageElement.textContent = message;
-                messageElement.className = `form-message ${isError ? 'error' : 'success'}`;
+                
+                // Remove all state classes first
+                messageElement.classList.remove('error', 'success', 'loading');
+                
+                // Add appropriate class
+                if (isLoading) {
+                    messageElement.classList.add('loading');
+                } else if (isError) {
+                    messageElement.classList.add('error');
+                } else {
+                    messageElement.classList.add('success');
+                }
             }
         }
 
-        function handleLogin() {
+        async function handleLogin() {
             const username = document.getElementById('username-input').value;
             const password = document.getElementById('password-input').value;
             
@@ -685,12 +845,39 @@
                 return;
             }
             
-            // For now, just show success
-            showMessage('login', 'Login functionality would connect to server', false);
-            console.log('Login attempt:', { username, password });
+            try {
+                showMessage('login', 'Logging in', false, true);
+                
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Store authentication session
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('loginTime', Date.now());
+                    
+                    showMessage('login', 'Login successful!', false);
+                    console.log('Login successful:', { username, token: data.token });
+                    
+                    // Show authenticated state after short delay
+                    setTimeout(() => showAuthenticatedState(), 1000);
+                } else {
+                    showMessage('login', data.error || 'Login failed', true);
+                    console.error('Login failed:', data);
+                }
+            } catch (error) {
+                showMessage('login', 'Network error - please try again', true);
+                console.error('Login error:', error);
+            }
         }
 
-        function handleRegister() {
+        async function handleRegister() {
             const username = document.getElementById('reg-username-input').value;
             const password = document.getElementById('reg-password-input').value;
             
@@ -709,12 +896,65 @@
                 return;
             }
             
-            // For now, just show success
-            showMessage('register', 'Registration successful! You can now login.', false);
-            console.log('Register attempt:', { username, password });
-            
+            try {
+                showMessage('register', 'Registering', false, true);
+                
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('register', 'Registration successful! You can now login.', false);
+                    console.log('Registration successful:', { username });
+                    
             // Switch to login tab after successful registration
-            setTimeout(() => switchTab('login'), 1500);
+            setTimeout(() => {
+                switchTab('login');
+                // Clear registration form
+                document.getElementById('reg-username-input').value = '';
+                document.getElementById('reg-password-input').value = '';
+            }, 1500);
+        }
+
+        async function handleLogout() {
+            const user = getCurrentUser();
+            
+            try {
+                // Call logout endpoint with token
+                const response = await fetch('http://localhost:3000/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    console.log('Logout successful:', data);
+                } else {
+                    console.warn('Logout server error:', data);
+                }
+            } catch (error) {
+                console.warn('Logout network error:', error);
+            }
+            
+            // Always clear local session regardless of server response
+            clearSession();
+            
+            // Return to authentication state
+            showAuthenticationState();
+            showMessage('login', 'Logged out successfully', false);
+        }
+            } catch (error) {
+                showMessage('register', 'Network error - please try again', true);
+                console.error('Registration error:', error);
+            }
         }
     </script>
 </body>
