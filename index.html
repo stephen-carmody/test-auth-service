@@ -1217,6 +1217,8 @@
                     type: 'message'
                 };
                 
+                console.log('Sending message:', message);
+                
                 const response = await fetch('http://localhost:3000/shared/chat/messages/atomic', {
                     method: 'POST',
                     headers: {
@@ -1229,8 +1231,12 @@
                     })
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to send message');
+                    const errorData = await response.text();
+                    console.error('Response error:', errorData);
+                    throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
                 }
                 
                 // Add to local display immediately for better UX
@@ -1462,18 +1468,35 @@
             
             // Initialise storage if needed
             try {
-                await fetch('http://localhost:3000/shared/chat/messages', {
-                    method: 'POST',
+                const response = await fetch('http://localhost:3000/shared/chat/messages', {
+                    method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({
-                        value: []
-                    })
+                    }
                 });
+                
+                if (!response.ok) {
+                    // Key doesn't exist, create it as a list
+                    await fetch('http://localhost:3000/shared/chat/messages/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'append',
+                            value: {
+                                id: 'init',
+                                username: 'system',
+                                message: 'Chat initialized',
+                                timestamp: Date.now(),
+                                type: 'system'
+                            }
+                        })
+                    });
+                }
             } catch (e) {
-                // Key might already exist, that's fine
+                console.error('Error initializing chat storage:', e);
             }
             
             // Update online status
