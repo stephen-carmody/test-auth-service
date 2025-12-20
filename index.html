@@ -1166,6 +1166,7 @@
         let onlineUsers = new Set();
         let lastCleanup = Date.now();
         let isPolling = false;
+        let lastPollTime = null;
 
         function sendCommand() {
             const input = document.getElementById('chat-input');
@@ -1346,8 +1347,9 @@
                     version = data.result.version || 0;
                 }
                 
-                console.log(`[${user.username}] Parsed messages:`, messages, `version: ${version}`);
-                return { messages, version };
+                const source = data.result?.source || 'unknown';
+                console.log(`[${user.username}] Parsed messages:`, messages, `version: ${version}`, `source: ${source}`);
+                return { messages, version, source };
                 
             } catch (error) {
                 console.error('Error getting messages:', error);
@@ -1490,11 +1492,15 @@
             if (isPolling) return;
             isPolling = true;
             
+            const pollStartTime = Date.now();
+            const currentUser = getCurrentUser()?.username || 'unknown';
+            console.log(`[${currentUser}] Starting poll at ${new Date().toISOString()}`);
+            
             try {
                 // Get all current messages from gateway
                 const { messages: allMessages, version: currentVersion } = await getMessages();
                 const currentUser = getCurrentUser()?.username || 'unknown';
-                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway at ${new Date().toISOString()}`);
+                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway (source: ${version}) at ${new Date().toISOString()}`);
                 console.log(`[${currentUser}] Message IDs:`, allMessages.map(m => m.id));
                 
                 // Clean up old messages periodically
@@ -1548,7 +1554,8 @@
                 updateOnlineUsersDisplay();
                 
             } catch (error) {
-                console.error('Polling error:', error);
+                const pollDuration = Date.now() - pollStartTime;
+                console.error(`[${currentUser}] Polling error after ${pollDuration}ms:`, error);
                 
                 // Handle rate limiting in polling
                 if (error.message.includes('429')) {
@@ -1561,6 +1568,8 @@
                 
                 // Continue polling, just retry next time
             } finally {
+                const pollDuration = Date.now() - pollStartTime;
+                console.log(`[${currentUser}] Poll completed in ${pollDuration}ms, next poll in 5000ms`);
                 isPolling = false;
             }
         }
