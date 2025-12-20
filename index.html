@@ -198,6 +198,9 @@
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
         
         .chat-message.system {
@@ -206,6 +209,32 @@
             align-self: flex-start;
             font-style: italic;
             border-bottom-left-radius: 4px;
+        }
+        
+        .chat-message .sender {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            opacity: 0.9;
+        }
+        
+        .chat-message .content {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .chat-message .timestamp {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+        
+        .chat-message.system .timestamp {
+            font-size: 11px;
+            text-align: left;
+            width: 100%;
+            display: block;
+            margin-top: 4px;
         }
         
         .chat-input-container {
@@ -826,11 +855,14 @@
                         </button>
                     </div>
                     <div class="chat-messages" id="chat-messages">
-                        <div class="chat-message system">Welcome, ${user.username}! Type /? for available commands.</div>
+                        <div class="chat-message system">
+                            <span class="content">Welcome, ${user.username}! You can now chat with other logged-in users.</span>
+                            <span class="timestamp">${formatTime(Date.now())}</span>
+                        </div>
                     </div>
                     <div class="chat-input-container">
                         <input type="text" id="chat-input" class="chat-input" 
-                               placeholder="Type a command..." 
+                               placeholder="Type a message or command..." 
                                onkeypress="handleChatInput(event)">
                         <button class="chat-send-btn" onclick="sendCommand()">
                             Send
@@ -838,6 +870,9 @@
                     </div>
                 </div>
             `;
+            
+            // Start polling for messages
+            startPolling();
         }
 
         function showLoginForm() {
@@ -1013,6 +1048,11 @@
                 console.warn('Logout network error:', error);
             }
             
+            // Stop polling and update status to offline
+            stopPolling();
+            lastProcessedMessageIds.clear();
+            onlineUsers.clear();
+            
             // Always clear local session regardless of server response
             clearSession();
             
@@ -1120,18 +1160,33 @@
             }
         }
 
+        // Message tracking and polling
+        let lastProcessedMessageIds = new Set();
+        let pollingInterval = null;
+        let onlineUsers = new Set();
+        let lastCleanup = Date.now();
+        let isPolling = false;
+
         function sendCommand() {
             const input = document.getElementById('chat-input');
-            const command = input.value.trim();
+            const text = input.value.trim();
             
-            if (!command) return;
+            if (!text) return;
+            
+            input.value = '';
             
             const user = getCurrentUser();
             
-            // Add user message
-            addChatMessage(command, 'user');
-            input.value = '';
-            
+            // Handle commands (start with /)
+            if (text.startsWith('/')) {
+                handleCommand(text, user);
+            } else {
+                // Send as regular message
+                sendMessage(text, user);
+            }
+        }
+
+        function handleCommand(command, user) {
             // Handle logout command
             if (command.toLowerCase() === '/logout') {
                 addChatMessage('Logging out...', 'system');
@@ -1143,8 +1198,8 @@
             }
             
             // Handle help command
-            if (command.toLowerCase() === '/?') {
-                addChatMessage('Available commands: /logout, /?', 'system');
+            if (command.toLowerCase() === '/?' || command.toLowerCase() === '/help') {
+                addChatMessage('Available commands: /logout, /?, /help', 'system');
                 return;
             }
             
@@ -1152,14 +1207,285 @@
             addChatMessage(`Unknown command: ${command}`, 'system');
         }
 
-        function addChatMessage(message, type = 'user') {
+        async function sendMessage(text, user) {
+            try {
+                const message = {
+                    id: `${Date.now()}-${user.username}`,
+                    username: user.username,
+                    message: text,
+                    timestamp: Date.now(),
+                    type: 'message'
+                };
+                
+                const response = await fetch('http://localhost:3000/shared/chat/messages/atomic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({
+                        operation: 'append',
+                        value: message
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to send message');
+                }
+                
+                // Add to local display immediately for better UX
+                addChatMessage(text, 'user', user.username);
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                addChatMessage('Failed to send message', 'system');
+            }
+        }
+
+        async function getMessages() {
+            const user = getCurrentUser();
+            if (!user) return [];
+            
+            try {
+                const response = await fetch('http://localhost:3000/shared/chat/messages', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get messages');
+                }
+                
+                const data = await response.json();
+                return data.value || [];
+                
+            } catch (error) {
+                console.error('Error getting messages:', error);
+                return [];
+            }
+        }
+
+        async function cleanupOldMessages(messages) {
+            const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
+            const oldMessages = messages.filter(msg => msg.timestamp < twelveHoursAgo);
+            
+            if (oldMessages.length === 0) return;
+            
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            try {
+                // Clean up old messages in batches
+                for (const oldMessage of oldMessages) {
+                    await fetch('http://localhost:3000/shared/chat/messages/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'remove',
+                            value: oldMessage
+                        })
+                    });
+                }
+                
+                console.log(`Cleaned up ${oldMessages.length} old messages`);
+                
+            } catch (error) {
+                console.error('Error cleaning up messages:', error);
+            }
+        }
+
+        async function updateOnlineStatus(isOnline) {
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            try {
+                if (isOnline) {
+                    // Add to online users set
+                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'addToSet',
+                            value: {
+                                username: user.username,
+                                lastSeen: Date.now()
+                            }
+                        })
+                    });
+                } else {
+                    // Remove from online users set
+                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'removeFromSet',
+                            value: {
+                                username: user.username,
+                                lastSeen: Date.now()
+                            }
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating online status:', error);
+            }
+        }
+
+        async function getOnlineUsers() {
+            const user = getCurrentUser();
+            if (!user) return [];
+            
+            try {
+                const response = await fetch('http://localhost:3000/shared/users/online', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get online users');
+                }
+                
+                const data = await response.json();
+                return data.value || [];
+                
+            } catch (error) {
+                console.error('Error getting online users:', error);
+                return [];
+            }
+        }
+
+        async function pollMessages() {
+            if (isPolling) return;
+            isPolling = true;
+            
+            try {
+                const messages = await getMessages();
+                
+                // Clean up old messages periodically
+                if (Date.now() - lastCleanup > 5 * 60 * 1000) { // Every 5 minutes
+                    await cleanupOldMessages(messages);
+                    lastCleanup = Date.now();
+                }
+                
+                // Process new messages
+                messages.forEach(message => {
+                    if (!lastProcessedMessageIds.has(message.id)) {
+                        lastProcessedMessageIds.add(message.id);
+                        
+                        if (message.type === 'message' && message.username !== getCurrentUser()?.username) {
+                            addChatMessage(message.message, 'user', message.username);
+                        }
+                    }
+                });
+                
+                // Update online users list
+                const newOnlineUsers = await getOnlineUsers();
+                const currentOnlineSet = new Set(newOnlineUsers.map(u => u.username));
+                
+                // Detect users who came online
+                currentOnlineSet.forEach(username => {
+                    if (!onlineUsers.has(username)) {
+                        if (username !== getCurrentUser()?.username) {
+                            addChatMessage(`${username} came online`, 'system');
+                        }
+                    }
+                });
+                
+                // Detect users who went offline
+                onlineUsers.forEach(username => {
+                    if (!currentOnlineSet.has(username)) {
+                        if (username !== getCurrentUser()?.username) {
+                            addChatMessage(`${username} went offline`, 'system');
+                        }
+                    }
+                });
+                
+                onlineUsers = currentOnlineSet;
+                updateOnlineUsersDisplay();
+                
+            } catch (error) {
+                console.error('Polling error:', error);
+                // Continue polling, just retry next time
+            } finally {
+                isPolling = false;
+            }
+        }
+
+        function updateOnlineUsersDisplay() {
+            const chatHeader = document.querySelector('.chat-header span');
+            if (chatHeader) {
+                const user = getCurrentUser();
+                const duration = user ? Math.floor((Date.now() - user.loginTime) / 60000) : 0;
+                const onlineCount = onlineUsers.size - (onlineUsers.has(user?.username) ? 1 : 0);
+                chatHeader.textContent = `${user?.username || 'Unknown'} (${onlineCount} online, ${duration} min${duration !== 1 ? 's' : ''})`;
+            }
+        }
+
+        function startPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+            
+            // Update online status
+            updateOnlineStatus(true);
+            
+            // Poll every 2 seconds
+            pollingInterval = setInterval(() => {
+                pollMessages();
+            }, 2000);
+        }
+
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+            
+            // Update online status to offline
+            updateOnlineStatus(false);
+        }
+
+        function addChatMessage(message, type = 'user', sender = null) {
             const chatMessages = document.getElementById('chat-messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `chat-message ${type}`;
-            messageDiv.textContent = message;
+            
+            if (type === 'user' && sender) {
+                messageDiv.innerHTML = `
+                    <span class="sender">${sender}:</span> 
+                    <span class="content">${message}</span>
+                    <span class="timestamp">${formatTime(Date.now())}</span>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <span class="content">${message}</span>
+                    <span class="timestamp">${formatTime(Date.now())}</span>
+                `;
+            }
             
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
         }
 
         // Initialize on page load
