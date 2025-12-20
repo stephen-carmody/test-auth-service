@@ -1173,9 +1173,16 @@
             
             if (!text) return;
             
-            input.value = '';
-            
             const user = getCurrentUser();
+            
+            // Check authentication before proceeding
+            if (!user) {
+                addChatMessage('Authentication error - please log in again', 'system');
+                handleLogout();
+                return;
+            }
+            
+            input.value = '';
             
             // Handle commands (start with /)
             if (text.startsWith('/')) {
@@ -1209,6 +1216,13 @@
 
         async function sendMessage(text, user) {
             try {
+                // Validate user parameter
+                if (!user || !user.token) {
+                    throw new Error('Invalid user authentication');
+                }
+                
+                console.log(`[${user.username}] Starting to send message: "${text}"`);
+                
                 // First get current messages with version
                 const { messages: currentMessages, version: currentVersion } = await getMessages();
                 const message = {
@@ -1249,11 +1263,20 @@
                     const errorData = await response.status === 409 ? await response.json() : await response.text();
                     console.error(`[${user.username}] Store error:`, errorData);
                     
-                    // If version conflict, retry with latest data
-                    if (response.status === 409 && (errorData.error === 'VERSION_CONFLICT' || errorData.error?.includes('Version conflict'))) {
+                    // Handle different error types
+                    if (response.status === 401) {
+                        addChatMessage('Authentication expired - please log in again', 'system');
+                        handleLogout();
+                        return;
+                    } else if (response.status >= 500) {
+                        addChatMessage('Server error - please try again', 'system');
+                        return;
+                    } else if (response.status === 409 && (errorData.error === 'VERSION_CONFLICT' || errorData.error?.includes('Version conflict'))) {
                         console.log(`[${user.username}] Version conflict, retrying...`);
                         await new Promise(resolve => setTimeout(resolve, 100)); // Brief delay
                         return sendMessage(text, user); // Retry
+                    } else {
+                        addChatMessage(`Request failed: ${response.status}`, 'system');
                     }
                     
                     throw new Error(`Failed to send message: ${response.status} - ${JSON.stringify(errorData)}`);
@@ -1267,8 +1290,11 @@
                 
             } catch (error) {
                 console.error('Error sending message:', error);
-                if (!error.message.includes('Version conflict')) {
-                    addChatMessage('Failed to send message', 'system');
+                if (error.message.includes('Invalid user authentication')) {
+                    addChatMessage('Authentication error - please log in again', 'system');
+                    handleLogout();
+                } else if (!error.message.includes('Version conflict')) {
+                    addChatMessage('Failed to send message - please check connection', 'system');
                 }
             }
         }
@@ -1461,16 +1487,14 @@
             isPolling = true;
             
             try {
-                const messages = await getMessages();
+                // Single API call instead of two redundant calls
+                const { messages: newMessages, version: currentVersion } = await getMessages();
                 
                 // Clean up old messages periodically
                 if (Date.now() - lastCleanup > 5 * 60 * 1000) { // Every 5 minutes
-                    await cleanupOldMessages(messages);
+                    await cleanupOldMessages(newMessages);
                     lastCleanup = Date.now();
                 }
-                
-                // Process new messages
-                const { messages: newMessages, version: currentVersion } = await getMessages();
                 newMessages.forEach(message => {
                     if (!lastProcessedMessageIds.has(message.id)) {
                         lastProcessedMessageIds.add(message.id);
