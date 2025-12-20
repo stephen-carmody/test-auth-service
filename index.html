@@ -681,213 +681,6 @@
             `;
         }
 
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            // Initialize grid
-            createGrid();
-            
-            // Create auth interface using CSS Grid
-            createAuthInterfaceCSS();
-            
-            // Check authentication state and show appropriate UI
-            if (isAuthenticated()) {
-                showAuthenticatedState();
-            } else {
-                showAuthenticationState();
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            createGrid();
-        });
-
-        // ===============================================================
-        // AUTH INTERFACE CREATION - CSS GRID VERSION
-        // ===============================================================
-
-        function createAuthInterfaceCSS() {
-            // Create auth container directly in DOM with CSS Grid
-            const authContainer = document.createElement('div');
-            authContainer.className = 'auth-container';
-            authContainer.id = 'auth-container';
-            document.body.appendChild(authContainer);
-            
-            // Create tabs container
-            const tabsContainer = document.createElement('div');
-            tabsContainer.className = 'tab-container';
-            tabsContainer.style.cssText = `
-                grid-column: 2 / 20;
-                grid-row: 3 / 5;
-                display: flex;
-                justify-content: center;
-                gap: 2px;
-                border-bottom: 2px solid var(--text);
-                padding-bottom: 0;
-            `;
-            authContainer.appendChild(tabsContainer);
-            
-            // Create login tab button
-            const loginTab = document.createElement('button');
-            loginTab.className = 'tab-button active';
-            loginTab.id = 'login-tab';
-            loginTab.textContent = 'Login';
-            loginTab.onclick = () => switchTab('login');
-            tabsContainer.appendChild(loginTab);
-            
-            // Create register tab button
-            const registerTab = document.createElement('button');
-            registerTab.className = 'tab-button';
-            registerTab.id = 'register-tab';
-            registerTab.textContent = 'Register';
-            registerTab.onclick = () => switchTab('register');
-            tabsContainer.appendChild(registerTab);
-            
-            // Create login form
-            const loginForm = document.createElement('div');
-            loginForm.id = 'login-form';
-            loginForm.innerHTML = `
-                <label class="form-label">Username</label>
-                <input type="text" class="form-input" id="username-input" placeholder="Enter your username">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="password-input" placeholder="Enter your password">
-                <button class="submit-button" onclick="handleLogin()">Login</button>
-                <div class="form-message" id="login-message"></div>
-            `;
-            loginForm.style.cssText = `
-                grid-column: 2 / 18;
-                grid-row: 6 / 16;
-            `;
-            authContainer.appendChild(loginForm);
-            
-            // Create register form (hidden initially)
-            const registerForm = document.createElement('div');
-            registerForm.id = 'register-form';
-            registerForm.style.display = 'none';
-            registerForm.innerHTML = `
-                <label class="form-label">Username</label>
-                <input type="text" class="form-input" id="reg-username-input" placeholder="Choose a username (3+ chars)">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="reg-password-input" placeholder="Choose a password (6+ chars)">
-                <button class="submit-button" onclick="handleRegister()">Register</button>
-                <div class="form-message" id="register-message"></div>
-            `;
-            registerForm.style.cssText = `
-                grid-column: 2 / 18;
-                grid-row: 6 / 16;
-            `;
-            authContainer.appendChild(registerForm);
-        }
-
-        // ===============================================================
-        // SESSION MANAGEMENT
-        // ===============================================================
-
-        function isAuthenticated() {
-            const token = localStorage.getItem('authToken');
-            const loginTime = localStorage.getItem('loginTime');
-            
-            if (!token || !loginTime) return false;
-            
-            // Check if token is older than 24 hours
-            const tokenAge = Date.now() - parseInt(loginTime);
-            const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-            
-            return tokenAge < maxAge;
-        }
-
-        function getCurrentUser() {
-            if (!isAuthenticated()) return null;
-            
-            return {
-                username: localStorage.getItem('username'),
-                token: localStorage.getItem('authToken'),
-                loginTime: parseInt(localStorage.getItem('loginTime'))
-            };
-        }
-
-        function clearSession() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('username');
-            localStorage.removeItem('loginTime');
-        }
-
-        // ===============================================================
-        // UI STATE MANAGEMENT
-        // ===============================================================
-
-        function showAuthenticationState() {
-            const authContainer = document.getElementById('auth-container');
-            
-            // Hide tabs container if it exists
-            const tabsContainer = authContainer.querySelector('.tab-container');
-            if (tabsContainer) {
-                tabsContainer.style.display = 'none';
-            }
-            
-            // Show authentication forms
-            showLoginForm();
-        }
-
-        function showAuthenticatedState() {
-            const user = getCurrentUser();
-            if (!user) {
-                showAuthenticationState();
-                return;
-            }
-            
-            const authContainer = document.getElementById('auth-container');
-            
-            // Hide tabs container
-            const tabsContainer = authContainer.querySelector('.tab-container');
-            if (tabsContainer) {
-                tabsContainer.style.display = 'none';
-            }
-            
-            // Hide both forms
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            if (loginForm) loginForm.style.display = 'none';
-            if (registerForm) registerForm.style.display = 'none';
-            
-            // Create authenticated user view
-            let authenticatedView = document.getElementById('authenticated-view');
-            if (!authenticatedView) {
-                authenticatedView = document.createElement('div');
-                authenticatedView.id = 'authenticated-view';
-                authenticatedView.style.cssText = `
-                    grid-column: 2 / 18;
-                    grid-row: 6 / 16;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                `;
-                authContainer.appendChild(authenticatedView);
-            }
-            
-            // Calculate login duration
-            const loginTime = new Date(user.loginTime);
-            const duration = Math.floor((Date.now() - user.loginTime) / 60000); // minutes
-            
-            authenticatedView.innerHTML = `
-                <h2 style="color: var(--text); margin-bottom: 20px;">Welcome, ${user.username}!</h2>
-                <p style="color: var(--text-muted); margin-bottom: 30px;">
-                    Logged in for ${duration} minute${duration !== 1 ? 's' : ''}
-                </p>
-                <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
-                    <button class="submit-button" onclick="handleLogout()">
-                        Logout
-                    </button>
-                    <button class="submit-button" style="background: var(--surface-light); color: var(--text);" 
-                            onclick="window.location.reload()">
-                        Refresh Status
-                    </button>
-                </div>
-            `;
-        }
-
         function showLoginForm() {
             const tabsContainer = document.querySelector('.tab-container');
             const loginForm = document.getElementById('login-form');
@@ -1020,13 +813,21 @@
                     showMessage('register', 'Registration successful! You can now login.', false);
                     console.log('Registration successful:', { username });
                     
-            // Switch to login tab after successful registration
-            setTimeout(() => {
-                switchTab('login');
-                // Clear registration form
-                document.getElementById('reg-username-input').value = '';
-                document.getElementById('reg-password-input').value = '';
-            }, 1500);
+                    // Switch to login tab after successful registration
+                    setTimeout(() => {
+                        switchTab('login');
+                        // Clear registration form
+                        document.getElementById('reg-username-input').value = '';
+                        document.getElementById('reg-password-input').value = '';
+                    }, 1500);
+                } else {
+                    showMessage('register', data.error || 'Registration failed', true);
+                    console.error('Registration failed:', data);
+                }
+            } catch (error) {
+                showMessage('register', 'Network error - please try again', true);
+                console.error('Registration error:', error);
+            }
         }
 
         async function handleLogout() {
@@ -1060,11 +861,31 @@
             showAuthenticationState();
             showMessage('login', 'Logged out successfully', false);
         }
-            } catch (error) {
-                showMessage('register', 'Network error - please try again', true);
-                console.error('Registration error:', error);
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            // Initialize grid
+            createGrid();
+            
+            // Create auth interface using CSS Grid
+            createAuthInterfaceCSS();
+            
+            // Check authentication state and show appropriate UI
+            if (isAuthenticated()) {
+                showAuthenticatedState();
+            } else {
+                showAuthenticationState();
             }
-        }
+        });
+
+        // ===============================================================
+        // AUTH INTERFACE CREATION - CSS GRID VERSION
+        // ==============================================================
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            createGrid();
+        });
     </script>
 </body>
 </html>
