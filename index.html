@@ -1238,6 +1238,16 @@
                 if (!response.ok) {
                     const errorData = await response.text();
                     console.error(`[${user.username}] Atomic append error:`, errorData);
+                    
+                    // Handle rate limiting
+                    if (response.status === 429) {
+                        const retryData = JSON.parse(errorData);
+                        const retryAfter = retryData.retryAfter || 5;
+                        addChatMessage(`Rate limited. Retrying in ${retryAfter} seconds...`, 'system');
+                        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+                        return sendMessage(text, user); // Retry after delay
+                    }
+                    
                     throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
                 }
                 
@@ -1466,6 +1476,16 @@
                 
             } catch (error) {
                 console.error('Polling error:', error);
+                
+                // Handle rate limiting in polling
+                if (error.message.includes('429')) {
+                    const retryAfter = 10; // Wait 10 seconds on rate limit
+                    addChatMessage(`Rate limited. Pausing for ${retryAfter} seconds...`, 'system');
+                    setTimeout(() => {
+                        addChatMessage('Resuming polling...', 'system');
+                    }, retryAfter * 1000);
+                }
+                
                 // Continue polling, just retry next time
             } finally {
                 isPolling = false;
@@ -1527,10 +1547,10 @@
             // Update online status
             await updateOnlineStatus(true);
             
-            // Poll every 2 seconds
+            // Poll every 5 seconds to avoid rate limits
             pollingInterval = setInterval(() => {
                 pollMessages();
-            }, 2000);
+            }, 5000);
         }
 
         function stopPolling() {
