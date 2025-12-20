@@ -908,6 +908,13 @@
                 authenticatedContainer.style.display = 'none';
             }
             showAuthenticationState();
+            
+            // Clear login form inputs for fresh login display
+            const usernameInput = document.getElementById('username-input');
+            const passwordInput = document.getElementById('password-input');
+            if (usernameInput) usernameInput.value = '';
+            if (passwordInput) passwordInput.value = '';
+            
             showMessage('login', 'Logged out successfully', false);
         }
 
