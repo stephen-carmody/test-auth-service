@@ -1363,21 +1363,45 @@
             
             try {
                 if (isOnline) {
-                    // First ensure the shared key exists
-                    try {
-                        await fetch('http://localhost:3000/shared/users/online', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${user.token}`
-                            },
-                            body: JSON.stringify({
-                                value: []
-                            })
-                        });
-                    } catch (e) {
-                        // Key might already exist, that's fine
-                    }
+                    // Add to online users set
+                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'addToSet',
+                            field: 'users',
+                            value: {
+                                username: user.username,
+                                lastSeen: Date.now()
+                            }
+                        })
+                    });
+                } else {
+                    // Remove from online users set
+                    await fetch('http://localhost:3000/shared/users/online/atomic', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${user.token}`
+                        },
+                        body: JSON.stringify({
+                            operation: 'removeFromSet',
+                            field: 'users',
+                            value: {
+                                username: user.username,
+                                lastSeen: Date.now()
+                            }
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating online status:', error);
+                // Don't let online status errors break messaging
+            }
+        }
                     
                     // Add to online users set
                     await fetch('http://localhost:3000/shared/users/online/atomic', {
@@ -1421,7 +1445,7 @@
             if (!user) return [];
             
             try {
-                const response = await fetch('http://localhost:3000/shared/users/online', {
+                const response = await fetch('http://localhost:3000/shared/users/online/users', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -1429,12 +1453,12 @@
                 });
                 
                 if (!response.ok) {
-                    // If online users endpoint doesn't exist yet, return just current user
+                    // If online users set doesn't exist yet, return just current user
                     return [{ username: user.username }];
                 }
                 
                 const data = await response.json();
-                return data.value || [];
+                return Array.isArray(data.value) ? data.value : [];
                 
             } catch (error) {
                 console.error('Error getting online users:', error);
