@@ -1209,6 +1209,8 @@
 
         async function sendMessage(text, user) {
             try {
+                // First get current messages
+                const currentMessages = await getMessages();
                 const message = {
                     id: `${Date.now()}-${user.username}`,
                     username: user.username,
@@ -1217,29 +1219,35 @@
                     type: 'message'
                 };
                 
-                console.log('Sending message:', message);
+                console.log(`[${user.username}] Current messages:`, currentMessages);
+                console.log(`[${user.username}] Adding message:`, message);
                 
-                // Send via atomic append to list field
-                const response = await fetch('http://localhost:3000/shared/chat/messages/atomic', {
-                    method: 'POST',
+                // Add new message to array and store back
+                const updatedMessages = [...currentMessages, message];
+                
+                // Update with optimistic locking
+                const response = await fetch('http://localhost:3000/shared/chat/messages', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
                     },
                     body: JSON.stringify({
-                        operation: 'append',
-                        field: 'list',
-                        value: message
+                        value: updatedMessages,
+                        version: 1 // We'll use simple version 1 for now
                     })
                 });
                 
-                console.log('Response status:', response.status);
+                console.log(`[${user.username}] Store response status:`, response.status);
                 
                 if (!response.ok) {
                     const errorData = await response.text();
-                    console.error('Response error:', errorData);
+                    console.error(`[${user.username}] Store error:`, errorData);
                     throw new Error(`Failed to send message: ${response.status} - ${errorData}`);
                 }
+                
+                const responseData = await response.json();
+                console.log(`[${user.username}] Store response data:`, responseData);
                 
                 // Add to local display immediately for better UX
                 addChatMessage(text, 'user', user.username);
@@ -1255,6 +1263,7 @@
             if (!user) return [];
             
             try {
+                console.log(`[${user.username}] Getting messages from shared storage`);
                 const response = await fetch('http://localhost:3000/shared/chat/messages', {
                     method: 'GET',
                     headers: {
@@ -1267,15 +1276,20 @@
                 }
                 
                 const data = await response.json();
+                console.log(`[${user.username}] Raw response:`, data);
+                
                 // Handle both direct array and list structure
+                let messages = [];
                 if (data.value) {
                     if (Array.isArray(data.value)) {
-                        return data.value;
+                        messages = data.value;
                     } else if (data.value.list) {
-                        return data.value.list;
+                        messages = data.value.list;
                     }
                 }
-                return [];
+                
+                console.log(`[${user.username}] Parsed messages:`, messages);
+                return messages;
                 
             } catch (error) {
                 console.error('Error getting messages:', error);
