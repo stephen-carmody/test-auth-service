@@ -1268,8 +1268,10 @@
             if (!user) return [];
             
             try {
-                console.log(`[${user.username}] Getting messages from shared storage`);
-                const response = await fetch('http://localhost:3000/shared/chat/messages', {
+                console.log(`[${user.username}] Getting messages from atomic list`);
+                
+                // Try GET on the atomic list key directly
+                const response = await fetch('http://localhost:3000/shared/chat/messages/list', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${user.token}`
@@ -1277,24 +1279,41 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to get messages');
+                    // Fallback to regular GET
+                    console.log(`[${user.username}] Fallback to regular GET`);
+                    const fallbackResponse = await fetch('http://localhost:3000/shared/chat/messages', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${user.token}`
+                        }
+                    });
+                    
+                    if (!fallbackResponse.ok) {
+                        throw new Error('Failed to get messages');
+                    }
+                    
+                    const data = await fallbackResponse.json();
+                    console.log(`[${user.username}] Fallback response:`, data);
+                    
+                    let messages = [];
+                    if (data.value) {
+                        if (Array.isArray(data.value)) {
+                            messages = data.value;
+                        } else if (data.value.list) {
+                            messages = data.value.list;
+                        }
+                    }
+                    
+                    console.log(`[${user.username}] Fallback messages:`, messages);
+                    return messages;
                 }
                 
                 const data = await response.json();
-                console.log(`[${user.username}] Raw response:`, data);
+                console.log(`[${user.username}] Atomic list response:`, data);
                 
-                // Handle both direct array and list structure from atomic append
                 let messages = [];
-                
                 if (data.value) {
-                    if (Array.isArray(data.value)) {
-                        messages = data.value;
-                    } else if (data.value.list) {
-                        messages = data.value.list;
-                    }
-                } else if (data.field === 'list' && data.value) {
-                    // Response from atomic append operation
-                    messages = data.value;
+                    messages = Array.isArray(data.value) ? data.value : [];
                 }
                 
                 console.log(`[${user.username}] Parsed messages:`, messages);
