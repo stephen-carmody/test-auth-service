@@ -636,31 +636,37 @@
                 return;
             }
             
+            // Hide auth container
             const authContainer = document.getElementById('auth-container');
+            authContainer.style.display = 'none';
             
-            // Hide tabs container (not the entire auth container)
-            const tabsContainer = authContainer.querySelector('.tab-container');
-            if (tabsContainer) {
-                tabsContainer.style.display = 'none';
-            }
-            
-            // Don't hide auth container - we'll replace its content
-            // Create authenticated user view
-            let authenticatedView = document.getElementById('authenticated-view');
-            if (!authenticatedView) {
-                authenticatedView = document.createElement('div');
+            // Create or show authenticated container
+            let authenticatedContainer = document.getElementById('authenticated-container');
+            if (!authenticatedContainer) {
+                authenticatedContainer = document.createElement('div');
+                authenticatedContainer.className = 'auth-container';
+                authenticatedContainer.id = 'authenticated-container';
+                document.body.appendChild(authenticatedContainer);
+                
+                // Create authenticated view content
+                const authenticatedView = document.createElement('div');
                 authenticatedView.id = 'authenticated-view';
                 authenticatedView.style.cssText = `
                     grid-column: 2 / 18;
-                    grid-row: 6 / 16;
+                    grid-row: 2 / 18;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: flex-start;
                     text-align: center;
+                    padding-top: 20px;
                 `;
-                authContainer.appendChild(authenticatedView);
+                authenticatedContainer.appendChild(authenticatedView);
+            } else {
+                authenticatedContainer.style.display = 'block';
             }
+            
+            const authenticatedView = document.getElementById('authenticated-view');
             
             // Calculate login duration
             const loginTime = new Date(user.loginTime);
@@ -680,13 +686,13 @@
                         Refresh Status
                     </button>
                 </div>
-                <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+                <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px; width: 100%;">
                     <h3 style="color: var(--text); margin-bottom: 10px;">Terminal Commands</h3>
                     <p style="color: var(--text-muted); margin-bottom: 15px;">Type /logout or press Enter to send a command.</p>
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                         <input type="text" id="chat-input" class="form-input" 
                                placeholder="Enter command..." 
-                               style="font-size: 18px; margin-bottom: 0;"
+                               style="font-size: 18px; margin-bottom: 0; flex: 1;"
                                onkeypress="handleChatInput(event)">
                         <button class="submit-button" onclick="sendCommand()" 
                                 style="font-size: 18px; padding: 8px 16px;">
@@ -703,6 +709,7 @@
                         font-size: 14px;
                         font-family: monospace;
                         color: var(--text);
+                        text-align: left;
                     ">
                         <div style="color: var(--accent); font-weight: 600; margin-bottom: 5px;">
                             Welcome, ${user.username}! Type /? for available commands.
@@ -888,7 +895,11 @@
             // Always clear local session regardless of server response
             clearSession();
             
-            // Return to authentication state
+            // Hide authenticated container and show auth container
+            const authenticatedContainer = document.getElementById('authenticated-container');
+            if (authenticatedContainer) {
+                authenticatedContainer.style.display = 'none';
+            }
             showAuthenticationState();
             showMessage('login', 'Logged out successfully', false);
         }
