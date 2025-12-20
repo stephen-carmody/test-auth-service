@@ -645,14 +645,18 @@
             
             // Create or show authenticated container
             let authenticatedContainer = document.getElementById('authenticated-container');
+            let authenticatedView = document.getElementById('authenticated-view');
+            
             if (!authenticatedContainer) {
                 authenticatedContainer = document.createElement('div');
                 authenticatedContainer.className = 'auth-container';
                 authenticatedContainer.id = 'authenticated-container';
                 document.body.appendChild(authenticatedContainer);
-                
-                // Create authenticated view content
-                const authenticatedView = document.createElement('div');
+            }
+            
+            // Always ensure the authenticated view exists
+            if (!authenticatedView) {
+                authenticatedView = document.createElement('div');
                 authenticatedView.id = 'authenticated-view';
                 authenticatedView.style.cssText = `
                     grid-column: 2 / 18;
@@ -665,11 +669,10 @@
                     padding-top: 20px;
                 `;
                 authenticatedContainer.appendChild(authenticatedView);
-            } else {
-                authenticatedContainer.style.display = 'block';
             }
             
-            const authenticatedView = document.getElementById('authenticated-view');
+            // Make sure the container is visible
+            authenticatedContainer.style.display = 'block';
             
             // Calculate login duration
             const loginTime = new Date(user.loginTime);
