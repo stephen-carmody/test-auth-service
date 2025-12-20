@@ -159,6 +159,22 @@
             align-items: center;
         }
         
+        .chat-logout-btn {
+            padding: 4px 12px;
+            font-size: 12px;
+            background: var(--error);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        
+        .chat-logout-btn:hover {
+            background: #d45e4a;
+        }
+        
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -805,7 +821,7 @@
                 <div class="chat-ui">
                     <div class="chat-header">
                         <span>Logged in as <strong>${user.username}</strong> (${duration} min${duration !== 1 ? 's' : ''})</span>
-                        <button class="submit-button" onclick="handleLogout()" style="padding: 5px 15px; font-size: 12px;">
+                        <button class="chat-logout-btn" onclick="handleLogout()">
                             Logout
                         </button>
                     </div>
