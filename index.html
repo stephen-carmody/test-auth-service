@@ -633,21 +633,29 @@
         }
 
         function showAuthenticatedState() {
+            console.log('showAuthenticatedState() called');
             const user = getCurrentUser();
+            console.log('Current user:', user);
             if (!user) {
+                console.log('No user found, showing authentication state');
                 showAuthenticationState();
                 return;
             }
             
             // Hide auth container
             const authContainer = document.getElementById('auth-container');
+            console.log('Hiding auth container:', authContainer);
             authContainer.style.display = 'none';
             
             // Create or show authenticated container
             let authenticatedContainer = document.getElementById('authenticated-container');
             let authenticatedView = document.getElementById('authenticated-view');
             
+            console.log('Authenticated container before:', authenticatedContainer);
+            console.log('Authenticated view before:', authenticatedView);
+            
             if (!authenticatedContainer) {
+                console.log('Creating new authenticated container');
                 authenticatedContainer = document.createElement('div');
                 authenticatedContainer.className = 'auth-container';
                 authenticatedContainer.id = 'authenticated-container';
@@ -656,6 +664,7 @@
             
             // Always ensure the authenticated view exists
             if (!authenticatedView) {
+                console.log('Creating new authenticated view');
                 authenticatedView = document.createElement('div');
                 authenticatedView.id = 'authenticated-view';
                 authenticatedView.style.cssText = `
@@ -673,11 +682,13 @@
             
             // Make sure the container is visible
             authenticatedContainer.style.display = 'block';
+            console.log('Container display set to block:', authenticatedContainer.style.display);
             
             // Calculate login duration
             const loginTime = new Date(user.loginTime);
             const duration = Math.floor((Date.now() - user.loginTime) / 60000); // minutes
             
+            console.log('Setting authenticated view HTML content');
             authenticatedView.innerHTML = `
                 <h2 style="color: var(--text); margin-bottom: 20px;">Welcome, ${user.username}!</h2>
                 <p style="color: var(--text-muted); margin-bottom: 30px;">
@@ -812,7 +823,11 @@
                     console.log('Login successful:', { username, token: data.token });
                     
                     // Show authenticated state after short delay
-                    setTimeout(() => showAuthenticatedState(), 1000);
+                    console.log('Login successful, calling showAuthenticatedState()...');
+                    setTimeout(() => {
+                        console.log('Timeout reached, calling showAuthenticatedState()');
+                        showAuthenticatedState();
+                    }, 1000);
                 } else {
                     showMessage('login', data.error || 'Login failed', true);
                     console.error('Login failed:', data);
