@@ -109,6 +109,17 @@
             grid-template-rows: repeat(20, 1fr);
             gap: 0;
         }
+        
+        /* Distinct containers for clarity */
+        .auth-unauthenticated {
+            border-color: var(--text);
+            box-shadow: 0 0 15px var(--accent);
+        }
+        
+        .auth-authenticated {
+            border-color: var(--success);
+            box-shadow: 0 0 15px var(--success);
+        }
 
         /* Tab Button Styles */
         .tab-button {
@@ -649,7 +660,7 @@
             
             if (!authenticatedContainer) {
                 authenticatedContainer = document.createElement('div');
-                authenticatedContainer.className = 'auth-container';
+                authenticatedContainer.className = 'auth-container auth-authenticated';
                 authenticatedContainer.id = 'authenticated-container';
                 document.body.appendChild(authenticatedContainer);
             }
@@ -923,9 +934,9 @@
         // ==============================================================
 
         function createAuthInterfaceCSS() {
-            // Create auth container directly in DOM with CSS Grid
+            // Create unauthenticated container directly in DOM with CSS Grid
             const authContainer = document.createElement('div');
-            authContainer.className = 'auth-container';
+            authContainer.className = 'auth-container auth-unauthenticated';
             authContainer.id = 'auth-container';
             document.body.appendChild(authContainer);
             
