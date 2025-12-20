@@ -1428,8 +1428,8 @@
                 }
                 
                 // Process new messages
-                const messages = await getMessages();
-                messages.forEach(message => {
+                const newMessages = await getMessages();
+                newMessages.forEach(message => {
                     if (!lastProcessedMessageIds.has(message.id)) {
                         lastProcessedMessageIds.add(message.id);
                         
