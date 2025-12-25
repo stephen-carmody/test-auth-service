@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Grid UI System</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -84,12 +85,29 @@
         }
 
         /* Component Level Management */
-        .ui-level-0 { z-index: 1000; }
-        .ui-level-1 { z-index: 1100; }
-        .ui-level-2 { z-index: 1200; }
-        .ui-level-3 { z-index: 1300; }
-        .ui-level-4 { z-index: 1400; }
-        .ui-level-5 { z-index: 1500; }
+        .ui-level-0 {
+            z-index: 1000;
+        }
+
+        .ui-level-1 {
+            z-index: 1100;
+        }
+
+        .ui-level-2 {
+            z-index: 1200;
+        }
+
+        .ui-level-3 {
+            z-index: 1300;
+        }
+
+        .ui-level-4 {
+            z-index: 1400;
+        }
+
+        .ui-level-5 {
+            z-index: 1500;
+        }
 
         /* Auth Container Styles */
         .auth-container {
@@ -109,13 +127,13 @@
             grid-template-rows: repeat(20, 1fr);
             gap: 0;
         }
-        
+
         /* Distinct containers for clarity */
         .auth-unauthenticated {
             border-color: var(--text);
             box-shadow: 0 0 15px var(--accent);
         }
-        
+
         .auth-authenticated {
             /* Remove all visual styling - transparent container */
             background: transparent;
@@ -133,7 +151,7 @@
             height: auto;
             display: block;
         }
-        
+
         /* Chat UI Styles */
         .chat-ui {
             position: fixed;
@@ -147,7 +165,7 @@
             flex-direction: column;
             font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
         }
-        
+
         .chat-header {
             background: var(--surface-light);
             padding: 10px 20px;
@@ -158,7 +176,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .chat-logout-btn {
             padding: 4px 12px;
             font-size: 12px;
@@ -170,11 +188,11 @@
             font-family: inherit;
             transition: background 0.2s;
         }
-        
+
         .chat-logout-btn:hover {
             background: #d45e4a;
         }
-        
+
         .chat-messages {
             flex: 1;
             overflow-y: auto;
@@ -183,7 +201,7 @@
             flex-direction: column;
             gap: 8px;
         }
-        
+
         .chat-message {
             max-width: 70%;
             padding: 8px 12px;
@@ -192,7 +210,7 @@
             line-height: 1.4;
             word-wrap: break-word;
         }
-        
+
         .chat-message.user {
             background: var(--accent);
             color: white;
@@ -202,7 +220,7 @@
             flex-direction: column;
             align-items: flex-end;
         }
-        
+
         .chat-message.system {
             background: var(--surface-light);
             color: var(--text);
@@ -210,25 +228,25 @@
             font-style: italic;
             border-bottom-left-radius: 4px;
         }
-        
+
         .chat-message .sender {
             font-weight: bold;
             font-size: 12px;
             margin-bottom: 2px;
             opacity: 0.9;
         }
-        
+
         .chat-message .content {
             font-size: 14px;
             line-height: 1.4;
         }
-        
+
         .chat-message .timestamp {
             font-size: 10px;
             opacity: 0.7;
             margin-top: 2px;
         }
-        
+
         .chat-message.system .timestamp {
             font-size: 11px;
             text-align: left;
@@ -236,7 +254,7 @@
             display: block;
             margin-top: 4px;
         }
-        
+
         .chat-input-container {
             display: flex;
             padding: 10px;
@@ -244,7 +262,7 @@
             background: var(--surface);
             gap: 10px;
         }
-        
+
         .chat-input {
             flex: 1;
             padding: 10px;
@@ -255,12 +273,12 @@
             font-size: 14px;
             font-family: inherit;
         }
-        
+
         .chat-input:focus {
             outline: none;
             border-color: var(--accent);
         }
-        
+
         .chat-send-btn {
             padding: 10px 20px;
             background: var(--accent);
@@ -272,7 +290,7 @@
             font-family: inherit;
             transition: background 0.2s;
         }
-        
+
         .chat-send-btn:hover {
             background: var(--accent-hover);
         }
@@ -391,10 +409,153 @@
         }
 
         @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
+
+            0%,
+            20% {
+                content: '';
+            }
+
+            40% {
+                content: '.';
+            }
+
+            60% {
+                content: '..';
+            }
+
+            80%,
+            100% {
+                content: '...';
+            }
+        }
+
+        /* Inventory System Styles */
+        .inventory-container {
+            background: var(--surface);
+            border: 2px solid var(--text);
+            box-shadow: 0 0 15px var(--accent);
+            border-radius: 4px;
+            padding: 15px;
+            
+            /* Use CSS Grid positioning like chat UI */
+            grid-column: 2 / 18;      /* Same as chat container */
+            grid-row: 2 / 5;         /* Position above chat */
+        }
+
+        .inventory-header {
+            background: var(--surface-light);
+            padding: 8px 15px;
+            border-bottom: 1px solid var(--border);
+            margin: -15px -15px 15px -15px;
+            border-radius: 4px 4px 0 0;
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 60px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 8px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .inventory-slot {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            aspect-ratio: 1;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inventory-slot:hover {
+            border-color: var(--accent);
+            background: var(--surface-light);
+        }
+
+        .inventory-slot.occupied {
+            background: var(--surface-light);
+            border-color: var(--accent);
+        }
+
+        .inventory-slot.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .inventory-slot.drag-over {
+            border-color: var(--accent-hover);
+            box-shadow: 0 0 10px var(--accent);
+            background: rgba(122, 140, 122, 0.1);
+        }
+
+        .slot-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .item-icon {
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .item-quality {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+            z-index: 2;
+        }
+
+        .item-damage {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            right: 2px;
+            height: 3px;
+            background: var(--error);
+            border-radius: 1px;
+            z-index: 2;
+        }
+
+        .item-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 3;
+        }
+
+        .inventory-slot:hover .item-tooltip {
+            opacity: 1;
         }
     </style>
 </head>
@@ -408,1300 +569,7 @@
     <!-- UI Components Container -->
     <div id="ui-container"></div>
 
-    <script>
-        // ===============================================================
-        // SIMPLE GRID UI SYSTEM
-        // ===============================================================
-
-        // Grid state
-        let gridState = {
-            cols: 0,
-            rows: 0,
-            cellWidthPx: 0,
-            cellHeightPx: 0,
-            initialized: false
-        };
-
-        // UI Component Registry
-        const components = new Map();
-
-        class SimpleGridUI {
-            constructor() {
-                this.nextId = 1;
-            }
-
-            // Create any HTML element with grid positioning
-            create(html, x, y, width, height, parent = null) {
-                const component = {
-                    id: `ui-${this.nextId++}`,
-                    html: html,
-                    x: x,
-                    y: y,
-                    width: width,
-                    height: height,
-                    parent: parent,
-                    level: parent ? components.get(parent)?.level + 1 : 0,
-                    children: [],
-                    dynamicPosition: { // Support for dynamic positioning
-                        x: typeof x === 'string',
-                        y: typeof y === 'string'
-                    }
-                };
-
-                // Create element from HTML
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = html;
-                const element = tempDiv.firstElementChild;
-                
-                element.id = component.id;
-                // Preserve original classes while adding UI component classes
-                const originalClasses = element.className || '';
-                element.className = `${originalClasses} ui-component ui-level-${component.level}`;
-
-                // Apply positioning using unified method
-                this.applyPositioning(element, component);
-
-                // Store element reference for later access
-                component.element = element;
-
-                // Add to DOM - attach to parent if exists, otherwise main container
-                let targetParent;
-                if (parent) {
-                    const parentComp = components.get(parent);
-                    targetParent = parentComp ? parentComp.element : document.getElementById('ui-container');
-                } else {
-                    targetParent = document.getElementById('ui-container');
-                }
-                
-                targetParent.appendChild(element);
-
-                // Register component
-                components.set(component.id, component);
-
-                // Add to parent's children
-                if (parent) {
-                    const parentComp = components.get(parent);
-                    if (parentComp) {
-                        parentComp.children.push(component.id);
-                    }
-                }
-
-                console.log('Created component:', component);
-                return component.id;
-            }
-
-            // Calculate absolute position considering parent hierarchy
-            calculateAbsolutePosition(component) {
-                let parentX = 0;
-                let parentY = 0;
-                let parent = component.parent;
-
-                // Walk up parent chain to get parent's absolute position
-                while (parent) {
-                    const parentComp = components.get(parent);
-                    if (parentComp) {
-                        // Add parent's position to accumulate total offset
-                        if (typeof parentComp.x === 'string') {
-                            parentX += this.calculateGridPosition(parentComp.x, parentComp, 'x');
-                        } else {
-                            parentX += Math.round(parentComp.x * gridState.cellWidthPx);
-                        }
-                        
-                        if (typeof parentComp.y === 'string') {
-                            parentY += this.calculateGridPosition(parentComp.y, parentComp, 'y');
-                        } else {
-                            parentY += Math.round(parentComp.y * gridState.cellHeightPx);
-                        }
-                        
-                        parent = parentComp.parent;
-                    } else {
-                        break;
-                    }
-                }
-
-                // Calculate child's position relative to parent
-                let childX, childY;
-                if (typeof component.x === 'string') {
-                    childX = Math.round(this.calculateGridPosition(component.x, component, 'x'));
-                } else {
-                    childX = Math.round(component.x * gridState.cellWidthPx);
-                }
-                
-                if (typeof component.y === 'string') {
-                    childY = Math.round(this.calculateGridPosition(component.y, component, 'y'));
-                } else {
-                    childY = Math.round(component.y * gridState.cellHeightPx);
-                }
-                
-                const pixelWidth = Math.round(this.calculateGridPosition(component.width, component, 'width'));
-                const pixelHeight = Math.round(this.calculateGridPosition(component.height, component, 'height'));
-
-                return {
-                    x: parentX + childX,
-                    y: parentY + childY,
-                    width: pixelWidth,
-                    height: pixelHeight
-                };
-            }
-
-            // Update component position
-            update(componentId, x, y, width, height) {
-                const component = components.get(componentId);
-                if (!component) return;
-
-                // Update dynamic position flags
-                component.dynamicPosition.x = typeof x === 'string';
-                component.dynamicPosition.y = typeof y === 'string';
-
-                component.x = x || component.x;
-                component.y = y || component.y;
-                component.width = width || component.width;
-                component.height = height || component.height;
-
-                // Update element
-                const element = component.element || document.getElementById(componentId);
-                if (element) {
-                    this.applyPositioning(element, component);
-                }
-
-                // Update children (recursive)
-                component.children.forEach(childId => {
-                    this.update(childId); // Children keep relative positions
-                });
-            }
-
-            // Apply correct positioning to element
-            applyPositioning(element, component) {
-                // All components use absolute positioning
-                const absPos = this.calculateAbsolutePosition(component);
-                element.style.position = 'fixed';
-                element.style.left = `${absPos.x}px`;
-                element.style.top = `${absPos.y}px`;
-                element.style.width = `${absPos.width}px`;
-                element.style.height = `${absPos.height}px`;
-            }
-
-            // Get component by ID
-            get(id) {
-                return components.get(id);
-            }
-
-            // Remove component
-            remove(componentId) {
-                const component = components.get(componentId);
-                if (!component) return;
-
-                // Remove children first (recursive)
-                [...component.children].forEach(childId => {
-                    this.remove(childId);
-                });
-
-                // Remove from parent's children
-                if (component.parent) {
-                    const parent = components.get(component.parent);
-                    if (parent) {
-                        parent.children = parent.children.filter(id => id !== componentId);
-                    }
-                }
-
-                // Remove from DOM
-                const element = document.getElementById(componentId);
-                if (element) {
-                    element.remove();
-                }
-
-                // Remove from registry
-                components.delete(componentId);
-            }
-
-            // Get DOM element
-            getElement(id) {
-                return document.getElementById(id);
-            }
-
-            // Re-render all components (when grid changes)
-            repositionAll() {
-                components.forEach((component, id) => {
-                    const element = component.element || document.getElementById(component.id);
-                    if (element) {
-                        this.applyPositioning(element, component);
-                    }
-                });
-            }
-
-            // Calculate position handling both numeric and dynamic keywords
-            calculateGridPosition(value, component, dimension) {
-                if (typeof value === 'string') {
-                    // Handle size strings like "20x20"
-                    if (value.includes('x')) {
-                        const [width, height] = value.split('x').map(v => parseInt(v.trim()));
-                        if (dimension === 'width') return Math.round(width * gridState.cellWidthPx);
-                        if (dimension === 'height') return Math.round(height * gridState.cellHeightPx);
-                    }
-                    
-                    // Handle dynamic positioning keywords
-                    switch(value) {
-                        case 'center':
-                        case 'centered':
-                            if (dimension === 'x') {
-                                let compWidth;
-                                if (component && component.element && component.element.offsetWidth) {
-                                    // Use actual rendered width if available
-                                    compWidth = component.element.offsetWidth;
-                                } else {
-                                    compWidth = this.calculateGridPosition(component ? component.width : '20x20', component, 'width');
-                                }
-                                return Math.round((window.innerWidth - compWidth) / 2); // Center X using exact viewport
-                            } else if (dimension === 'y') {
-                                let compHeight;
-                                if (component && component.element && component.element.offsetHeight) {
-                                    // Use actual rendered height if available
-                                    compHeight = component.element.offsetHeight;
-                                } else {
-                                    compHeight = this.calculateGridPosition(component ? component.height : '20x20', component, 'height');
-                                }
-                                return Math.round((window.innerHeight - compHeight) / 2); // Center Y using exact viewport
-                            } else if (dimension === 'width') {
-                                return Math.round(20 * gridState.cellWidthPx); // 20 cells wide
-                            } else if (dimension === 'height') {
-                                return Math.round(20 * gridState.cellHeightPx); // 20 cells high
-                            }
-                            break;
-                        case 'middle':
-                            if (dimension === 'y') {
-                                return Math.round(window.innerHeight / 2); // Middle of viewport
-                            }
-                            break;
-                    }
-                    return 0; // Default fallback
-                } else {
-                    // Handle numeric grid coordinates
-                    return Math.round(value * gridState.cellWidthPx);
-                }
-            }
-
-        }
-
-        // Initialize Grid System
-        function createGrid() {
-            const overlay = document.getElementById('game-grid-overlay');
-            const grid = document.getElementById('game-grid');
-            
-            // Use exact viewport dimensions
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            
-            // Find optimal grid dimensions
-            let bestCols, bestRows, bestFit = Infinity;
-            
-            for (let cols = 10; cols <= 100; cols++) {
-                for (let rows = 10; rows <= 50; rows++) {
-                    const cellWidth = windowWidth / cols;
-                    const cellHeight = windowHeight / rows;
-                    const avgSize = (cellWidth + cellHeight) / 2;
-                    
-                    // Prefer cells around 20px
-                    const fitScore = Math.abs(avgSize - 20);
-                    
-                    if (fitScore < bestFit) {
-                        bestFit = fitScore;
-                        bestCols = cols;
-                        bestRows = rows;
-                    }
-                }
-            }
-            
-            // Set grid template
-            grid.style.gridTemplateColumns = `repeat(${bestCols}, 1fr)`;
-            grid.style.gridTemplateRows = `repeat(${bestRows}, 1fr)`;
-            grid.style.width = '100vw';
-            grid.style.height = '100vh';
-            
-            // Create cells
-            grid.innerHTML = '';
-            const totalCells = bestCols * bestRows;
-            for (let i = 0; i < totalCells; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'grid-cell';
-                cell.textContent = i % 10 === 0 ? '•' : '';
-                grid.appendChild(cell);
-            }
-            
-            // Update grid state
-            gridState.cols = bestCols;
-            gridState.rows = bestRows;
-            gridState.cellWidthPx = windowWidth / bestCols;
-            gridState.cellHeightPx = windowHeight / bestRows;
-            gridState.initialized = true;
-            
-            console.log(`Grid: ${bestCols}x${bestRows} cells, ${gridState.cellWidthPx.toFixed(1)}x${gridState.cellHeightPx.toFixed(1)}px each`);
-            
-
-            
-            // Reposition all UI components (with small delay for stability)
-            if (window.gridUI) {
-                setTimeout(() => {
-                    window.gridUI.repositionAll();
-                }, 50);
-            }
-        }
-
-        // ===============================================================
-        // SESSION MANAGEMENT
-        // ===============================================================
-
-        function isAuthenticated() {
-            const token = localStorage.getItem('authToken');
-            const loginTime = localStorage.getItem('loginTime');
-            
-            if (!token || !loginTime) return false;
-            
-            // Check if token is older than 24 hours
-            const tokenAge = Date.now() - parseInt(loginTime);
-            const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-            
-            return tokenAge < maxAge;
-        }
-
-        function getCurrentUser() {
-            if (!isAuthenticated()) return null;
-            
-            return {
-                username: localStorage.getItem('username'),
-                token: localStorage.getItem('authToken'),
-                loginTime: parseInt(localStorage.getItem('loginTime'))
-            };
-        }
-
-        function clearSession() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('username');
-            localStorage.removeItem('loginTime');
-        }
-
-        // ===============================================================
-        // UI STATE MANAGEMENT
-        // ===============================================================
-
-        function showAuthenticationState() {
-            const authContainer = document.getElementById('auth-container');
-            
-            // Make auth container visible
-            authContainer.style.display = 'block';
-            
-            // Show tabs container if it exists
-            const tabsContainer = authContainer.querySelector('.tab-container');
-            if (tabsContainer) {
-                tabsContainer.style.display = 'flex';
-            }
-            
-            // Show authentication forms
-            showLoginForm();
-        }
-
-        function showAuthenticatedState() {
-            const user = getCurrentUser();
-            if (!user) {
-                showAuthenticationState();
-                return;
-            }
-            
-            // Hide auth container
-            const authContainer = document.getElementById('auth-container');
-            authContainer.style.display = 'none';
-            
-            // Create or show authenticated container
-            let authenticatedContainer = document.getElementById('authenticated-container');
-            let authenticatedView = document.getElementById('authenticated-view');
-            
-            if (!authenticatedContainer) {
-                authenticatedContainer = document.createElement('div');
-                authenticatedContainer.className = 'auth-container auth-authenticated';
-                authenticatedContainer.id = 'authenticated-container';
-                document.body.appendChild(authenticatedContainer);
-            }
-            
-            // Always ensure the authenticated view exists
-            if (!authenticatedView) {
-                authenticatedView = document.createElement('div');
-                authenticatedView.id = 'authenticated-view';
-                authenticatedView.style.cssText = `
-                    grid-column: 2 / 18;
-                    grid-row: 2 / 18;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: flex-start;
-                    text-align: center;
-                    padding-top: 20px;
-                `;
-                authenticatedContainer.appendChild(authenticatedView);
-            }
-            
-            // Make sure the container and view are visible
-            authenticatedContainer.style.display = 'block';
-            authenticatedView.style.display = 'flex';
-            
-            // Calculate login duration
-            const loginTime = new Date(user.loginTime);
-            const duration = Math.floor((Date.now() - user.loginTime) / 60000); // minutes
-            
-            authenticatedView.innerHTML = `
-                <div class="chat-ui">
-                    <div class="chat-header">
-                        <span>Logged in as <strong>${user.username}</strong> (${duration} min${duration !== 1 ? 's' : ''})</span>
-                        <button class="chat-logout-btn" onclick="handleLogout()">
-                            Logout
-                        </button>
-                    </div>
-                    <div class="chat-messages" id="chat-messages">
-                        <div class="chat-message system">
-                            <span class="content">Welcome, ${user.username}! You can now chat with other logged-in users.</span>
-                            <span class="timestamp">${formatTime(Date.now())}</span>
-                        </div>
-                    </div>
-                    <div class="chat-input-container">
-                        <input type="text" id="chat-input" class="chat-input" 
-                               placeholder="Type a message or command..." 
-                               onkeypress="handleChatInput(event)">
-                        <button class="chat-send-btn" onclick="sendCommand()">
-                            Send
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Start polling for messages
-            startPolling();
-        }
-
-        function showLoginForm() {
-            const tabsContainer = document.querySelector('.tab-container');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-            const authenticatedView = document.getElementById('authenticated-view');
-            
-            if (tabsContainer) tabsContainer.style.display = 'flex';
-            if (loginForm) loginForm.style.display = 'block';
-            if (registerForm) registerForm.style.display = 'none';
-            if (authenticatedView) authenticatedView.style.display = 'none';
-        }
-
-        // ===============================================================
-        // AUTH FUNCTIONS
-        // ===============================================================
-
-        function switchTab(tabName) {
-            // Update tab buttons
-            const loginTab = document.getElementById('login-tab');
-            const registerTab = document.getElementById('register-tab');
-            
-            if (tabName === 'login') {
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-                
-                // Show login form, hide register form
-                document.getElementById('login-form').style.display = 'block';
-                document.getElementById('register-form').style.display = 'none';
-            } else {
-                loginTab.classList.remove('active');
-                registerTab.classList.add('active');
-                
-                // Show register form, hide login form
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-            }
-        }
-
-        function showMessage(formId, message, isError = false, isLoading = false) {
-            const messageElement = document.getElementById(`${formId}-message`);
-            if (messageElement) {
-                messageElement.textContent = message;
-                
-                // Remove all state classes first
-                messageElement.classList.remove('error', 'success', 'loading');
-                
-                // Add appropriate class
-                if (isLoading) {
-                    messageElement.classList.add('loading');
-                } else if (isError) {
-                    messageElement.classList.add('error');
-                } else {
-                    messageElement.classList.add('success');
-                }
-            }
-        }
-
-        async function handleLogin() {
-            const username = document.getElementById('username-input').value;
-            const password = document.getElementById('password-input').value;
-            
-            if (!username || !password) {
-                showMessage('login', 'Please fill in all fields', true);
-                return;
-            }
-            
-            try {
-                showMessage('login', 'Logging in', false, true);
-                
-                const response = await fetch('http://localhost:3000/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    // Store authentication session
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('username', username);
-                    localStorage.setItem('loginTime', Date.now());
-                    
-                    showMessage('login', 'Login successful!', false);
-                    console.log('Login successful:', { username, token: data.token });
-                    
-                    // Show authenticated state after short delay
-                    setTimeout(() => showAuthenticatedState(), 1000);
-                } else {
-                    showMessage('login', data.error || 'Login failed', true);
-                    console.error('Login failed:', data);
-                }
-            } catch (error) {
-                showMessage('login', 'Network error - please try again', true);
-                console.error('Login error:', error);
-            }
-        }
-
-        async function handleRegister() {
-            const username = document.getElementById('reg-username-input').value;
-            const password = document.getElementById('reg-password-input').value;
-            
-            if (!username || !password) {
-                showMessage('register', 'Please fill in all fields', true);
-                return;
-            }
-            
-            if (username.length < 3) {
-                showMessage('register', 'Username must be at least 3 characters', true);
-                return;
-            }
-            
-            if (password.length < 6) {
-                showMessage('register', 'Password must be at least 6 characters', true);
-                return;
-            }
-            
-            try {
-                showMessage('register', 'Registering', false, true);
-                
-                const response = await fetch('http://localhost:3000/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showMessage('register', 'Registration successful! You can now login.', false);
-                    console.log('Registration successful:', { username });
-                    
-                    // Switch to login tab after successful registration
-                    setTimeout(() => {
-                        switchTab('login');
-                        // Clear registration form
-                        document.getElementById('reg-username-input').value = '';
-                        document.getElementById('reg-password-input').value = '';
-                    }, 1500);
-                } else {
-                    showMessage('register', data.error || 'Registration failed', true);
-                    console.error('Registration failed:', data);
-                }
-            } catch (error) {
-                showMessage('register', 'Network error - please try again', true);
-                console.error('Registration error:', error);
-            }
-        }
-
-        async function handleLogout() {
-            const user = getCurrentUser();
-            
-            try {
-                // Call logout endpoint with token
-                const response = await fetch('http://localhost:3000/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    console.log('Logout successful:', data);
-                } else {
-                    console.warn('Logout server error:', data);
-                }
-            } catch (error) {
-                console.warn('Logout network error:', error);
-            }
-            
-            // Stop polling and update status to offline
-            stopPolling();
-            lastProcessedMessageIds.clear();
-            onlineUsers.clear();
-            
-            // Always clear local session regardless of server response
-            clearSession();
-            
-            // Hide authenticated container and show auth container
-            const authenticatedContainer = document.getElementById('authenticated-container');
-            if (authenticatedContainer) {
-                authenticatedContainer.style.display = 'none';
-            }
-            showAuthenticationState();
-            
-            // Clear login form inputs for fresh login display
-            const usernameInput = document.getElementById('username-input');
-            const passwordInput = document.getElementById('password-input');
-            if (usernameInput) usernameInput.value = '';
-            if (passwordInput) passwordInput.value = '';
-            
-            showMessage('login', 'Logged out successfully', false);
-        }
-
-        // ===============================================================
-        // AUTH INTERFACE CREATION - CSS GRID VERSION
-        // ==============================================================
-
-        function createAuthInterfaceCSS() {
-            // Create unauthenticated container directly in DOM with CSS Grid
-            const authContainer = document.createElement('div');
-            authContainer.className = 'auth-container auth-unauthenticated';
-            authContainer.id = 'auth-container';
-            document.body.appendChild(authContainer);
-            
-            // Create tabs container
-            const tabsContainer = document.createElement('div');
-            tabsContainer.className = 'tab-container';
-            tabsContainer.style.cssText = `
-                grid-column: 2 / 20;
-                grid-row: 3 / 5;
-                display: flex;
-                justify-content: center;
-                gap: 2px;
-                border-bottom: 2px solid var(--text);
-                padding-bottom: 0;
-            `;
-            authContainer.appendChild(tabsContainer);
-            
-            // Create login tab button
-            const loginTab = document.createElement('button');
-            loginTab.className = 'tab-button active';
-            loginTab.id = 'login-tab';
-            loginTab.textContent = 'Login';
-            loginTab.onclick = () => switchTab('login');
-            tabsContainer.appendChild(loginTab);
-            
-            // Create register tab button
-            const registerTab = document.createElement('button');
-            registerTab.className = 'tab-button';
-            registerTab.id = 'register-tab';
-            registerTab.textContent = 'Register';
-            registerTab.onclick = () => switchTab('register');
-            tabsContainer.appendChild(registerTab);
-            
-            // Create login form
-            const loginForm = document.createElement('div');
-            loginForm.id = 'login-form';
-            loginForm.innerHTML = `
-                <label class="form-label">Username</label>
-                <input type="text" class="form-input" id="username-input" placeholder="Enter your username">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="password-input" placeholder="Enter your password">
-                <button class="submit-button" onclick="handleLogin()">Login</button>
-                <div class="form-message" id="login-message"></div>
-            `;
-            loginForm.style.cssText = `
-                grid-column: 2 / 18;
-                grid-row: 6 / 16;
-            `;
-            authContainer.appendChild(loginForm);
-            
-            // Create register form (hidden initially)
-            const registerForm = document.createElement('div');
-            registerForm.id = 'register-form';
-            registerForm.style.display = 'none';
-            registerForm.innerHTML = `
-                <label class="form-label">Username</label>
-                <input type="text" class="form-input" id="reg-username-input" placeholder="Choose a username (3+ chars)">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="reg-password-input" placeholder="Choose a password (6+ chars)">
-                <button class="submit-button" onclick="handleRegister()">Register</button>
-                <div class="form-message" id="register-message"></div>
-            `;
-            registerForm.style.cssText = `
-                grid-column: 2 / 18;
-                grid-row: 6 / 16;
-            `;
-            authContainer.appendChild(registerForm);
-        }
-
-        // ===============================================================
-        // CHAT FUNCTIONS
-        // ==============================================================
-
-        function handleChatInput(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                sendCommand();
-            }
-        }
-
-        // Message tracking and polling
-        let lastProcessedMessageIds = new Set();
-        let pollingInterval = null;
-        let onlineUsers = new Set();
-        let lastCleanup = Date.now();
-        let isPolling = false;
-        let lastPollTime = null;
-
-        function sendCommand() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            
-            if (!text) return;
-            
-            const user = getCurrentUser();
-            
-            // Check authentication before proceeding
-            if (!user) {
-                addChatMessage('Authentication error - please log in again', 'system');
-                handleLogout();
-                return;
-            }
-            
-            input.value = '';
-            
-            // Handle commands (start with /)
-            if (text.startsWith('/')) {
-                handleCommand(text, user);
-            } else {
-                // Send as regular message
-                sendMessage(text, user);
-            }
-        }
-
-        function handleCommand(command, user) {
-            // Handle logout command
-            if (command.toLowerCase() === '/logout') {
-                addChatMessage('Logging out...', 'system');
-                
-                setTimeout(() => {
-                    handleLogout();
-                }, 500);
-                return;
-            }
-            
-            // Handle help command
-            if (command.toLowerCase() === '/?' || command.toLowerCase() === '/help') {
-                addChatMessage('Available commands: /logout, /?, /help', 'system');
-                return;
-            }
-            
-            // Add unknown command response
-            addChatMessage(`Unknown command: ${command}`, 'system');
-        }
-
-        async function sendMessage(text, user) {
-            try {
-                // Validate user parameter
-                if (!user || !user.token) {
-                    throw new Error('Invalid user authentication');
-                }
-                
-                console.log(`[${user.username}] Starting to send message: "${text}"`);
-                
-                // First get current messages with version
-                const { messages: currentMessages, version: currentVersion } = await getMessages();
-                const message = {
-                    id: `${Date.now()}-${user.username}`,
-                    username: user.username,
-                    message: text,
-                    timestamp: Date.now(),
-                    type: 'message'
-                };
-                
-                console.log(`[${user.username}] Current messages:`, currentMessages);
-                console.log(`[${user.username}] Current version:`, currentVersion);
-                console.log(`[${user.username}] Adding message:`, message);
-                
-                // Add new message to array and store back with current version
-                const updatedMessages = [...currentMessages, message];
-                
-                // Update with optimistic locking using current version
-                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`,
-                        'Cache-Control': 'persist=true' // Force persistence for chat messages
-                    },
-                    body: JSON.stringify({
-                        operation: 'write',
-                        value: updatedMessages,
-                        options: {
-                            version: currentVersion
-                        }
-                    })
-                });
-                
-                console.log(`[${user.username}] Store response status:`, response.status);
-                
-                if (!response.ok) {
-                    const errorData = await response.status === 409 ? await response.json() : await response.text();
-                    console.error(`[${user.username}] Store error:`, errorData);
-                    
-                    // Handle different error types
-                    if (response.status === 401) {
-                        addChatMessage('Authentication expired - please log in again', 'system');
-                        handleLogout();
-                        return;
-                    } else if (response.status >= 500) {
-                        addChatMessage('Server error - please try again', 'system');
-                        return;
-                    } else if (response.status === 409 && (errorData.error === 'VERSION_CONFLICT' || errorData.error?.includes('Version conflict'))) {
-                        console.log(`[${user.username}] Version conflict, retrying...`);
-                        await new Promise(resolve => setTimeout(resolve, 100)); // Brief delay
-                        return sendMessage(text, user); // Retry
-                    } else {
-                        addChatMessage(`Request failed: ${response.status}`, 'system');
-                    }
-                    
-                    throw new Error(`Failed to send message: ${response.status} - ${JSON.stringify(errorData)}`);
-                }
-                
-                const responseData = await response.json();
-                console.log(`[${user.username}] Store response data:`, responseData);
-                
-                // Don't add to local display immediately
-                // Let polling handle all message updates from gateway
-                const sendTime = new Date().toISOString();
-                console.log(`[${user.username}] Message sent at ${sendTime}, waiting for polling to display...`);
-                console.log(`[${user.username}] Message object:`, message);
-                
-            } catch (error) {
-                console.error('Error sending message:', error);
-                if (error.message.includes('Invalid user authentication')) {
-                    addChatMessage('Authentication error - please log in again', 'system');
-                    handleLogout();
-                } else if (!error.message.includes('Version conflict')) {
-                    addChatMessage('Failed to send message - please check connection', 'system');
-                }
-            }
-        }
-                    
-
-
-        async function getMessages() {
-            const user = getCurrentUser();
-            if (!user) return { messages: [], version: 0 };
-            
-            try {
-                console.log(`[${user.username}] Getting messages from unified API`);
-                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({
-                        operation: 'read'
-                    })
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        // Key doesn't exist yet, return empty
-                        return { messages: [], version: 0 };
-                    }
-                    throw new Error(`Failed to get messages: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const responseTime = new Date().toISOString();
-                console.log(`[${user.username}] Raw response at ${responseTime}:`, data);
-                
-                // New API format: {operation: "read", key: "chat/messages", result: {value: ..., version: ...}}
-                let messages = [];
-                let version = 0;
-                
-                if (data.result && data.result.value) {
-                    if (Array.isArray(data.result.value)) {
-                        messages = data.result.value;
-                    } else if (data.result.value.list) {
-                        messages = data.result.value.list;
-                    }
-                    version = data.result.version || 0;
-                }
-                
-                const source = data.result?.source || 'unknown';
-                console.log(`[${user.username}] Parsed messages:`, messages, `version: ${version}`, `source: ${source}`);
-                return { messages, version, source };
-                
-            } catch (error) {
-                console.error('Error getting messages:', error);
-                return { messages: [], version: 0 };
-            }
-        }
-
-        async function cleanupOldMessages(messages) {
-            const twelveHoursAgo = Date.now() - (12 * 60 * 60 * 1000);
-            const filteredMessages = messages.filter(msg => msg.timestamp >= twelveHoursAgo);
-            
-            if (filteredMessages.length === messages.length) return; // No old messages to remove
-            
-            const user = getCurrentUser();
-            if (!user) return;
-            
-            try {
-                // Get current version and write filtered messages back
-                const { version: currentVersion } = await getMessages();
-                
-                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`,
-                        'Cache-Control': 'persist=true'
-                    },
-                    body: JSON.stringify({
-                        operation: 'write',
-                        value: filteredMessages,
-                        options: {
-                            version: currentVersion
-                        }
-                    })
-                });
-                
-                if (response.ok) {
-                    const removedCount = messages.length - filteredMessages.length;
-                    console.log(`Cleaned up ${removedCount} old messages`);
-                } else {
-                    console.error('Failed to clean up old messages');
-                }
-                
-            } catch (error) {
-                console.error('Error cleaning up messages:', error);
-            }
-        }
-
-        async function updateOnlineStatus(isOnline) {
-            const user = getCurrentUser();
-            if (!user) return;
-            
-            try {
-                if (isOnline) {
-                    // Add to online users set
-                    await fetch('http://localhost:3000/api/v1/store/users/online', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`,
-                            'Cache-Control': 'persist=true'
-                        },
-                        body: JSON.stringify({
-                            operation: 'addToSet',
-                            field: 'users',
-                            value: {
-                                username: user.username,
-                                lastSeen: Date.now()
-                            }
-                        })
-                    });
-                } else {
-                    // Remove from online users set
-                    await fetch('http://localhost:3000/api/v1/store/users/online', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`,
-                            'Cache-Control': 'persist=true'
-                        },
-                        body: JSON.stringify({
-                            operation: 'removeFromSet',
-                            field: 'users',
-                            value: {
-                                username: user.username,
-                                lastSeen: Date.now()
-                            }
-                        })
-                    });
-                }
-            } catch (error) {
-                console.error('Error updating online status:', error);
-                // Don't let online status errors break messaging
-            }
-        }
-
-        async function getOnlineUsers() {
-            const user = getCurrentUser();
-            if (!user) return [];
-            
-            try {
-                const response = await fetch('http://localhost:3000/api/v1/store/users/online', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({
-                        operation: 'read'
-                    })
-                });
-                
-                if (!response.ok) {
-                    // If online users set doesn't exist yet, return just current user
-                    return [{ username: user.username }];
-                }
-                
-                const data = await response.json();
-                
-                // New API format: {operation: "read", key: "users/online", result: {value: ..., version: ...}}
-                let users = [];
-                if (data.result && data.result.value) {
-                    if (data.result.value.users && Array.isArray(data.result.value.users)) {
-                        users = data.result.value.users;
-                    } else if (Array.isArray(data.result.value)) {
-                        users = data.result.value;
-                    }
-                }
-                
-                return users.length > 0 ? users : [{ username: user.username }];
-                
-            } catch (error) {
-                console.error('Error getting online users:', error);
-                // Return just current user as fallback
-                return [{ username: user.username }];
-            }
-        }
-
-        async function pollMessages() {
-            if (isPolling) return;
-            isPolling = true;
-            
-            const pollStartTime = Date.now();
-            const currentUser = getCurrentUser()?.username || 'unknown';
-            console.log(`[${currentUser}] Starting poll at ${new Date().toISOString()}`);
-            
-            try {
-                // Get all current messages from gateway
-                const { messages: allMessages, version: currentVersion, source } = await getMessages();
-                const currentUser = getCurrentUser()?.username || 'unknown';
-                console.log(`[${currentUser}] Retrieved ${allMessages.length} messages from gateway (source: ${source}) at ${new Date().toISOString()}`);
-                console.log(`[${currentUser}] Message IDs:`, allMessages.map(m => m.id));
-                
-                // Clean up old messages periodically
-                if (Date.now() - lastCleanup > 5 * 60 * 1000) { // Every 5 minutes
-                    await cleanupOldMessages(allMessages);
-                    lastCleanup = Date.now();
-                }
-                
-                // Clear chat display and rebuild with all messages from gateway
-                const chatMessages = document.getElementById('chat-messages');
-                chatMessages.innerHTML = ''; // Clear all existing messages
-                
-                // Add all messages returned by gateway (source of truth)
-                allMessages.forEach(message => {
-                    if (message.type === 'message') {
-                        addChatMessage(message.message, 'user', message.username);
-                    } else if (message.type === 'system') {
-                        addChatMessage(message.message, 'system');
-                    }
-                });
-                
-                // Track processed message IDs for future deduplication
-                lastProcessedMessageIds.clear();
-                allMessages.forEach(message => {
-                    lastProcessedMessageIds.add(message.id);
-                });
-                
-                // Update online users list
-                const newOnlineUsers = await getOnlineUsers();
-                const currentOnlineSet = new Set(newOnlineUsers.map(u => u.username));
-                
-                // Detect users who came online
-                currentOnlineSet.forEach(username => {
-                    if (!onlineUsers.has(username)) {
-                        if (username !== getCurrentUser()?.username) {
-                            addChatMessage(`${username} came online`, 'system');
-                        }
-                    }
-                });
-                
-                // Detect users who went offline
-                onlineUsers.forEach(username => {
-                    if (!currentOnlineSet.has(username)) {
-                        if (username !== getCurrentUser()?.username) {
-                            addChatMessage(`${username} went offline`, 'system');
-                        }
-                    }
-                });
-                
-                onlineUsers = currentOnlineSet;
-                updateOnlineUsersDisplay();
-                
-            } catch (error) {
-                const pollDuration = Date.now() - pollStartTime;
-                console.error(`[${currentUser}] Polling error after ${pollDuration}ms:`, error);
-                
-                // Handle rate limiting in polling
-                if (error.message.includes('429')) {
-                    const retryAfter = 10; // Wait 10 seconds on rate limit
-                    addChatMessage(`Rate limited. Pausing for ${retryAfter} seconds...`, 'system');
-                    setTimeout(() => {
-                        addChatMessage('Resuming polling...', 'system');
-                    }, retryAfter * 1000);
-                }
-                
-                // Continue polling, just retry next time
-            } finally {
-                const pollDuration = Date.now() - pollStartTime;
-                console.log(`[${currentUser}] Poll completed in ${pollDuration}ms, next poll in 5000ms`);
-                isPolling = false;
-            }
-        }
-
-        function updateOnlineUsersDisplay() {
-            const chatHeader = document.querySelector('.chat-header span');
-            if (chatHeader) {
-                const user = getCurrentUser();
-                const duration = user ? Math.floor((Date.now() - user.loginTime) / 60000) : 0;
-                const onlineCount = onlineUsers.size - (onlineUsers.has(user?.username) ? 1 : 0);
-                chatHeader.textContent = `${user?.username || 'Unknown'} (${onlineCount} online, ${duration} min${duration !== 1 ? 's' : ''})`;
-            }
-        }
-
-        async function startPolling() {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-            }
-            
-            const user = getCurrentUser();
-            if (!user) return;
-            
-            // Initialise storage if needed
-            try {
-                const response = await fetch('http://localhost:3000/api/v1/store/chat/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({
-                        operation: 'read'
-                    })
-                });
-                
-                if (!response.ok) {
-                    // Key doesn't exist, create it with an initial message
-                    await fetch('http://localhost:3000/api/v1/store/chat/messages', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${user.token}`,
-                            'Cache-Control': 'persist=true'
-                        },
-                        body: JSON.stringify({
-                            operation: 'write',
-                            value: [{
-                                id: 'init',
-                                username: 'system',
-                                message: 'Chat initialized',
-                                timestamp: Date.now(),
-                                type: 'system'
-                            }]
-                        })
-                    });
-                }
-            } catch (e) {
-                console.error('Error initializing chat storage:', e);
-            }
-            
-            // Update online status
-            await updateOnlineStatus(true);
-            
-            // Poll every 5 seconds to avoid rate limits
-            pollingInterval = setInterval(() => {
-                pollMessages();
-            }, 5000);
-        }
-
-        function stopPolling() {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-                pollingInterval = null;
-            }
-            
-            // Update online status to offline
-            updateOnlineStatus(false);
-        }
-
-        function addChatMessage(message, type = 'user', sender = null) {
-            const displayTime = new Date().toISOString();
-            console.log(`[${sender || 'system'}] Adding message to UI at ${displayTime}: "${message}"`);
-            
-            const chatMessages = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-message ${type}`;
-            
-            if (type === 'user' && sender) {
-                messageDiv.innerHTML = `
-                    <span class="sender">${sender}:</span> 
-                    <span class="content">${message}</span>
-                    <span class="timestamp">${formatTime(Date.now())}</span>
-                `;
-            } else {
-                messageDiv.innerHTML = `
-                    <span class="content">${message}</span>
-                    <span class="timestamp">${formatTime(Date.now())}</span>
-                `;
-            }
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function formatTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-        }
-
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            // Initialize grid
-            createGrid();
-            
-            // Create auth interface using CSS Grid
-            createAuthInterfaceCSS();
-            
-            // Check authentication state and show appropriate UI
-            if (isAuthenticated()) {
-                showAuthenticatedState();
-            } else {
-                showAuthenticationState();
-            }
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            createGrid();
-        });
-    </script>
+    <script src="client.js"></script>
 </body>
+
 </html>
